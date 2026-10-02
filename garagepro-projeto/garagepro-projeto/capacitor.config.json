@@ -1,0 +1,8 @@
+{
+  "appId": "pt.bbtecnodev.garagepro",
+  "appName": "GaragePro",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#060a14"
+  }
+}
