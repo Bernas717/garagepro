@@ -1,0 +1,111 @@
+name: Gerar APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'www/**'
+      - 'assets/**'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - '.github/workflows/gerar-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gerar-apk
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04   # fixo: o ubuntu-latest muda para Ubuntu 26 a 19/10/2026
+    steps:
+      - name: Obter o código
+        uses: actions/checkout@v5
+
+      - name: Verificar a chave de assinatura
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ]; then
+            echo "::error::Faltam os segredos ANDROID_KEYSTORE_BASE64 e/ou ANDROID_KEYSTORE_PASSWORD (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Versão e notas
+        id: v
+        run: node scripts/notas.js
+
+      - name: Preencher compilação e repositório na app
+        run: |
+          sed -i "s/const APP_BUILD=0;/const APP_BUILD=${{ github.run_number }};/" www/index.html
+          sed -i "s#const UPDATE_REPO='__REPO__';#const UPDATE_REPO='${{ github.repository }}';#" www/index.html
+          grep -q "const APP_BUILD=${{ github.run_number }};" www/index.html || { echo "::error::APP_BUILD não encontrado no index.html"; exit 1; }
+
+      - name: Instalar Capacitor
+        run: npm install --no-audit --no-fund
+
+      - name: Criar projeto Android
+        run: npx cap add android
+
+      - name: Ícone da app
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick >/dev/null
+          RES=android/app/src/main/res
+          rm -rf $RES/mipmap-anydpi-v26
+          for p in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
+            d=${p%%:*}; s=${p##*:}
+            mkdir -p $RES/mipmap-$d
+            convert assets/icon.png -resize ${s}x${s} $RES/mipmap-$d/ic_launcher.png
+            cp $RES/mipmap-$d/ic_launcher.png $RES/mipmap-$d/ic_launcher_round.png
+            rm -f $RES/mipmap-$d/ic_launcher_foreground.png
+          done
+
+      - name: Número da versão Android
+        run: |
+          sed -i -E "s/versionCode [0-9]+/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          sed -i -E "s/versionName \"[^\"]*\"/versionName \"${{ steps.v.outputs.versao }}\"/" android/app/build.gradle
+          grep -E "versionCode|versionName" android/app/build.gradle
+
+      - name: Compilar
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Assinar
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KS_B64" | tr -d '\r\n ' | base64 -d > chave.jks
+          BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
+          IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          OUT=GaragePro-v${{ steps.v.outputs.versao }}-b${{ github.run_number }}.apk
+          "$ANDROID_HOME/build-tools/$BT/zipalign" -f -p 4 "$IN" alinhado.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" sign --ks chave.jks --ks-key-alias garagepro \
+            --ks-pass env:KS_PASS --key-pass env:KS_PASS --out "$OUT" alinhado.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" verify "$OUT"
+          rm -f chave.jks alinhado.apk
+          echo "APK=$OUT" >> $GITHUB_ENV
+
+      - name: Publicar versão (Release)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
+          name: GaragePro v${{ steps.v.outputs.versao }} (compilação ${{ github.run_number }})
+          body_path: notas.md
+          files: ${{ env.APK }}
+          make_latest: true
