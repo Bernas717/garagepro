@@ -1,1 +1,239 @@
 
+name: Gerar APK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'www/**'
+      - 'assets/**'
+      - 'capacitor.config.json'
+      - 'package.json'
+      - '.github/workflows/gerar-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gerar-apk
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04   # fixo: o ubuntu-latest muda para Ubuntu 26 a 19/10/2026
+    steps:
+      - name: Obter o código
+        uses: actions/checkout@v5
+
+      - name: Verificar a chave de assinatura
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ]; then
+            echo "::error::Faltam os segredos ANDROID_KEYSTORE_BASE64 e/ou ANDROID_KEYSTORE_PASSWORD (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Versão e notas
+        id: v
+        run: node scripts/notas.js
+
+      - name: Preencher compilação e repositório na app
+        run: |
+          sed -i "s/const APP_BUILD=0;/const APP_BUILD=${{ github.run_number }};/" www/index.html
+          sed -i "s#const UPDATE_REPO='__REPO__';#const UPDATE_REPO='${{ github.repository }}';#" www/index.html
+          grep -q "const APP_BUILD=${{ github.run_number }};" www/index.html || { echo "::error::APP_BUILD não encontrado no index.html"; exit 1; }
+
+      - name: Instalar Capacitor
+        run: npm install --no-audit --no-fund
+
+      - name: Criar projeto Android
+        run: npx cap add android
+
+      - name: Instalador nativo (atualizações dentro da app)
+        run: |
+          PKG=android/app/src/main/java/pt/bbtecnodev/garagepro
+          test -d "$PKG" || { echo "::error::Pasta do pacote não encontrada: $PKG"; exit 1; }
+          cat > "$PKG/MainActivity.java" <<'JAVA'
+          package pt.bbtecnodev.garagepro;
+
+          import android.os.Bundle;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  registerPlugin(InstaladorPlugin.class);
+                  super.onCreate(savedInstanceState);
+              }
+          }
+          JAVA
+          cat > "$PKG/InstaladorPlugin.java" <<'JAVA'
+          package pt.bbtecnodev.garagepro;
+
+          import android.content.Intent;
+          import android.net.Uri;
+          import android.os.Build;
+          import android.provider.Settings;
+          import androidx.core.content.FileProvider;
+          import com.getcapacitor.JSObject;
+          import com.getcapacitor.Plugin;
+          import com.getcapacitor.PluginCall;
+          import com.getcapacitor.PluginMethod;
+          import com.getcapacitor.annotation.CapacitorPlugin;
+          import java.io.File;
+          import java.io.FileOutputStream;
+          import java.io.IOException;
+          import java.io.InputStream;
+          import java.io.OutputStream;
+          import java.net.HttpURLConnection;
+          import java.net.URL;
+
+          @CapacitorPlugin(name = "Instalador")
+          public class InstaladorPlugin extends Plugin {
+
+              @PluginMethod
+              public void podeInstalar(PluginCall call) {
+                  boolean ok = true;
+                  if (Build.VERSION.SDK_INT >= 26) {
+                      ok = getContext().getPackageManager().canRequestPackageInstalls();
+                  }
+                  JSObject r = new JSObject();
+                  r.put("ok", ok);
+                  call.resolve(r);
+              }
+
+              @PluginMethod
+              public void abrirPermissao(PluginCall call) {
+                  if (Build.VERSION.SDK_INT >= 26) {
+                      Intent i = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:" + getContext().getPackageName()));
+                      i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                      getContext().startActivity(i);
+                  }
+                  call.resolve();
+              }
+
+              @PluginMethod
+              public void descarregarEInstalar(final PluginCall call) {
+                  final String url = call.getString("url");
+                  if (url == null || !url.startsWith("https://github.com/")) {
+                      call.reject("Endereço inválido");
+                      return;
+                  }
+                  new Thread(() -> {
+                      HttpURLConnection c = null;
+                      try {
+                          File dir = new File(getContext().getCacheDir(), "updates");
+                          if (!dir.exists() && !dir.mkdirs()) throw new IOException("sem espaço na cache");
+                          File f = new File(dir, "garagepro-atualizacao.apk");
+                          if (f.exists()) f.delete();
+                          c = (HttpURLConnection) new URL(url).openConnection();
+                          c.setInstanceFollowRedirects(true);
+                          c.setConnectTimeout(20000);
+                          c.setReadTimeout(60000);
+                          int code = c.getResponseCode();
+                          if (code != 200) throw new IOException("HTTP " + code);
+                          long total = c.getContentLengthLong();
+                          long done = 0, last = 0;
+                          try (InputStream in = c.getInputStream(); OutputStream out = new FileOutputStream(f)) {
+                              byte[] buf = new byte[65536];
+                              int n;
+                              while ((n = in.read(buf)) != -1) {
+                                  out.write(buf, 0, n);
+                                  done += n;
+                                  long now = System.currentTimeMillis();
+                                  if (total > 0 && now - last > 250) {
+                                      last = now;
+                                      JSObject p = new JSObject();
+                                      p.put("pct", (int) (done * 100 / total));
+                                      notifyListeners("progresso", p);
+                                  }
+                              }
+                          }
+                          if (total > 0 && done != total) throw new IOException("transferência incompleta");
+                          JSObject p = new JSObject();
+                          p.put("pct", 100);
+                          notifyListeners("progresso", p);
+                          Uri uri = FileProvider.getUriForFile(getContext(), getContext().getPackageName() + ".fileprovider", f);
+                          Intent i = new Intent(Intent.ACTION_VIEW);
+                          i.setDataAndType(uri, "application/vnd.android.package-archive");
+                          i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+                          getContext().startActivity(i);
+                          call.resolve();
+                      } catch (Exception e) {
+                          call.reject(e.getMessage() != null ? e.getMessage() : e.toString());
+                      } finally {
+                          if (c != null) c.disconnect();
+                      }
+                  }).start();
+              }
+          }
+          JAVA
+          MAN=android/app/src/main/AndroidManifest.xml
+          grep -q REQUEST_INSTALL_PACKAGES "$MAN" || sed -i 's#<uses-permission android:name="android.permission.INTERNET" />#&\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />#' "$MAN"
+          grep -q REQUEST_INSTALL_PACKAGES "$MAN" || { echo "::error::Não consegui adicionar a permissão ao AndroidManifest"; exit 1; }
+          grep -q 'android:authorities="${applicationId}.fileprovider"' "$MAN" || { echo "::error::FileProvider não encontrado no AndroidManifest"; cat "$MAN"; exit 1; }
+          mkdir -p android/app/src/main/res/xml
+          printf '%s\n' '<?xml version="1.0" encoding="utf-8"?>' '<paths xmlns:android="http://schemas.android.com/apk/res/android">' '    <external-path name="my_images" path="." />' '    <cache-path name="my_cache_images" path="." />' '</paths>' > android/app/src/main/res/xml/file_paths.xml
+          head -3 "$PKG/InstaladorPlugin.java"; grep -n "REQUEST_INSTALL" "$MAN"
+
+      - name: Ícone da app
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq imagemagick >/dev/null
+          RES=android/app/src/main/res
+          rm -rf $RES/mipmap-anydpi-v26
+          for p in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
+            d=${p%%:*}; s=${p##*:}
+            mkdir -p $RES/mipmap-$d
+            convert assets/icon.png -resize ${s}x${s} $RES/mipmap-$d/ic_launcher.png
+            cp $RES/mipmap-$d/ic_launcher.png $RES/mipmap-$d/ic_launcher_round.png
+            rm -f $RES/mipmap-$d/ic_launcher_foreground.png
+          done
+
+      - name: Número da versão Android
+        run: |
+          sed -i -E "s/versionCode [0-9]+/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          sed -i -E "s/versionName \"[^\"]*\"/versionName \"${{ steps.v.outputs.versao }}\"/" android/app/build.gradle
+          grep -E "versionCode|versionName" android/app/build.gradle
+
+      - name: Compilar
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+
+      - name: Assinar
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KS_B64" | tr -d '\r\n ' | base64 -d > chave.jks
+          BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
+          IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          OUT=GaragePro-v${{ steps.v.outputs.versao }}-b${{ github.run_number }}.apk
+          "$ANDROID_HOME/build-tools/$BT/zipalign" -f -p 4 "$IN" alinhado.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" sign --ks chave.jks --ks-key-alias garagepro \
+            --ks-pass env:KS_PASS --key-pass env:KS_PASS --out "$OUT" alinhado.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" verify "$OUT"
+          rm -f chave.jks alinhado.apk
+          echo "APK=$OUT" >> $GITHUB_ENV
+
+      - name: Publicar versão (Release)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
+          name: GaragePro v${{ steps.v.outputs.versao }} (compilação ${{ github.run_number }})
+          body_path: notas.md
+          files: ${{ env.APK }}
+          make_latest: true
