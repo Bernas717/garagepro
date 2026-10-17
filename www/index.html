@@ -285,6 +285,7 @@ textarea.ta:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--soft)}
 .lnk.sm{margin:0;font-size:13px}.orcard{padding:14px;cursor:pointer;margin-bottom:10px;display:flex;flex-direction:column;gap:10px}.orcard .r1{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}.orcard>b{font-size:16px;font-weight:650}.orcard .r1 b{color:var(--tx);font-size:14.5px}
 .est4 button{font-size:13px;padding:0 4px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mo3 .in{padding:0 8px}.mo3 .u{font-size:12px}
 .pos2{display:grid;grid-template-columns:2fr 3fr;gap:8px}.pos2 .seg button{font-size:13.5px}
+.sycard{display:flex;gap:12px;align-items:flex-start;padding:14px;margin-top:10px}.sycard b{display:block;font-weight:700}.sycard small{display:block;color:var(--mut);font-size:13px;margin-top:2px}.syhelp{padding:14px;margin-top:20px;font-size:14px;line-height:1.5}.syhelp ol{margin:8px 0 8px 18px;padding:0}.syhelp li{margin-bottom:6px}.syhelp code{background:var(--card2);padding:1px 5px;border-radius:5px;font-size:13px}.syhelp small{color:var(--mut)}
 .hbtns{margin-top:12px}.hbtns .btn{margin:0}.lnk{display:flex;align-items:center;gap:6px;margin:12px auto 0;color:var(--pri);font-weight:600;font-size:14px}
 .fsum{margin:12px 16px 0;padding:16px 16px 4px}.fsum>small{color:var(--mut);font-size:13px}.fsum>b{display:block;font-size:30px;font-weight:750;font-variant-numeric:tabular-nums;margin:2px 0 8px}.fsum .kv:last-child{border-bottom:0}.kv.tot b{font-size:16px}
 .kv span{color:var(--mut)}
@@ -869,8 +870,15 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 
 /* ================== VERSÃO / CHANGELOG ================== */
 // Regra: todas as alterações do mesmo dia ficam na mesma versão; um dia novo = versão nova (+0.1).
-const APP_VER='0.7';
+const APP_VER='0.8';
 const CHANGELOG=[
+ {v:'0.8',d:'2026-10-17',t:'Dados partilhados entre aparelhos',items:[
+  'Sincronização entre o telemóvel e o tablet através de um repositório privado teu no GitHub (Definições → Sincronizar aparelhos)',
+  'Com os dois aparelhos abertos, o que gravas num aparece no outro em cerca de 15 segundos',
+  'Funciona sem rede: guarda no aparelho e envia quando a ligação voltar',
+  'Se os dois mexerem ao mesmo tempo, cada carro, ordem, cliente, movimento ou tarefa fica com a alteração mais recente; nada se perde por inteiro',
+  'O token fica só no aparelho e não vai nas cópias de segurança; o repositório tem de ser privado'
+ ]},
  {v:'0.7',d:'2026-10-15',t:'Trabalhos com valores, tarefas e mais peças',items:[
   'Cada reparação passa a ser um trabalho completo: peças com preço, mão de obra, total e pagamento no mesmo sítio',
   'Preço em cada peça (e se já pagaste à loja), mão de obra e "Recebi agora" no formulário da reparação',
@@ -1054,6 +1062,7 @@ function migrate(o){
 function save(){
  if(DBOK){DB.set('state',S).catch(()=>toast('Erro ao guardar os dados!'));}
  else{try{localStorage.setItem('garagepro',JSON.stringify(S))}catch(e){toast('Erro ao guardar os dados!')}}
+ try{syTrack()}catch(_){}
 }
 
 /* ================== FINANÇAS ================== */
@@ -1159,7 +1168,7 @@ function openCli(id){go('client',{id})}
 function render(){
  const top=stack[stack.length-1];let h='';
  try{
-  const V={or:()=>vOR(top.id),vhist:()=>vVHist(top.id),shop:vShop,transfer:vTransfer,aparencia:vAparencia,search:vSearch,home:vHome,tasks:vTasks,vehicles:vVehicles,veh:()=>vVeh(top.id),rep:()=>F?vRep():vHome(),vform:()=>VF?vVForm():vHome(),timeline:vTimeline,fin:vFin,client:()=>vClient(top.id),set:vSet,clients:vClients,intervals:vIntervals,changelog:vChangelog,updates:vUpdates};
+  const V={sync:vSync,or:()=>vOR(top.id),vhist:()=>vVHist(top.id),shop:vShop,transfer:vTransfer,aparencia:vAparencia,search:vSearch,home:vHome,tasks:vTasks,vehicles:vVehicles,veh:()=>vVeh(top.id),rep:()=>F?vRep():vHome(),vform:()=>VF?vVForm():vHome(),timeline:vTimeline,fin:vFin,client:()=>vClient(top.id),set:vSet,clients:vClients,intervals:vIntervals,changelog:vChangelog,updates:vUpdates};
   h=(V[top.v]||vHome)();
  }catch(e){console.error(e);h=`<div class="empty">Erro: ${esc(e.message)}</div>`}
  $('#app').dataset.view=top.v;
@@ -1167,7 +1176,7 @@ function render(){
  a11y($('#app'));
 }
 function nav(v){
- const map={or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:'fin',set:'set',clients:'set',intervals:'set',changelog:'set',updates:'set'};
+ const map={sync:'set',or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:'fin',set:'set',clients:'set',intervals:'set',changelog:'set',updates:'set'};
  const a=map[v];
  const b=(k,ic,t)=>`<button class="${a===k?'on':''}" onclick="tab('${k}')">${I(ic)}<span>${t}</span></button>`;
  return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b>Garage<span>Pro</span></b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${b('set','sliders','Definições').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}</nav>`;
@@ -1984,6 +1993,163 @@ function vVHist(id,t){
  return h+'<div style="height:16px"></div>';
 }
 
+/* ================== SINCRONIZAÇÃO ENTRE APARELHOS (repositório privado GitHub) — v0.8 ================== */
+// A configuração (repositório + token) fica só neste aparelho: não vai nas cópias nem no ficheiro partilhado.
+const SY_FILE='garagepro-sync.json.gz',SY_COLS=['vehicles','records','clients','moves','tasks'];
+let SY={cfg:{on:false,repo:'',token:'',dev:''},meta:{u:{},tomb:{},snap:{}},sha:'',etag:'',last:0,err:'',busy:false,dirty:false,timer:null,poll:null,seen:0};
+const syOn=()=>!!(SY.cfg.on&&SY.cfg.repo&&SY.cfg.token);
+function fnv(str){let h=0x811c9dc5;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,0x01000193)}return(h>>>0).toString(36)+str.length.toString(36)}
+// Itens partilhados: chave → objeto
+function syItems(st){
+ const o={};SY_COLS.forEach(c=>arr(st[c]).forEach(x=>{if(x&&x.id)o[c+':'+x.id]=x}));
+ o['S:intervals']=st.intervals||{};o['S:shop']=(st.prefs||{}).shop||null;
+ return o;
+}
+async function sySaveLocal(){const v={cfg:SY.cfg,meta:SY.meta,sha:SY.sha,last:SY.last};try{if(DBOK)await DB.set('sync',v);else localStorage.setItem('garagepro-sync',JSON.stringify(v))}catch(_){}}
+async function syLoadLocal(){try{const v=DBOK?await DB.get('sync'):JSON.parse(localStorage.getItem('garagepro-sync')||'null');if(v&&typeof v==='object'){SY.cfg={...SY.cfg,...(v.cfg||{})};SY.meta={u:{},tomb:{},snap:{},...(v.meta||{})};SY.sha=v.sha||'';SY.last=v.last||0}}catch(_){}
+ if(!SY.cfg.dev){SY.cfg.dev=uid();sySaveLocal()}}
+// Chamado em cada save(): marca o que mudou neste aparelho
+function syTrack(){
+ if(!syOn())return;
+ const now=Date.now(),it=syItems(S),m=SY.meta,seen=new Set();let ch=false;
+ Object.entries(it).forEach(([k,x])=>{seen.add(k);const h=x==null?'∅':fnv(JSON.stringify(x));if(m.snap[k]!==h){m.snap[k]=h;m.u[k]=now;delete m.tomb[k];ch=true}});
+ Object.keys(m.snap).forEach(k=>{if(!seen.has(k)){delete m.snap[k];delete m.u[k];m.tomb[k]=now;ch=true}});
+ if(ch){SY.dirty=true;sySaveLocal();clearTimeout(SY.timer);SY.timer=setTimeout(()=>syncNow(),1500)}
+}
+// Junta o estado local com o remoto: em cada item ganha a alteração mais recente; apagados ganham se forem mais recentes
+function syMerge(rem){
+ const L=syItems(S),R=rem.items||{},lm=SY.meta,ru=rem.u||{},rt=rem.tomb||{},out={},u={},tomb={};let needPush=false,localChanged=false;
+ const H={};const hh=(side,k,x)=>H[side+k]||(H[side+k]=x==null?'∅':fnv(JSON.stringify(x)));
+ const keys=new Set([...Object.keys(L),...Object.keys(R),...Object.keys(lm.tomb),...Object.keys(rt)]);
+ keys.forEach(k=>{
+  const hasL=k in L,hasR=k in R,lu=hasL?(lm.u[k]||0):-1,rU=hasR?(ru[k]||0):-1,t=Math.max(lm.tomb[k]||0,rt[k]||0);
+  let src=null;
+  if(hasL&&hasR){src=lu>rU?'L':rU>lu?'R':(hh('L',k,L[k])>=hh('R',k,R[k])?'L':'R')}else if(hasL)src='L';else if(hasR)src='R';
+  const xu=src==='L'?lu:rU;
+  if(src&&!(t&&t>=xu)){
+   const x=src==='L'?L[k]:R[k],h=hh(src,k,x);out[k]=x;u[k]=Math.max(0,xu);
+   if(!hasR||h!==hh('R',k,R[k])||(ru[k]||0)!==u[k])needPush=true;
+   if(!hasL||h!==hh('L',k,L[k]))localChanged=true;
+  }else if(t){tomb[k]=t;if(hasR||(rt[k]||0)<t)needPush=true;if(hasL)localChanged=true}
+ });
+ const cut=Date.now()-180*864e5;Object.keys(tomb).forEach(k=>{if(tomb[k]<cut)delete tomb[k]});
+ return{out,u,tomb,needPush,localChanged};
+}
+function syApply(res,remSeq){
+ const st={...S,vehicles:[],records:[],clients:[],moves:[],tasks:[]};
+ Object.entries(res.out).forEach(([k,x])=>{const i=k.indexOf(':'),c=k.slice(0,i);if(SY_COLS.includes(c))st[c].push(x);else if(k==='S:intervals')st.intervals=x||{};else if(k==='S:shop')st.prefs={...st.prefs,shop:x||undefined}});
+ if(!('S:shop' in res.out)&&st.prefs)delete st.prefs.shop;
+ const seq={...((S.prefs||{}).docSeq||{})};Object.entries(remSeq||{}).forEach(([y,n])=>{seq[y]=Math.max(seq[y]||0,+n||0)});st.prefs={...st.prefs,docSeq:seq};
+ S=normalize(st);
+ // números de ordem repetidos (dois aparelhos ao mesmo tempo): renumera o mais recente
+ const by={};S.records.forEach(r=>{if(r.orNo)(by[r.orNo]=by[r.orNo]||[]).push(r)});
+ Object.values(by).filter(a=>a.length>1).forEach(a=>{a.sort((x,y)=>(res.u['records:'+x.id]||0)-(res.u['records:'+y.id]||0)||String(x.id).localeCompare(String(y.id))).slice(1).forEach(r=>{if(r.docNo===r.orNo)delete r.docNo;r.orNo=nextOrNo(r.data.slice(0,4));res.u['records:'+r.id]=Date.now();res.needPush=true})});
+ // novo instantâneo: o que veio de fora não conta como alteração deste aparelho
+ const it=syItems(S),snap={};Object.entries(it).forEach(([k,x])=>{snap[k]=x==null?'∅':fnv(JSON.stringify(x))});
+ const u={};Object.keys(it).forEach(k=>{u[k]=res.u[k]||Date.now()});
+ SY.meta={u,tomb:res.tomb,snap};
+}
+async function gh(path,opt={}){
+ const r=await fetch('https://api.github.com'+path,{...opt,cache:'no-store',headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+SY.cfg.token,...(opt.headers||{})}});
+ return r;
+}
+function syErr(r){if(!r)return'Sem ligação à internet — sincroniza quando voltar';if(r.status===401)return'Token inválido ou expirado — cria um novo';if(r.status===403)return'Sem permissão (o token precisa de "Contents: Read and write") ou limite do GitHub atingido';if(r.status===404)return'Repositório não encontrado ou token sem acesso a ele';return'Erro do GitHub ('+r.status+')'}
+async function syPull(){
+ const r=await gh(`/repos/${SY.cfg.repo}/contents/${SY_FILE}`,{headers:SY.etag&&SY.sha?{'If-None-Match':SY.etag}:{}});
+ if(r.status===304)return{same:true};
+ if(r.status===404){const rr=await gh(`/repos/${SY.cfg.repo}`);if(!rr.ok)throw rr;SY.sha='';return{empty:true}}
+ if(!r.ok)throw r;
+ const j=await r.json();SY.etag=r.headers.get('ETag')||'';
+ let b64=j.content;
+ if(!b64||j.encoding==='none'){const rb=await gh(`/repos/${SY.cfg.repo}/git/blobs/${j.sha}`);if(!rb.ok)throw rb;b64=(await rb.json()).content}
+ const bytes=Uint8Array.from(atob(String(b64).replace(/\s/g,'')),c=>c.charCodeAt(0));
+ const txt=bytes[0]===0x1f&&bytes[1]===0x8b?await gunzipText(bytes):new TextDecoder().decode(bytes);
+ const o=JSON.parse(txt);if(!o||o.app!=='GaragePro-sync')throw new Error('Ficheiro de sincronização inválido');
+ return{sha:j.sha,rem:o};
+}
+async function syPush(){
+ const it=syItems(S);const o={app:'GaragePro-sync',v:1,appVer:APP_VER,at:Date.now(),dev:SY.cfg.dev,items:it,u:SY.meta.u,tomb:SY.meta.tomb,docSeq:(S.prefs||{}).docSeq||{}};
+ const json=JSON.stringify(o),bytes=canGzip()?await gzipBytes(json):new TextEncoder().encode(json);
+ const r=await gh(`/repos/${SY.cfg.repo}/contents/${SY_FILE}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'GaragePro: sincronização '+new Date().toISOString().slice(0,19).replace('T',' '),content:bytesB64(bytes),...(SY.sha?{sha:SY.sha}:{})})});
+ if(r.status===409||r.status===422)return false; // alguém gravou entretanto
+ if(!r.ok)throw r;
+ const j=await r.json();SY.sha=j.content&&j.content.sha||'';SY.etag='';SY.dirty=false;return true;
+}
+const syQuiet=()=>{const top=stack[stack.length-1]||{};const a=document.activeElement;return!$('#sheet')&&!['rep','vform','shop','sync'].includes(top.v)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))};
+async function syncNow(manual){
+ if(!syOn()||SY.busy)return;if(navigator.onLine===false){SY.err=syErr(null);if(manual)render();return}
+ SY.busy=true;let changed=false;
+ try{
+  for(let tries=0;tries<4;tries++){
+   const p=await syPull();
+   if(p.rem){SY.sha=p.sha;const res=syMerge(p.rem);
+    if(res.localChanged||res.needPush){syApply(res,p.rem.docSeq);if(res.localChanged){changed=true;await saveQuiet()}}
+    SY.dirty=res.needPush}
+   else if(p.empty){SY.dirty=true}
+   if(!SY.dirty)break;
+   if(await syPush())break;
+   SY.etag='';
+  }
+  SY.last=Date.now();SY.err='';
+ }catch(e){SY.err=e instanceof Response?syErr(e):(e&&e.name==='TypeError'?syErr(null):String(e&&e.message||e).slice(0,120))}
+ finally{SY.busy=false;sySaveLocal()}
+ if(changed){if(syQuiet())render();else toast('Dados atualizados a partir do outro aparelho')}
+ else if(manual||(stack[stack.length-1]||{}).v==='sync')render();
+}
+async function saveQuiet(){if(DBOK){try{await DB.set('state',S)}catch(_){}}else{try{localStorage.setItem('garagepro',JSON.stringify(S))}catch(_){}}}
+function syStart(){
+ clearInterval(SY.poll);if(!syOn())return;
+ SY.poll=setInterval(()=>{if(document.visibilityState==='visible')syncNow()},15000);
+}
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&syOn())syncNow()});
+addEventListener('online',()=>{if(syOn())syncNow()});
+/* Ecrã de configuração */
+let SYF=null;
+function vSync(){
+ if(!SYF)SYF={repo:SY.cfg.repo||'',token:''};
+ let h=hdr('Sincronizar aparelhos');
+ h+='<div class="wrap">';
+ if(syOn()){
+  const ok=!SY.err;
+  h+=`<div class="card sycard ${ok?'ok':'bad'}"><span class="bub ${ok?'b-ok':'b-bad'}">${I(ok?'check':'alert')}</span><div style="flex:1;min-width:0"><b>${ok?'Ligado':'Problema na sincronização'}</b><small>${esc(SY.cfg.repo)}</small><small>${SY.busy?'A sincronizar…':SY.last?'Última sincronização: '+new Date(SY.last).toLocaleTimeString('pt-PT'):'Ainda não sincronizou'}</small>${SY.err?`<small class="c-bad">${esc(SY.err)}</small>`:''}</div></div>`;
+  h+=`<button class="btn" onclick="syncNow(true)">${I('history')} Sincronizar agora</button>`;
+  h+=`<p class="hint">Com a app aberta nos dois aparelhos, o que gravas num aparece no outro em cerca de 15 segundos. Sem rede, continua a funcionar e envia quando voltar.</p>`;
+  h+=`<button class="btn danger" onclick="syOff()">Desligar neste aparelho</button><p class="hint">Desligar não apaga nada: os dados ficam neste aparelho e no repositório.</p>`;
+ }else{
+  h+=`<div class="note" style="margin-top:8px">${I('info')}<span>Os dados ficam num <b>repositório privado</b> teu no GitHub e são partilhados entre o telemóvel e o tablet. Liga os dois aparelhos ao mesmo repositório.</span></div>`;
+  h+=`<label class="fl">Repositório privado</label><div class="in"><input value="${esc(SYF.repo)}" placeholder="Ex: Bernas717/garagepro-dados" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="SYF.repo=this.value.trim()"></div>`;
+  h+=`<label class="fl">Token de acesso</label><div class="in"><input type="password" value="${esc(SYF.token)}" placeholder="github_pat_…" autocapitalize="off" autocorrect="off" spellcheck="false" oninput="SYF.token=this.value.trim()"></div>`;
+  h+=`<button class="btn" onclick="syOnSetup()">${I('check')} Ligar</button>`;
+  h+=`<div class="card syhelp"><b>Como criar (uma vez, no GitHub)</b><ol>
+   <li><b>Repositório:</b> github.com → <b>+</b> → New repository → nome <code>garagepro-dados</code> → <b>Private</b> → marca "Add a README" → Create.</li>
+   <li><b>Token:</b> foto de perfil → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate new token.</li>
+   <li>Repository access: <b>Only select repositories</b> → <code>garagepro-dados</code>. Permissions → Repository → <b>Contents: Read and write</b>. Expiração: a mais longa.</li>
+   <li>Copia o token (começa por <code>github_pat_</code>) e cola aqui, no telemóvel e no tablet.</li></ol>
+   <small>O token só dá acesso a esse repositório. Fica guardado apenas neste aparelho e não vai nas cópias de segurança.</small></div>`;
+ }
+ return h+'<div style="height:20px"></div></div>';
+}
+async function syOnSetup(){
+ if(lock('syOn'))return;
+ const repo=(SYF.repo||'').replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'').replace(/\/+$/,''),token=SYF.token||'';
+ if(!/^[\w.-]+\/[\w.-]+$/.test(repo))return toast('Escreve o repositório como utilizador/nome');
+ if(!/^(github_pat_|ghp_)[\w]{20,}$/.test(token))return toast('O token não parece válido');
+ SY.cfg={...SY.cfg,repo,token,on:false};toast('A verificar…');
+ try{
+  const r=await gh(`/repos/${repo}`);if(!r.ok){toast(syErr(r));return}
+  const j=await r.json();
+  if(!j.private){toast('Esse repositório é público. Os dados dos clientes têm de ficar num repositório privado.');SY.cfg.token='';return}
+  if(j.permissions&&j.permissions.push===false){toast('O token não tem permissão de escrita (Contents: Read and write)');return}
+ }catch(_){toast(syErr(null));return}
+ await autoBackup('Antes de ligar a sincronização');
+ SY.cfg.on=true;SY.meta={u:{},tomb:{},snap:{}};SY.sha='';SY.etag='';SY.err='';
+ // primeiro registo: tudo o que existe aqui conta como "de agora" com data antiga, para não apagar nada do outro aparelho
+ const it=syItems(S);Object.entries(it).forEach(([k,x])=>{SY.meta.snap[k]=x==null?'∅':fnv(JSON.stringify(x));SY.meta.u[k]=1});
+ SY.dirty=true;SYF=null;await sySaveLocal();syStart();render();await syncNow(true);
+ if(!SY.err)toast('Sincronização ligada');
+}
+async function syOff(){if(!confirm('Desligar a sincronização neste aparelho?'))return;SY.cfg={...SY.cfg,on:false,token:''};SY.err='';clearInterval(SY.poll);await sySaveLocal();render();toast('Sincronização desligada')}
+
 /* ================== CLIENTE ================== */
 function vClient(id){
  const c=cli(id);if(!c){stack=[{v:'home'},{v:'fin'}];return vFin()}
@@ -2043,13 +2209,14 @@ function vSet(){
  h+=`<div class="sec"><h2>Segurança</h2></div><div class="card grp">
   <button class="opt" onclick="pinSheet()"><span class="bub b-pri">${I('shield')}</span>Bloqueio com PIN<span class="rv">${pinOn()?'<span class="tag t-ok">Ligado</span>':'Desligado'} ${I('chev','s')}</span></button></div>`;
  h+=`<div class="sec"><h2>Dados</h2></div><div class="card grp">
+  <button class="opt" onclick="SYF=null;go('sync')"><span class="bub b-pri">${I('history')}</span>Sincronizar aparelhos<span class="rv">${syOn()?(SY.err?'<span class="tag t-bad">Erro</span>':'<span class="tag t-ok">Ligado</span>'):'Desligado'} ${I('chev','s')}</span></button>
   <button class="opt" onclick="go('transfer')"><span class="bub b-ok">${I('upload')}</span>Passar dados e cópias<span class="rv">${I('chev','s')}</span></button>
   <button class="opt" onclick="loadSample()"><span class="bub b-vio">${I('sparkle')}</span>Carregar dados de exemplo</button>
   <button class="opt red" onclick="wipe()"><span class="bub b-bad">${I('trash')}</span>Apagar todos os dados</button></div>`;
  h+=`<div class="sec"><h2>Sobre</h2></div><div class="card grp">
   <button class="opt" onclick="go('updates')"><span class="bub b-ok">${I('download')}</span>Atualizações<span class="rv">${updBadge()?'<span class="tag t-pri">Nova versão</span>':''} ${I('chev','s')}</span></button>
   <button class="opt" onclick="go('changelog')"><span class="bub b-pri">${I('history')}</span>Changelog<span class="rv">v${APP_VER} ${I('chev','s')}</span></button></div>`;
- h+=`<div class="wrap"><p class="hint" style="margin:14px 2px 10px">Os dados ficam guardados apenas neste dispositivo${DBOK?'':' (modo de recurso)'}. Faz cópias de segurança regularmente.<br>${S.vehicles.length} veículo(s) · ${S.clients.length} cliente(s) · ${S.records.length} reparação(ões) · ${S.moves.length} movimento(s) · ${S.tasks.length} tarefa(s).</p></div>`;
+ h+=`<div class="wrap"><p class="hint" style="margin:14px 2px 10px">${syOn()?'Os dados são partilhados com os outros aparelhos ligados ao repositório '+esc(SY.cfg.repo)+'.':'Os dados ficam guardados apenas neste dispositivo'+(DBOK?'':' (modo de recurso)')+'.'} Faz cópias de segurança regularmente.<br>${S.vehicles.length} veículo(s) · ${S.clients.length} cliente(s) · ${S.records.length} reparação(ões) · ${S.moves.length} movimento(s) · ${S.tasks.length} tarefa(s).</p></div>`;
  return h;
 }
 function vClients(){
@@ -2082,7 +2249,7 @@ function ivSheet(key){
 }
 function saveIv(key){S.intervals[key]={km:pInt($('#iv-km').value)||0,m:pInt($('#iv-m').value)||0};save();closeSheet();render();toast('Intervalo guardado')}
 $('#fileImport').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';importFile(f)});
-function wipe(){if(!confirm('Apagar TODOS os veículos, clientes, reparações e finanças? Esta ação não pode ser desfeita.'))return;S={vehicles:[],records:[],clients:[],moves:[],tasks:[],intervals:{},prefs:S.prefs||{bg:'tema'},ver:3};UI.cur=null;UI.tlVeh='all';save();tab('home');toast('Dados apagados')}
+function wipe(){if(!confirm('Apagar TODOS os veículos, clientes, reparações e finanças?'+(syOn()?' Com a sincronização ligada, apaga também nos outros aparelhos.':'')+' Esta ação não pode ser desfeita.'))return;S={vehicles:[],records:[],clients:[],moves:[],tasks:[],intervals:{},prefs:S.prefs||{bg:'tema'},ver:3};UI.cur=null;UI.tlVeh='all';save();tab('home');toast('Dados apagados')}
 function loadSample(){
  if(S.vehicles.length&&!confirm('Adicionar dados de exemplo aos teus dados?'))return;
  const ago=(mo,dd=0)=>{const d=addM(new Date(),-mo);d.setDate(d.getDate()-dd);return iso(d)};
@@ -2856,6 +3023,7 @@ let tT;function toast(t){let e=$('.toast');if(!e){e=document.createElement('div'
  try{await DB.open();const s=await DB.get('state');if(s){const was=s.ver||1;S=normalize(s);if(was<3)save()}}
  catch(e){DBOK=false;try{const s=localStorage.getItem('garagepro');if(s)S=normalize(JSON.parse(s))}catch(_){}}
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
+ await syLoadLocal();
  UI.cur=myVeh()[0]?.id||S.vehicles[0]?.id||null;
  if(!(S.prefs||{}).firstUse){S.prefs={...S.prefs,firstUse:todayISO()};save()}
  applyPrefs();
@@ -2864,6 +3032,7 @@ let tT;function toast(t){let e=$('.toast');if(!e){e=document.createElement('div'
  render();
  lockNow();
  setTimeout(()=>dailyBackup(),2500);
+ if(syOn()){syStart();setTimeout(()=>syncNow(),800)}
  if(isNative()&&repoOK()&&(S.prefs||{}).updAuto!==false)setTimeout(()=>checkUpdates(true),1500);
 })();
 
