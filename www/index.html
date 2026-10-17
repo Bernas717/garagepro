@@ -938,7 +938,7 @@ const CAT_MORE={
 };
 CAT_DEF.forEach(d=>{(CAT_MORE[d[0]]||[]).forEach(x=>d[3].push(x))});
 // Sinónimos para a pesquisa (o nome que se diz na oficina)
-const CAT_ALIAS={junta_homo_int:'lado caixa',kit_terminais:'terminal',kit_susp_f:'terminal',rotula_direcao:'terminal ponteira',axial:'terminal interior barra',bieleta:'tirante estabilizadora',braco_susp:'triangulo braco oscilante',
+const CAT_ALIAS={junta_homo_int:'lado caixa',kit_terminais:'terminal',kit_susp_f:'terminal',rotula_direcao:'terminal ponteira',axial:'terminal interior barra',bieleta:'tirante tirantes estabilizadora terminal terminais terminal da barra estabilizadora',braco_susp:'triangulo braco oscilante',
  rolamento_embr:'rolamento de impulso',cil_escravo_embr:'bomba concentrica atuador embreagem',velas_incand:'aquecedoras incandescencia',fap:'dpf particulas',
  valvula_egr:'egr',medidor_ar:'caudalimetro debitometro maf',sonda_lambda:'sensor oxigenio',sensor_cambota:'pms',motor_arranque:'arranque starter',
  alternador:'dinamo',vaso_expansao:'deposito agua',radiador_aquec:'chaufagem aquecimento',amortecedores:'dianteiros frente',pastilhas:'dianteiras frente calços',
@@ -1877,6 +1877,7 @@ function porExtenso(val){
  const fi=n=>{if(n<1000)return f3(n);if(n>=1e6){const m=Math.floor(n/1e6),r=n%1e6;return(m===1?'um milhão':fi(m)+' milhões')+(r?(r<100||r%100===0?' e ':' ')+fi(r):'')}
   const t=Math.floor(n/1000),r=n%1000;return(t===1?'mil':f3(t)+' mil')+(r?(r<100||r%100===0?' e ':' ')+f3(r):'')};
  const e=Math.floor(Math.round(val*100)/100),c=Math.round((val-e)*100);
+ if(!e&&!c)return 'zero euros';
  let s='';if(e||!c)s=e===1?'um euro':fi(e)+(e>=1e6&&e%1e6===0?' de euros':' euros');
  if(c)s+=(e?' e ':'')+(c===1?'um cêntimo':fi(c)+' cêntimos');
  return s;
