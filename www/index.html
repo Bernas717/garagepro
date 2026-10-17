@@ -877,7 +877,8 @@ const APP_VER='0.8';
 const CHANGELOG=[
  {v:'0.8',d:'2026-10-17',t:'Dados partilhados entre aparelhos',items:[
   'Sincronização entre o telemóvel e o tablet através de um repositório privado teu no GitHub (Definições → Sincronizar aparelhos)',
-  'Com os dois aparelhos abertos, o que gravas num aparece no outro em cerca de 15 segundos',
+  'Com os aparelhos abertos, o que gravas num aparece nos outros em cerca de 5 segundos (telemóvel, tablet e computador)',
+  'Proteção de versões: um aparelho com a app desatualizada deixa de enviar dados até ser atualizado, para não apagar campos novos, e avisa para atualizar',
   'Funciona sem rede: guarda no aparelho e envia quando a ligação voltar',
   'Se os dois mexerem ao mesmo tempo, cada carro, ordem, cliente, movimento ou tarefa fica com a alteração mais recente; nada se perde por inteiro',
   'O token fica só no aparelho e não vai nas cópias de segurança; o repositório tem de ser privado',
@@ -1214,7 +1215,7 @@ function vHome(){
  const hr=new Date().getHours(),greet=hr<12?'Bom dia':hr<20?'Boa tarde':'Boa noite';
  let h=`<header class="hdr"><div class="logo"><img class="lgimg" src="${LOGO}" alt=""><span class="lt">Garage<span>Pro</span></span></div><div class="hr"><button class="ib" onclick="go('search')">${I('search')}</button><button class="ib" onclick="openAlerts()">${I('bell')}${n?`<i class="badge">${n}</i>`:''}</button><button class="ib pri" onclick="plusMenu()">${I('plus')}</button></div></header>`;
  h+=`<div class="hello"><h2>${greet}</h2><p>${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'})}</p></div>`;
- h+=bakBanner();
+ h+=syBanner()+bakBanner();
  if(S.clients.length||S.moves.length)h+=`<div class="mstrip">
   <div class="card ms c-warn" onclick="UI.ftab='cli';tab('fin')"><span class="bub b-warn">${I('wallet')}</span><b>${fmtE(g.rec)}</b><small>A receber</small></div>
   <div class="card ms c-info" onclick="UI.ftab='cli';tab('fin')"><span class="bub b-info">${I('coins')}</span><b>${fmtE(g.adi)}</b><small>Adiantado</small></div>
@@ -2175,7 +2176,7 @@ async function syPull(){
  return{sha:j.sha,rem:o};
 }
 async function syPush(){
- const it=syItems(S);const o={app:'GaragePro-sync',v:1,appVer:APP_VER,at:Date.now(),dev:SY.cfg.dev,items:it,u:SY.meta.u,tomb:SY.meta.tomb,docSeq:(S.prefs||{}).docSeq||{}};
+ const it=syItems(S);const o={app:'GaragePro-sync',v:1,appVer:APP_VER,build:APP_BUILD,at:Date.now(),dev:SY.cfg.dev,items:it,u:SY.meta.u,tomb:SY.meta.tomb,docSeq:(S.prefs||{}).docSeq||{}};
  const json=JSON.stringify(o),bytes=canGzip()?await gzipBytes(json):new TextEncoder().encode(json);
  const r=await gh(`/repos/${SY.cfg.repo}/contents/${SY_FILE}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'GaragePro: sincronização '+new Date().toISOString().slice(0,19).replace('T',' '),content:bytesB64(bytes),...(SY.sha?{sha:SY.sha}:{})})});
  if(r.status===409||r.status===422)return false; // alguém gravou entretanto
@@ -2183,12 +2184,27 @@ async function syPush(){
  const j=await r.json();SY.sha=j.content&&j.content.sha||'';SY.etag='';SY.dirty=false;return true;
 }
 const syQuiet=()=>{const top=stack[stack.length-1]||{};const a=document.activeElement;return!$('#sheet')&&!['rep','vform','shop','sync'].includes(top.v)&&!(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))};
+// Versões: se outro aparelho já usa uma compilação mais recente, este pára de enviar até ser atualizado
+// (evita que uma versão antiga apague campos novos que ainda não conhece).
+const syOutdated=()=>APP_BUILD>0&&!!SY.remVer&&SY.remVer.build>APP_BUILD;
+let _syOutNote=false;
+function syOnOutdated(){
+ if(_syOutNote)return;_syOutNote=true;
+ try{if(isPC())window.gpDesktop.checkUpdates();else if(isNative()&&repoOK())checkUpdates(true)}catch(_){}
+ render();
+}
+function syBanner(){
+ if(!syOn()||!syOutdated())return'';
+ return `<div class="wrap"><div class="card sycard bad" style="margin-top:10px"><span class="bub b-bad">${I('download')}</span><div style="flex:1;min-width:0"><b>Atualiza a app para continuar a sincronizar</b><small>Outro aparelho já usa a v${esc(SY.remVer.ver)} (compilação ${SY.remVer.build}). Este tem a v${APP_VER} (compilação ${APP_BUILD}). As alterações feitas aqui ficam guardadas e são enviadas depois de atualizares.</small><button class="btn sm" style="margin-top:10px" onclick="go('updates');${isPC()?'pcCheck()':''}">${I('download','s')} Atualizar agora</button></div></div></div>`;
+}
 async function syncNow(manual){
  if(!syOn()||SY.busy)return;if(navigator.onLine===false){SY.err=syErr(null);if(manual)render();return}
  SY.busy=true;let changed=false;
  try{
   for(let tries=0;tries<4;tries++){
    const p=await syPull();
+   if(p.rem)SY.remVer={ver:String(p.rem.appVer||''),build:+p.rem.build||0};
+   if(syOutdated()){syOnOutdated();break}
    if(p.rem){SY.sha=p.sha;const res=syMerge(p.rem);
     if(res.localChanged||res.needPush){syApply(res,p.rem.docSeq);if(res.localChanged){changed=true;await saveQuiet()}}
     SY.dirty=res.needPush}
@@ -2206,10 +2222,11 @@ async function syncNow(manual){
 async function saveQuiet(){if(DBOK){try{await DB.set('state',S)}catch(_){}}else{try{localStorage.setItem('garagepro',JSON.stringify(S))}catch(_){}}}
 function syStart(){
  clearInterval(SY.poll);if(!syOn())return;
- SY.poll=setInterval(()=>{if(document.visibilityState==='visible')syncNow()},15000);
+ SY.poll=setInterval(()=>{if(document.visibilityState==='visible')syncNow()},5000);
 }
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&syOn())syncNow()});
 addEventListener('online',()=>{if(syOn())syncNow()});
+addEventListener('focus',()=>{if(syOn())syncNow()});
 /* Ecrã de configuração */
 let SYF=null;
 function vSync(){
@@ -2218,9 +2235,10 @@ function vSync(){
  h+='<div class="wrap">';
  if(syOn()){
   const ok=!SY.err;
+  h+=syBanner();
   h+=`<div class="card sycard ${ok?'ok':'bad'}"><span class="bub ${ok?'b-ok':'b-bad'}">${I(ok?'check':'alert')}</span><div style="flex:1;min-width:0"><b>${ok?'Ligado':'Problema na sincronização'}</b><small>${esc(SY.cfg.repo)}</small><small>${SY.busy?'A sincronizar…':SY.last?'Última sincronização: '+new Date(SY.last).toLocaleTimeString('pt-PT'):'Ainda não sincronizou'}</small>${SY.err?`<small class="c-bad">${esc(SY.err)}</small>`:''}</div></div>`;
   h+=`<button class="btn" onclick="syncNow(true)">${I('history')} Sincronizar agora</button>`;
-  h+=`<p class="hint">Com a app aberta nos dois aparelhos, o que gravas num aparece no outro em cerca de 15 segundos. Sem rede, continua a funcionar e envia quando voltar.</p>`;
+  h+=`<p class="hint">Com a app aberta, o que gravas num aparelho aparece nos outros em poucos segundos (cerca de 5). Sem rede, continua a funcionar e envia quando voltar.</p>`;
   h+=`<button class="btn danger" onclick="syOff()">Desligar neste aparelho</button><p class="hint">Desligar não apaga nada: os dados ficam neste aparelho e no repositório.</p>`;
  }else{
   h+=`<div class="note" style="margin-top:8px">${I('info')}<span>Os dados ficam num <b>repositório privado</b> teu no GitHub e são partilhados entre o telemóvel e o tablet. Liga os dois aparelhos ao mesmo repositório.</span></div>`;
