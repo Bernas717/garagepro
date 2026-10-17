@@ -1,4 +1,3 @@
-
 name: Gerar APK
 
 on:
@@ -9,6 +8,7 @@ on:
       - 'assets/**'
       - 'capacitor.config.json'
       - 'package.json'
+      - 'desktop/**'
       - '.github/workflows/gerar-apk.yml'
   workflow_dispatch:
 
@@ -237,3 +237,53 @@ jobs:
           body_path: notas.md
           files: ${{ env.APK }}
           make_latest: true
+
+  # ---------- Versão para computador (Windows) — junta o instalador à mesma Release
+  pc:
+    needs: apk
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Obter o código
+        uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Versão
+        id: v
+        run: node scripts/notas.js
+
+      - name: Preparar a app para o computador
+        run: |
+          test -f desktop/package.json || { echo "::error::Falta a pasta desktop no repositório"; exit 1; }
+          mkdir -p desktop/app desktop/build
+          cp www/index.html desktop/app/index.html
+          cp assets/icon.png desktop/app/icon.png
+          cp assets/icon.png desktop/build/icon.png
+          sed -i "s/const APP_BUILD=0;/const APP_BUILD=${{ github.run_number }};/" desktop/app/index.html
+          sed -i "s#const UPDATE_REPO='__REPO__';#const UPDATE_REPO='${{ github.repository }}';#" desktop/app/index.html
+          sed -i "s#__REPO__#${{ github.repository }}#" desktop/package.json
+          cd desktop && npm pkg set version="${{ steps.v.outputs.versao }}.${{ github.run_number }}"
+
+      - name: Instalar Electron
+        working-directory: desktop
+        run: npm install --no-audit --no-fund
+
+      - name: Gerar instalador (.exe)
+        working-directory: desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npx electron-builder --win nsis --x64 --publish never
+
+      - name: Juntar à versão (Release)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
+          files: |
+            desktop/dist/*.exe
+            desktop/dist/*.blockmap
+            desktop/dist/latest.yml
