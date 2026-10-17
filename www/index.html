@@ -885,6 +885,7 @@ const CHANGELOG=[
   'Personalizar por secções: queixa e diagnóstico, datas, referências, mão de obra detalhada, pagamentos, recomendações, garantia e assinaturas; a escolha fica guardada para cada cliente',
   'Valor por extenso no recibo, pagamentos com data e forma de pagamento, próxima manutenção recomendada',
   'Imagem para WhatsApp cortada à medida, sem espaço em branco',
+  'Versão para computador (Windows): instalador próprio, gerado junto com o APK, com atualizações automáticas',
   'Referência em cada peça, várias linhas de mão de obra, forma de pagamento (numerário, MB WAY, transferência, multibanco) e data de entrega automática'
  ]},
  {v:'0.7',d:'2026-10-15',t:'Trabalhos com valores, tarefas e mais peças',items:[
@@ -3082,7 +3083,18 @@ function mdLite(s){
  return esc(s).split(/\r?\n/).map(l=>{l=l.trim();if(!l)return'';if(/^[-*] /.test(l))return `<li>${l.slice(2)}</li>`;return `<p>${l.replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')}</p>`}).join('').replace(/(<li>.*?<\/li>)+/g,m=>`<ul>${m}</ul>`);
 }
 async function vUpdatesLoad(){UI.autobak=DBOK?((await DB.get('autobak'))||[]):[];render()}
+const isPC=()=>!!window.gpDesktop;
+function vUpdatesPC(){
+ let h=hdr('Atualizações');
+ h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>GaragePro v${APP_VER}</b><small>${APP_BUILD?'Compilação '+APP_BUILD+' · ':''}Computador (Windows)</small></div></div>`;
+ h+=`<div class="wrap"><div class="note">${I('info')}<span>A versão do computador procura atualizações sozinha ao abrir. Descarrega em segundo plano e pergunta se queres reiniciar; se disseres "Mais tarde", instala quando fechares a app.</span></div>`;
+ if(UI.pcUpd)h+=`<div class="card upd"><span class="bub b-pri">${I('download')}</span><div><b>${esc(UI.pcUpd)}</b></div></div>`;
+ h+=`<button class="btn" onclick="pcCheck()">${I('history')} Procurar atualizações agora</button></div>`;
+ return h;
+}
+async function pcCheck(){UI.pcUpd='A procurar atualizações…';render();try{UI.pcUpd=await window.gpDesktop.checkUpdates()}catch(_){UI.pcUpd='Não foi possível verificar'}render()}
 function vUpdates(){
+ if(isPC())return vUpdatesPC();
  if(UI.autobak===undefined){UI.autobak=null;vUpdatesLoad()}
  const nat=isNative(),p=S.prefs||{};
  let h=hdr('Atualizações');
