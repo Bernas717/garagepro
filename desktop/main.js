@@ -66,7 +66,7 @@ function setupUpdates() {
   ipcMain.removeHandler('gp-check');
   ipcMain.handle('gp-check', async () => { try { await autoUpdater.checkForUpdates(); } catch (_) {} return updState; });
   setTimeout(() => autoUpdater.checkForUpdates().catch(() => {}), 4000);
-  setInterval(() => autoUpdater.checkForUpdates().catch(() => {}), 6 * 3600 * 1000);
+  setInterval(() => autoUpdater.checkForUpdates().catch(() => {}), 30 * 60 * 1000);
 }
 ipcMain.handle('gp-state', () => updState);
 ipcMain.handle('gp-version', () => app.getVersion());
