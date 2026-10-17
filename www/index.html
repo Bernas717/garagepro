@@ -289,19 +289,6 @@ textarea.ta:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--soft)}
 .dsecs{display:flex;flex-direction:column;gap:10px;margin-top:10px;padding:12px 14px;background:var(--card2);border:1px solid var(--line);border-radius:var(--rb)}
 .mol{margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:var(--rb);background:var(--card2);display:flex;flex-direction:column;gap:8px}.mol .in{height:44px}
 .fpchips{display:flex;flex-wrap:wrap;gap:6px}.fpchips button{padding:8px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--card);font-size:13px;color:var(--tx)}.fpchips button.on{background:var(--pri);border-color:var(--pri);color:var(--pri-tx)}
-#ntbox{position:fixed;z-index:120;top:calc(12px + env(safe-area-inset-top));right:12px;left:12px;display:flex;flex-direction:column;gap:8px;pointer-events:none;align-items:flex-end}
-.ntc{pointer-events:auto;width:min(380px,100%);display:flex;gap:12px;align-items:flex-start;padding:12px 8px 12px 12px;border-radius:14px;background:color-mix(in srgb,var(--card) 94%,transparent);backdrop-filter:blur(16px);border:1px solid var(--line2);box-shadow:0 14px 34px rgba(0,0,0,.38);transform:translateY(-10px) scale(.98);opacity:0;transition:transform .28s cubic-bezier(.2,.8,.2,1),opacity .28s}
-.ntc.show{transform:none;opacity:1}.ntc.out{opacity:0;transform:translateX(24px)}
-.nti{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--pri) 16%,transparent);color:var(--pri)}.nti .i{width:19px;height:19px}
-.ntc[data-tone=ok] .nti{background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok)}.ntc[data-tone=warn] .nti{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}.ntc[data-tone=bad] .nti{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
-.ntm{flex:1;min-width:0;padding-top:1px}.ntm b{display:block;font-size:14.5px;font-weight:700}.ntm small{display:block;color:var(--mut);font-size:13px;margin-top:3px;line-height:1.4}
-.nta{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.nta button{height:34px;padding:0 12px;border-radius:9px;border:1px solid var(--line2);background:var(--card2);color:var(--tx);font-size:13px;font-weight:600}.nta button.p{background:var(--pri);border-color:var(--pri);color:var(--pri-tx)}
-.ntx{width:28px;height:28px;color:var(--mut);display:grid;place-items:center;flex:none;border-radius:8px}.ntx:hover{background:var(--card2)}
-[data-layout=desktop] #ntbox,[data-layout=tablet] #ntbox{left:auto;right:20px;top:20px}
-html.pc body{padding-top:36px}html.pc .hdr{top:36px}html.pc #ntbox{top:52px}html.pc[data-layout=tablet] .nav,html.pc[data-layout=desktop] .nav{top:36px}
-#pcbar{position:fixed;top:0;left:0;right:0;height:36px;z-index:110;display:flex;align-items:center;gap:8px;padding:0 150px 0 12px;background:var(--bg);border-bottom:1px solid var(--line);-webkit-app-region:drag;font-size:13px;user-select:none}
-#pcbar img{width:18px;height:18px;border-radius:5px}#pcbar b{font-weight:700;letter-spacing:.2px}#pcbar b span{color:var(--pri)}
-.pcst{margin-left:14px;color:var(--mut);font-size:12px;display:flex;align-items:center;gap:6px}.pcst:empty{display:none}.pcst:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--mut)}.pcst.ok:before{background:var(--ok)}.pcst.bad:before{background:var(--bad)}.pcst.warn:before{background:var(--warn)}
 .hbtns{margin-top:12px}.hbtns .btn{margin:0}.lnk{display:flex;align-items:center;gap:6px;margin:12px auto 0;color:var(--pri);font-weight:600;font-size:14px}
 .fsum{margin:12px 16px 0;padding:16px 16px 4px}.fsum>small{color:var(--mut);font-size:13px}.fsum>b{display:block;font-size:30px;font-weight:750;font-variant-numeric:tabular-nums;margin:2px 0 8px}.fsum .kv:last-child{border-bottom:0}.kv.tot b{font-size:16px}
 .kv span{color:var(--mut)}
@@ -899,9 +886,6 @@ const CHANGELOG=[
   'Personalizar por secções: queixa e diagnóstico, datas, referências, mão de obra detalhada, pagamentos, recomendações, garantia e assinaturas; a escolha fica guardada para cada cliente',
   'Valor por extenso no recibo, pagamentos com data e forma de pagamento, próxima manutenção recomendada',
   'Imagem para WhatsApp cortada à medida, sem espaço em branco',
-  'Computador: barra de título nova com o estado da sincronização, cores a acompanhar o tema',
-  'Computador: a janela lembra o tamanho, a posição e se estava maximizada; F11 para ecrã inteiro',
-  'Avisos novos: ao abrir mostra o que chegou de outros aparelhos e se há versão nova da app; no computador também aparecem nas notificações do Windows',
   'Versão para computador (Windows): instalador próprio, gerado junto com o APK, com atualizações automáticas',
   'Referência em cada peça, várias linhas de mão de obra, forma de pagamento (numerário, MB WAY, transferência, multibanco) e data de entrega automática'
  ]},
@@ -2142,7 +2126,7 @@ function syTrack(){
 }
 // Junta o estado local com o remoto: em cada item ganha a alteração mais recente; apagados ganham se forem mais recentes
 function syMerge(rem){
- const L=syItems(S),R=rem.items||{},lm=SY.meta,ru=rem.u||{},rt=rem.tomb||{},out={},u={},tomb={},changed=[];let needPush=false,localChanged=false;
+ const L=syItems(S),R=rem.items||{},lm=SY.meta,ru=rem.u||{},rt=rem.tomb||{},out={},u={},tomb={};let needPush=false,localChanged=false;
  const H={};const hh=(side,k,x)=>H[side+k]||(H[side+k]=x==null?'∅':fnv(JSON.stringify(x)));
  const keys=new Set([...Object.keys(L),...Object.keys(R),...Object.keys(lm.tomb),...Object.keys(rt)]);
  keys.forEach(k=>{
@@ -2153,11 +2137,11 @@ function syMerge(rem){
   if(src&&!(t&&t>=xu)){
    const x=src==='L'?L[k]:R[k],h=hh(src,k,x);out[k]=x;u[k]=Math.max(0,xu);
    if(!hasR||h!==hh('R',k,R[k])||(ru[k]||0)!==u[k])needPush=true;
-   if(!hasL||h!==hh('L',k,L[k])){localChanged=true;changed.push(k)}
-  }else if(t){tomb[k]=t;if(hasR||(rt[k]||0)<t)needPush=true;if(hasL){localChanged=true;changed.push(k)}}
+   if(!hasL||h!==hh('L',k,L[k]))localChanged=true;
+  }else if(t){tomb[k]=t;if(hasR||(rt[k]||0)<t)needPush=true;if(hasL)localChanged=true}
  });
  const cut=Date.now()-180*864e5;Object.keys(tomb).forEach(k=>{if(tomb[k]<cut)delete tomb[k]});
- return{out,u,tomb,needPush,localChanged,changed};
+ return{out,u,tomb,needPush,localChanged};
 }
 function syApply(res,remSeq){
  const st={...S,vehicles:[],records:[],clients:[],moves:[],tasks:[]};
@@ -2222,7 +2206,7 @@ async function syncNow(manual){
    if(p.rem)SY.remVer={ver:String(p.rem.appVer||''),build:+p.rem.build||0};
    if(syOutdated()){syOnOutdated();break}
    if(p.rem){SY.sha=p.sha;const res=syMerge(p.rem);
-    if(res.localChanged||res.needPush){syApply(res,p.rem.docSeq);if(res.localChanged){changed=true;await saveQuiet();try{syNotifyChanges(res.changed.map(k=>k.startsWith('S:')?'S:'+k:k),!SY.firstDone)}catch(_){}}}
+    if(res.localChanged||res.needPush){syApply(res,p.rem.docSeq);if(res.localChanged){changed=true;await saveQuiet()}}
     SY.dirty=res.needPush}
    else if(p.empty){SY.dirty=true}
    if(!SY.dirty)break;
@@ -2231,7 +2215,7 @@ async function syncNow(manual){
   }
   SY.last=Date.now();SY.err='';
  }catch(e){SY.err=e instanceof Response?syErr(e):(e&&e.name==='TypeError'?syErr(null):String(e&&e.message||e).slice(0,120))}
- finally{SY.busy=false;SY.firstDone=true;sySaveLocal();try{pcStatus()}catch(_){}}
+ finally{SY.busy=false;sySaveLocal()}
  if(changed){if(syQuiet())render();else toast('Dados atualizados a partir do outro aparelho')}
  else if(manual||(stack[stack.length-1]||{}).v==='sync')render();
 }
@@ -2290,56 +2274,6 @@ async function syOnSetup(){
  if(!SY.err)toast('Sincronização ligada');
 }
 async function syOff(){if(!confirm('Desligar a sincronização neste aparelho?'))return;SY.cfg={...SY.cfg,on:false,token:''};SY.err='';clearInterval(SY.poll);await sySaveLocal();render();toast('Sincronização desligada')}
-
-/* ================== NOTIFICAÇÕES (na app + Windows) — v0.8 ================== */
-const NT_ACT={};let NT_N=0;
-// o: {icon, tone:'pri'|'ok'|'warn'|'bad', title, text, actions:[{label, primary, fn}], timeout(ms), os:true → também no Windows se a janela não estiver em foco}
-function notify(o){
- let box=$('#ntbox');if(!box){box=document.createElement('div');box.id='ntbox';box.setAttribute('aria-live','polite');document.body.appendChild(box)}
- const id='nt'+(++NT_N);NT_ACT[id]=(o.actions||[]).map(a=>a.fn);
- const el=document.createElement('div');el.className='ntc';el.dataset.tone=o.tone||'pri';el.id=id;
- el.innerHTML=`<span class="nti">${I(o.icon||'bell')}</span><div class="ntm"><b>${esc(o.title||'')}</b>${o.text?`<small>${esc(o.text)}</small>`:''}${(o.actions||[]).length?`<div class="nta">${o.actions.map((a,i)=>`<button class="${a.primary?'p':''}" onclick="ntAct('${id}',${i})">${esc(a.label)}</button>`).join('')}</div>`:''}</div><button class="ntx" onclick="ntClose('${id}')" aria-label="Fechar">${I('x','s')}</button>`;
- box.prepend(el);requestAnimationFrame(()=>el.classList.add('show'));
- [...box.children].slice(4).forEach(x=>x.remove());
- if(o.timeout!==0)setTimeout(()=>ntClose(id),o.timeout||7000);
- if(o.os&&isPC()){try{window.gpDesktop.isFocused().then(f=>{if(!f)window.gpDesktop.notify({title:o.title,body:o.text||''})})}catch(_){}}
- return id;
-}
-function ntAct(id,i){const f=(NT_ACT[id]||[])[i];ntClose(id);if(typeof f==='function')f()}
-function ntClose(id){const el=$('#'+id);delete NT_ACT[id];if(!el)return;el.classList.remove('show');el.classList.add('out');setTimeout(()=>el.remove(),260)}
-// Resumo do que chegou de outro aparelho
-const SY_LBL={vehicles:['veículo','veículos'],records:['ordem','ordens'],clients:['cliente','clientes'],moves:['movimento','movimentos'],tasks:['tarefa','tarefas'],S:['definição','definições']};
-let _syAcc=null,_syAccT=null;
-function syNotifyChanges(keys,first){
- if(!keys||!keys.length)return;
- _syAcc=_syAcc||{};keys.forEach(k=>{const c=k.slice(0,k.indexOf(':'));_syAcc[c]=(_syAcc[c]||0)+1});
- clearTimeout(_syAccT);_syAccT=setTimeout(()=>{
-  const parts=Object.entries(_syAcc).map(([c,n])=>{const l=SY_LBL[c]||['item','itens'];return n+' '+(n===1?l[0]:l[1])});_syAcc=null;
-  const lst=parts.length>1?parts.slice(0,-1).join(', ')+' e '+parts.slice(-1):parts[0],text=(first?'Recebido desde a última vez que abriste a app: ':'Alterado noutro aparelho: ')+lst+'.';
-  notify({icon:'history',tone:'ok',title:first?'Dados sincronizados':'Dados atualizados',text,os:true});
- },1200);
-}
-/* ---------- Computador: barra de título e atualizações da app */
-function pcShell(){
- if(!isPC())return;
- document.documentElement.classList.add('pc');
- if(!$('#pcbar')){const b=document.createElement('div');b.id='pcbar';b.innerHTML=`<img src="${LOGO}" alt=""><b>Garage<span>Pro</span></b><span class="pcst" id="pcst"></span>`;document.body.prepend(b)}
- pcTitleColors();
- try{window.gpDesktop.onUpdate(u=>pcUpdate(u))}catch(_){}
-}
-function pcTitleColors(){
- if(!isPC())return;
- const cs=getComputedStyle(document.documentElement),bg=(cs.getPropertyValue('--bg')||'#0b0d10').trim(),tx=(cs.getPropertyValue('--tx')||'#eceef2').trim();
- try{window.gpDesktop.setTitleBar({color:bg,symbolColor:tx})}catch(_){}
-}
-function pcStatus(){const e=$('#pcst');if(!e)return;const on=syOn();e.className='pcst'+(on?(SY.err?' bad':syOutdated()?' warn':' ok'):'');e.textContent=on?(SY.err?'Sincronização com erro':SY.busy?'A sincronizar…':'Sincronizado'+(SY.last?' · '+new Date(SY.last).toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'}):'')):''}
-let _pcUpdShown='';
-function pcUpdate(u){
- if(!u||!u.state)return;
- if(u.state==='available'&&_pcUpdShown!=='a'+u.version){_pcUpdShown='a'+u.version;notify({icon:'download',tone:'pri',title:'Nova versão '+u.version,text:'A descarregar em segundo plano. Aviso quando estiver pronta.'})}
- if(u.state==='downloaded'&&_pcUpdShown!=='d'+u.version){_pcUpdShown='d'+u.version;UI.pcUpd='Versão '+u.version+' pronta a instalar';
-  notify({icon:'download',tone:'ok',title:'GaragePro '+u.version+' pronto',text:'Reinicia para atualizar. Os teus dados mantêm-se.',timeout:0,os:true,actions:[{label:'Reiniciar e atualizar',primary:true,fn:()=>window.gpDesktop.installNow()},{label:'Mais tarde',fn:()=>{}}]})}
-}
 
 /* ================== CLIENTE ================== */
 function vClient(id){
@@ -2915,7 +2849,6 @@ function applyPrefs(){
  r.style.setProperty('--bgo',BG_INT[curInt()].o);
  applyLayout();
  mountBg();
- try{pcTitleColors()}catch(_){}
  const m=document.querySelector('meta[name=theme-color]');if(m)m.content=getComputedStyle(r).getPropertyValue('--bg').trim()||'#0b0d10';
 }
 if(_mq&&_mq.addEventListener)_mq.addEventListener('change',()=>{if(curMode()==='auto'){applyPrefs();render()}});
@@ -3127,7 +3060,7 @@ async function checkUpdates(silent){
   const newer=rel.build>APP_BUILD;
   UP={st:newer?'avail':'none',rel,err:''};
   S.prefs={...(S.prefs||{}),updLast:new Date().toISOString()};save();
-  if(silent&&newer)notify({icon:'download',tone:'pri',title:`Nova versão ${rel.ver} disponível`,text:'Atualiza para teres as novidades e continuares a sincronizar com os outros aparelhos.',timeout:0,actions:[{label:'Atualizar',primary:true,fn:()=>go('updates')},{label:'Depois',fn:()=>{}}]});
+  if(silent&&newer)toast(`Atualização v${rel.ver} disponível`);
  }catch(e){UP={st:'error',rel:null,err:e.message||'Sem ligação à internet.'}}
  render();
 }
@@ -3230,7 +3163,6 @@ let tT;function toast(t){let e=$('.toast');if(!e){e=document.createElement('div'
  UI.cur=myVeh()[0]?.id||S.vehicles[0]?.id||null;
  if(!(S.prefs||{}).firstUse){S.prefs={...S.prefs,firstUse:todayISO()};save()}
  applyPrefs();
- pcShell();setInterval(()=>{try{pcStatus()}catch(_){}},15000);
  [['icon',LOGO],['apple-touch-icon',LOGO]].forEach(([r,u])=>{const l=document.createElement('link');l.rel=r;l.href=u;document.head.appendChild(l)});
  history.replaceState({root:1},'');history.pushState({n:1},'');
  render();
