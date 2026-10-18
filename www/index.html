@@ -324,6 +324,7 @@ html.pc body{padding-top:36px}html.pc .hdr{top:36px}html.pc #ntbox{top:52px}html
 .pplist{max-height:min(58vh,520px);overflow-y:auto;margin-top:6px;overscroll-behavior:contain}.pph{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:14px 2px 4px}
 .cjg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:6px 0 4px}.cjt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--rs);border:1px solid var(--line);background:var(--card2);text-align:left;color:var(--tx);min-width:0}.cjt>span:last-child{min-width:0}.cjt b{display:block;font-size:13.5px;font-weight:650;line-height:1.25}.cjt small{display:block;color:var(--mut);font-size:11.5px;margin-top:2px}.cjt:hover{border-color:var(--line2)}
 .cjback{display:inline-flex;align-items:center;gap:6px;color:var(--pri);font-weight:600;font-size:14px;padding:8px 0}.cjh{display:flex;gap:12px;align-items:flex-start;padding:6px 2px 4px}.cjh b{display:block;font-size:16px;font-weight:700}.cjh small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.4}
+.pprw{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}.pprw .pprow{flex:1;min-width:0;border-bottom:0}.ppph{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--mut);border:1px solid var(--line);background:var(--card2)}.ppph:hover,.ppph:active{color:var(--pri);border-color:var(--pri)}.ppph .i{width:18px;height:18px}.phl{margin:8px 0 0}
 .pprow{padding:10px 2px}.pprow .mid{flex:1;min-width:0}.pprow b{display:block;font-weight:600;font-size:14.5px}.pprow small{display:block;color:var(--mut);font-size:12.5px;line-height:1.35;margin-top:1px}
 .shero{margin:6px 16px 0;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
 .shero b{font-size:18px;font-weight:var(--hw);display:block;font-family:var(--fh);text-transform:var(--htt);letter-spacing:var(--hls);font-style:var(--hst)}
@@ -1145,6 +1146,7 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 const APP_VER='0.9';
 const CHANGELOG=[
  {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
+  'Fotos das peças: botão da câmara em cada peça (e "Ver fotos desta peça") abre fotos reais com o nome exato e o modelo do carro (precisa de internet)',
   'Escolher por conjunto: Transmissão, Barra de direção, Braço de suspensão, Travões, Embraiagem, Distribuição, Turbo, Escape e mais (37 conjuntos). Em cada um escolhes tudo, um kit ou só a peça que trocaste',
   'Cerca de 170 peças e kits novos (agora 696 no total, 107 kits): barra de direção completa por lado, kits de juntas e foles da transmissão, braço completo, McPherson completo, cubo com rolamento, manga completa, peças recondicionadas, bronzes, juntas, e outras',
   'Nomes mais claros: junta homocinética exterior (lado roda) e interior (lado caixa), barra axial (rótula interior), terminal (rótula exterior)',
@@ -1670,7 +1672,15 @@ function pickPart(mode){PP={mode,q:'',g:'',cj:''};openSheet(`<h3>${mode==='tipo'
   <div class="in" style="margin-top:12px">${I('search')}<input id="pp-q" placeholder="Pesquisar (ex: kit embraiagem, H7, bomba água)" oninput="PP.q=this.value;PP.cj='';ppList()" autocomplete="off"></div>
   <div class="ppg" id="pp-g"></div><div class="pplist" id="pp-l"></div>`);ppList()}
 function ppRow(k){const c=CAT[k],sub=isKit(k)?'Inclui: '+kitList(k):c.g;const nm=PP.mode==='tipo'?label(k):c.n;
- return `<button class="opt pprow" onclick="ppDone('${k}')"><span class="ico sm" style="--c:${c.c}">${I(c.ic)}</span><div class="mid"><b>${esc(nm)}</b><small>${esc(sub)}</small></div></button>`}
+ return `<div class="pprw"><button class="opt pprow" onclick="ppDone('${k}')"><span class="ico sm" style="--c:${c.c}">${I(c.ic)}</span><div class="mid"><b>${esc(nm)}</b><small>${esc(sub)}</small></div></button>${c.g==='Serviços'?'':`<button class="ppph" onclick="partPhotos('${k}')" aria-label="Ver fotos de ${esc(c.n)}" title="Ver fotos">${I('camera')}</button>`}</div>`}
+/* fotos reais da peça: abre a pesquisa de imagens com o nome exato (e o carro, se houver) */
+function partPhotoQuery(k,withCar){
+ const c=CAT[k];if(!c)return '';
+ let n=c.n.replace(/\s*[—–-]\s*(um lado|os dois lados).*$/i,'').replace(/\((par|unidade)\)/gi,'').replace(/^(Kit|Jogo de|Par de)\s+/i,'').trim();
+ const v=withCar&&(veh((typeof F!=='undefined'&&F&&F.vid)||UI.cur));
+ return n+(v?' '+[v.marca,v.modelo].filter(Boolean).join(' '):'')+' peça auto';
+}
+function partPhotos(k){const q=partPhotoQuery(k,true);if(q)openExt('https://www.google.com/search?tbm=isch&q='+encodeURIComponent(q))}
 function ppList(){
  const q=fold(PP.q).trim(),all=q.split(/\s+/).filter(Boolean),ws=all.filter(w=>!POS_W[w]),pw=all.filter(w=>POS_W[w]);
  PP.pos={};pw.forEach(w=>{const [k,v]=POS_W[w];PP.pos[k==='x'?'eixo':'lado']=v});
@@ -1684,7 +1694,7 @@ function ppList(){
   :`<button class="opt pprow" onclick="ppDone('')"><span class="ico sm" style="--c:#64748b">${I('edit')}</span><div class="mid"><b>Outra peça (escrever o nome)</b><small>Peça que não está na lista ou não identificada</small></div></button>`;
  // dentro de um conjunto: peça inteira / kits / só um componente
  if(PP.cj){const c=CONJ.find(x=>x.id===PP.cj);if(c){const f=c.full.filter(k=>CAT[k]),pt=c.parts.filter(k=>CAT[k]);
-  $('#pp-l').innerHTML=`<button class="cjback" onclick="PP.cj='';ppList()">${I('back','s')} Conjuntos</button><div class="cjh"><span class="ico" style="--c:${(GROUP_IC[c.g]||{}).c||'#64748b'}">${I(c.ic)}</span><div><b>${esc(c.n)}</b><small>Escolhe tudo, um kit ou só a peça que trocaste. O lado (Esq./Dir.) escolhes a seguir.</small></div></div>`
+  $('#pp-l').innerHTML=`<button class="cjback" onclick="PP.cj='';ppList()">${I('back','s')} Conjuntos</button><div class="cjh"><span class="ico" style="--c:${(GROUP_IC[c.g]||{}).c||'#64748b'}">${I(c.ic)}</span><div><b>${esc(c.n)}</b><small>Escolhe tudo, um kit ou só a peça que trocaste. O lado (Esq./Dir.) escolhes a seguir. Toca na câmara para ver fotos de cada peça.</small></div></div>`
    +(f.length?`<div class="pph">Completo e kits</div>`+f.map(ppRow).join(''):'')+(pt.length?`<div class="pph">Só uma peça</div>`+pt.map(ppRow).join(''):'');
   $('#pp-l').scrollTop=0;return}PP.cj=''}
  const cjTile=c=>`<button class="cjt" onclick="PP.cj='${c.id}';ppList()"><span class="ico sm" style="--c:${(GROUP_IC[c.g]||{}).c||'#64748b'}">${I(c.ic)}</span><span><b>${esc(c.n)}</b><small>${c.full.filter(k=>CAT[k]).length+c.parts.filter(k=>CAT[k]).length} opções</small></span></button>`;
@@ -1719,7 +1729,7 @@ function apKeep(){if(!$('#ap-n'))return;AP.nome=$('#ap-n').value;AP.ref=$('#ap-r
 function apSheet(noAnim){
  const k=AP.key,c=CAT[k];
  openSheet(`<h3>${AP.idx!=null?'Editar peça':'Peça montada'}</h3>
-  <label class="fl">Peça</label><button class="in pick" onclick="apKeep();pickPart('peca')"><span class="ico sm" style="--c:${c?c.c:'#64748b'}">${I(c?c.ic:'edit')}</span><span class="pk">${c?esc(c.n):'Outra peça (escreve o nome em baixo)'}</span><span class="rv">Mudar</span></button>
+  <label class="fl">Peça</label><button class="in pick" onclick="apKeep();pickPart('peca')"><span class="ico sm" style="--c:${c?c.c:'#64748b'}">${I(c?c.ic:'edit')}</span><span class="pk">${c?esc(c.n):'Outra peça (escreve o nome em baixo)'}</span><span class="rv">Mudar</span></button>${c?`<button class="lnk sm phl" onclick="partPhotos('${AP.key}')">${I('camera','s')} Ver fotos desta peça</button>`:''}
   ${isKit(k)?`<p class="hint">Conta como trocadas: ${esc(kitList(k))}.</p>`:''}
   <label class="fl">${c?'Descrição / marca':'Nome da peça'}</label><div class="in"><input id="ap-n" value="${esc(AP.nome)}" placeholder="${c?(c.g==='Iluminação'?'Ex: H7 Osram Night Breaker':k==='oleo'?'Ex: Óleo motor 5W30':'Ex: Kit Valeo'):'Ex: Suporte do para-choques'}"></div>
   <label class="fl">Referência <small class="c-mut">opcional</small></label><div class="in"><input id="ap-r" value="${esc(AP.ref||'')}" placeholder="Ex: 826317" autocapitalize="characters"></div>
