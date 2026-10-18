@@ -322,6 +322,8 @@ html.pc body{padding-top:36px}html.pc .hdr{top:36px}html.pc #ntbox{top:52px}html
 .ppg{display:flex;gap:6px;overflow-x:auto;padding:12px 0 4px;scrollbar-width:none}.ppg::-webkit-scrollbar{display:none}.ppg button{flex:none;padding:7px 12px;border-radius:99px;border:1px solid var(--line2);background:var(--card);font-size:13px;color:var(--tx);white-space:nowrap}.ppg button.on{background:var(--pri);border-color:var(--pri);color:var(--pri-tx)}
 .ppg.bulbs{flex-wrap:wrap;overflow:visible;padding-top:10px}.ppg.bulbs button{padding:6px 10px;font-size:12.5px;font-family:var(--fm,inherit)}
 .pplist{max-height:min(58vh,520px);overflow-y:auto;margin-top:6px;overscroll-behavior:contain}.pph{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:14px 2px 4px}
+.cjg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:6px 0 4px}.cjt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--rs);border:1px solid var(--line);background:var(--card2);text-align:left;color:var(--tx);min-width:0}.cjt>span:last-child{min-width:0}.cjt b{display:block;font-size:13.5px;font-weight:650;line-height:1.25}.cjt small{display:block;color:var(--mut);font-size:11.5px;margin-top:2px}.cjt:hover{border-color:var(--line2)}
+.cjback{display:inline-flex;align-items:center;gap:6px;color:var(--pri);font-weight:600;font-size:14px;padding:8px 0}.cjh{display:flex;gap:12px;align-items:flex-start;padding:6px 2px 4px}.cjh b{display:block;font-size:16px;font-weight:700}.cjh small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.4}
 .pprow{padding:10px 2px}.pprow .mid{flex:1;min-width:0}.pprow b{display:block;font-weight:600;font-size:14.5px}.pprow small{display:block;color:var(--mut);font-size:12.5px;line-height:1.35;margin-top:1px}
 .shero{margin:6px 16px 0;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
 .shero b{font-size:18px;font-weight:var(--hw);display:block;font-family:var(--fh);text-transform:var(--htt);letter-spacing:var(--hls);font-style:var(--hst)}
@@ -937,8 +939,125 @@ const CAT_MORE={
  ]
 };
 CAT_DEF.forEach(d=>{(CAT_MORE[d[0]]||[]).forEach(x=>d[3].push(x))});
+// Mais peças e kits (v0.9) — peças individuais e conjuntos completos
+const CAT_X={
+ 'Kits':[
+  ['kit_transm_juntas','Kit juntas da transmissão (exterior + interior + foles)',0,0,{ic:'gear',kit:['junta_homo','fole_homo','junta_homo_int','fole_homo_int']}],
+  ['kit_foles_homo','Kit foles da transmissão (exterior + interior)',0,0,{ic:'gear',kit:['fole_homo','fole_homo_int']}],
+  ['kit_fole_homo_int','Kit fole da homocinética interior (fole + abraçadeiras + massa)',0,0,{ic:'gear',kit:['fole_homo_int']}],
+  ['kit_axial_term','Barra de direção completa (barra axial + terminal) — um lado',0,0,{ic:'steer',kit:['axial','rotula_direcao'],un:'un'}],
+  ['kit_axial_term_fole','Barra de direção completa + fole — um lado',0,0,{ic:'steer',kit:['axial','rotula_direcao','fole_direcao'],un:'un'}],
+  ['kit_fole_dir','Kit foles da caixa de direção (par)',0,0,{ic:'steer',kit:['fole_direcao']}],
+  ['kit_braco_compl','Braço de suspensão completo (com rótula e casquilhos)',0,0,{ic:'spring',kit:['braco_susp','rotula_susp','casquilhos'],un:'un'}],
+  ['kit_bracos_par','Par de braços de suspensão dianteiros',0,0,{ic:'spring',kit:['braco_susp','rotula_susp','casquilhos']}],
+  ['kit_bieletas','Par de bieletas da barra estabilizadora',0,0,{ic:'spring',kit:['bieleta']}],
+  ['kit_estab','Kit barra estabilizadora (bieletas + casquilhos)',0,0,{ic:'spring',kit:['bieleta','casq_estab']}],
+  ['kit_amort_completo','Amortecedor completo montado (McPherson: amortecedor + mola + apoio)',0,0,{ic:'spring',kit:['amortecedores','molas','apoio_amort','rolamento_apoio','fole_amort'],un:'un'}],
+  ['kit_amort_f_par','Par de amortecedores dianteiros',0,0,{ic:'spring',kit:['amortecedores']}],
+  ['kit_amort_t_par','Par de amortecedores traseiros',0,0,{ic:'spring',kit:['amortecedores_tras']}],
+  ['kit_apoio_amort','Kit apoio do amortecedor + rolamento',0,0,{ic:'spring',kit:['apoio_amort','rolamento_apoio']}],
+  ['kit_foles_amort','Kit foles e batentes dos amortecedores (par)',0,0,{ic:'spring',kit:['fole_amort']}],
+  ['kit_molas_f','Par de molas dianteiras',0,0,{ic:'spring',kit:['molas']}],
+  ['kit_molas_t','Par de molas traseiras',0,0,{ic:'spring',kit:['molas_tras']}],
+  ['kit_bracos_t','Kit braços traseiros + casquilhos',0,0,{ic:'spring',kit:['braco_tras','casq_braco_tras']}],
+  ['cubo_rolamento','Cubo de roda com rolamento (conjunto)',0,0,{ic:'gear',kit:['cubo_roda','rolamento_roda'],un:'un'}],
+  ['cubo_rolamento_t','Cubo de roda traseiro com rolamento (conjunto)',0,0,{ic:'gear',kit:['cubo_roda_t','rolamento_roda_t'],un:'un'}],
+  ['kit_manga','Manga de eixo completa (manga + cubo + rolamento)',0,0,{ic:'gear',kit:['manga','cubo_roda','rolamento_roda'],un:'un'}],
+  ['kit_maxilas_cil','Kit maxilas pré-montadas (maxilas + cilindros + molas)',0,0,{ic:'disc',kit:['maxilas','cil_roda','molas_tambor']}],
+  ['kit_tambor_rol','Tambores com rolamento + maxilas',0,0,{ic:'disc',kit:['disco_tambor_rol','maxilas']}],
+  ['kit_discos_rol_t','Discos traseiros com rolamento + pastilhas',0,0,{ic:'disc',kit:['disco_tambor_rol','pastilhas_tras']}],
+  ['kit_tubos_trav','Kit tubos flexíveis de travão',0,0,{ic:'disc',kit:['tubos_trav']}],
+  ['kit_embr_conv','Kit conversão volante rígido + embraiagem',0,0,{ic:'clutch',kit:['volante_rigido','embraiagem','disco_embr','prato_embr','rolamento_embr']}],
+  ['kit_rep_caixa','Kit reparação da caixa (rolamentos + retentores + sincronizadores)',0,0,{ic:'clutch',kit:['rolamentos_caixa','retentor_caixa','retentor_transm','sincronizadores']}],
+  ['kit_retentores_caixa','Kit retentores da caixa',0,0,{ic:'clutch',kit:['retentor_caixa','retentor_transm']}],
+  ['kit_acess_compl','Kit correia de acessórios + polia do alternador + amortecedor',0,0,{ic:'belt',kit:['correia_acess','tensor_acess','rolo_acess','polia_alt','amort_correia']}],
+  ['kit_corrente_compl','Kit corrente completo (corrente + tensor + guias + carretos + variador + juntas)',0,0,{ic:'belt',kit:['corrente_distrib','tensor_corrente','guias_corrente','carretos_distrib','variador','junta_tampa_distrib']}],
+  ['kit_vvt','Variador de fase + eletroválvula',0,0,{ic:'belt',kit:['variador','eletrov_vvt']}],
+  ['kit_tampa_valv','Tampa das válvulas com junta',0,0,{ic:'cog',kit:['tampa_valvulas','junta_tampa'],un:'un'}],
+  ['kit_carter','Cárter + junta + bujão',0,0,{ic:'cog',kit:['carter','junta_carter','bujao_carter'],un:'un'}],
+  ['kit_motor_recon','Kit reconstrução do motor (pistões, segmentos, bronzes e juntas)',0,0,{ic:'cog',kit:['pistoes','segmentos','bronzes_biela','bronzes_apoio','junta_cabeca','parafusos_cabeca','junta_carter','junta_tampa','retentor_cambota','retentor_cambota_t']}],
+  ['kit_bronzes','Jogo de bronzes (biela + apoio)',0,0,{ic:'cog',kit:['bronzes_biela','bronzes_apoio']}],
+  ['kit_impulsores','Jogo de impulsores + balanceiros',0,0,{ic:'cog',kit:['impulsores','balanceiros']}],
+  ['kit_valvulas','Kit válvulas + retentores + molas',0,0,{ic:'cog',kit:['valvulas','retentores_valv','molas_valv']}],
+  ['kit_apoios_motor','Jogo completo de apoios do motor (3 apoios)',0,0,{ic:'cog',kit:['apoio_motor','apoio_caixa','apoio_motor_sup']}],
+  ['kit_turbo_compl','Turbo + juntas + tubos de óleo',0,0,{ic:'air',kit:['turbo','juntas_turbo','tubos_oleo_turbo']}],
+  ['kit_cat','Catalisador + juntas + apoios',0,0,{ic:'pipe',kit:['catalisador','junta_escape','apoios_escape']}],
+  ['kit_fap','Filtro de partículas + juntas + sensor',0,0,{ic:'pipe',kit:['fap','sensor_fap','junta_escape']}],
+  ['kit_silenciador','Silenciador + abraçadeiras + borrachas',0,0,{ic:'pipe',kit:['silenciador','apoios_escape']}],
+  ['kit_termostato','Termóstato com caixa e junta',0,0,{ic:'thermo',kit:['termostato','caixa_termostato'],un:'un'}],
+  ['kit_ventilador','Ventilador completo (com suporte e resistência)',0,0,{ic:'snow',kit:['ventilador','resistencia_vent'],un:'un'}],
+  ['kit_condensador','Condensador + filtro desidratador',0,0,{ic:'snow',kit:['condensador','filtro_secador']}],
+  ['kit_bomba_comb','Módulo da bomba de combustível (bomba + boia)',0,0,{ic:'fuel',kit:['bomba_comb','boia_deposito'],un:'un'}],
+  ['kit_velas_cabos','Velas + cabos das velas',0,0,{ic:'plug',kit:['velas','cabos_velas']}],
+  ['kit_elevador_vidro','Elevador do vidro com motor',0,0,{ic:'battery',kit:['elevador_vidro','motor_vidro'],un:'un'}],
+  ['kit_farois','Par de faróis',0,0,{ic:'bulb',kit:['farol']}],
+  ['kit_lamp_xenon','Par de lâmpadas de xénon',0,0,{ic:'bulb',kit:['lamp_xenon']}],
+  ['kit_farolins','Par de farolins traseiros',0,0,{ic:'bulb',kit:['farolim']}],
+  ['kit_parafusos_roda','Jogo de parafusos / porcas de roda',0,0,{ic:'tyre',kit:['parafusos_roda']}]
+ ],
+ 'Motor':[
+  ['retentor_cambota_t','Retentor da cambota traseiro (lado caixa)'],['bronzes_biela','Bronzes de biela'],['bronzes_apoio','Bronzes de apoio (cambota)'],
+  ['balanceiros','Balanceiros / martelos'],['molas_valv','Molas das válvulas'],['junta_tampa_distrib','Junta da tampa da distribuição'],
+  ['junta_bomba_agua','Junta da bomba de água'],['junta_bomba_oleo','Junta / O-ring da bomba de óleo'],['veios_equil','Veios equilibradores'],
+  ['corrente_bomba_oleo','Corrente da bomba de óleo'],['pescador_oleo','Pescador / chupador do óleo'],['tubo_respiro','Tubo do respiro do motor'],['cavilhas_motor','Pernos / casquilhos de centragem'],['motor_recond','Motor recondicionado / usado'],
+  ['cabeca_recond','Cabeça do motor recondicionada'],['tampa_cambota','Tampa / flange do retentor da cambota'],['sedes_valv','Sedes das válvulas']
+ ],
+ 'Distribuição':[['correia_bomba_oleo','Correia da bomba de óleo (banhada)'],['tensor_hidraulico','Tensor hidráulico da distribuição']],
+ 'Alimentação e injeção':[
+  ['injetor_recond','Injetor recondicionado'],['cabo_acelerador','Cabo do acelerador'],['filtro_bomba_comb','Filtro / rede da bomba de combustível'],
+  ['parafusos_inj','Parafusos / garras dos injetores'],['valvula_drv','Válvula reguladora do common-rail (DRV)'],['bomba_alta_recond','Bomba de alta pressão recondicionada'],
+  ['tubo_comb_rapido','Uniões rápidas dos tubos de combustível']
+ ],
+ 'Ignição e pré-aquecimento':[['vela_incand_1','Vela de incandescência (unidade)']],
+ 'Turbo e escape':[
+  ['turbo_recond','Turbo recondicionado'],['junta_escape','Juntas do escape'],['aditivo_fap','Aditivo do FAP (Eolys)'],
+  ['coletor_adm_turbo','Tubo de admissão do turbo'],['abracadeira_escape','Abraçadeira / união do escape'],['sonda_lambda_post','Sonda lambda pós-catalisador'],
+  ['valvula_egr_lp','Válvula EGR de baixa pressão'],['borboleta_escape','Borboleta / válvula do escape']
+ ],
+ 'Refrigeração':[['ventilador_aux','Ventilador auxiliar'],['tubo_vaso','Tubo do vaso de expansão'],['termostato_eletr','Termóstato eletrónico']],
+ 'Climatização':[['condensador_ventilador','Ventilador do condensador'],['valvula_comp','Válvula de controlo do compressor']],
+ 'Travagem':[
+  ['pinca_recond','Pinça de travão recondicionada'],['molas_tambor','Molas e acessórios do tambor'],['disco_tambor_rol','Disco / tambor traseiro com rolamento'],
+  ['parafusos_pinca','Parafusos da pinça'],['resguardo_disco','Chapa de proteção do disco'],['pistao_pinca','Pistão da pinça'],
+  ['pedal_trav','Pedal / borracha do pedal de travão'],['alavanca_trav_mao','Alavanca do travão de mão'],['regulador_tambor','Regulador automático do tambor']
+ ],
+ 'Suspensão':[
+  ['braco_susp_sup','Braço de suspensão superior'],['casq_hidraulico','Casquilho hidráulico do braço'],['tirante_conv','Tirante de convergência traseiro'],
+  ['barra_panhard','Barra Panhard'],['parafuso_excentrico','Parafuso excêntrico (afinação)'],['batente_susp','Batente da suspensão'],
+  ['amort_susp_pneum','Amortecedor pneumático'],['fole_pneum','Fole da suspensão pneumática'],['valvula_susp','Bloco de válvulas da suspensão'],
+  ['porca_cubo','Porca do cubo / da transmissão'],['grampo_mola','Abraçadeiras / grampos das molas de lâmina']
+ ],
+ 'Direção':[
+  ['caixa_dir_recond','Caixa de direção recondicionada'],['pressostato_dir','Pressostato da direção assistida'],['polia_bomba_dir','Polia da bomba da direção'],
+  ['porca_terminal','Porca / contraporca do terminal'],['amort_direcao','Amortecedor de direção'],['bomba_dir_eletro','Bomba eletro-hidráulica da direção'],
+  ['coluna_dir_elet','Coluna de direção elétrica (com motor)'],['barra_direcao_central','Barra de direção central (sistemas antigos)']
+ ],
+ 'Transmissão':[
+  ['transmissao_recond','Transmissão recondicionada'],['volante_rigido','Volante rígido (monomassa)'],['casquilho_piloto','Rolamento / casquilho piloto'],
+  ['veio_intermedio','Veio intermédio da transmissão'],['pedal_embr','Pedal da embraiagem'],['sensor_embr','Interruptor / sensor do pedal da embraiagem'],
+  ['caixa_vel_recond','Caixa de velocidades recondicionada / usada'],['selector_caixa','Seletor / garfos da caixa'],['carretos_caixa','Carretos da caixa'],
+  ['rolamento_diferencial','Rolamentos do diferencial'],['satelites','Satélites / planetários do diferencial'],['junta_cardan','Junta elástica do cardan (flector)']
+ ],
+ 'Rodas e pneus':[['jante_liga','Jante de liga leve'],['jante_ferro','Jante de ferro'],['sensor_tpms_val','Válvula do sensor TPMS']],
+ 'Elétrica':[
+  ['alternador_recond','Alternador recondicionado'],['motor_arranque_recond','Motor de arranque recondicionado'],['interruptor_vidros','Interruptor dos vidros elétricos'],
+  ['fecho_mala','Fechadura / atuador da mala'],['chave_nova','Chave nova / programação'],['caixa_fusiveis','Caixa de fusíveis'],
+  ['motor_portinhola','Atuador da portinhola do depósito'],['sensor_estac_t','Sensor de estacionamento traseiro'],['modulo_vidros','Módulo dos vidros / conforto'],
+  ['interruptor_ignicao','Interruptor da ignição (contacto)'],['ecra_multimedia','Ecrã / módulo multimédia']
+ ],
+ 'Sensores':[['sensor_abs_t','Sensor ABS traseiro'],['sensor_temp_oleo','Sensor de temperatura do óleo'],['sensor_vel_caixa','Sensor de velocidade da caixa'],['sensor_pressao_ac','Sensor de pressão do A/C'],['sensor_chuva_gel','Gel / suporte do sensor de chuva']],
+ 'Iluminação':[['lamp_xenon','Lâmpada de xénon (D1S/D2S/D3S)'],['lamp_led','Lâmpadas LED (substituição)'],['farol_diurno','Luz diurna completa (DRL)'],['tampa_farol','Tampa traseira do farol']],
+ 'Carroçaria e vidros':[
+  ['dobradica','Dobradiça da porta'],['limitador_porta','Limitador / batente da porta'],['portinhola','Portinhola do depósito'],['suporte_matricula','Suporte da matrícula'],
+  ['grelha_pc','Grelha do para-choques'],['palas','Palas de lama'],['cabo_fecho_porta','Cabo / varão do fecho da porta'],['amort_capo','Amortecedor do capô'],
+  ['oculo_tras','Óculo traseiro'],['teto_abrir','Teto de abrir (vidro / calhas)'],['barras_tejadilho','Barras de tejadilho'],['retrovisor_int','Retrovisor interior']
+ ],
+ 'Serviços':[['mudanca_oleo_caixa','Mudança de óleo da caixa'],['carga_ac','Carga e verificação do A/C'],['rep_vidro','Reparação de vidro / para-brisas'],['limpeza_rad','Limpeza do sistema de refrigeração']],
+ 'Outros':[['massa_cobre','Massa de cobre / cerâmica'],['massa_homo','Massa da homocinética'],['desengordurante','Desengordurante / limpa-travões']]
+};
+CAT_DEF.forEach(d=>{(CAT_X[d[0]]||[]).forEach(x=>d[3].push(x))});
 // Sinónimos para a pesquisa (o nome que se diz na oficina)
-const CAT_ALIAS={junta_homo_int:'lado caixa',kit_terminais:'terminal',kit_susp_f:'terminal',rotula_direcao:'terminal ponteira',axial:'terminal interior barra',bieleta:'tirante tirantes estabilizadora terminal terminais terminal da barra estabilizadora',braco_susp:'triangulo braco oscilante',
+const CAT_ALIAS={junta_homo_int:'lado caixa',kit_terminais:'terminal',kit_susp_f:'terminal',rotula_direcao:'terminal ponteira rotula exterior rotula de direcao',axial:'terminal interior barra rotula axial rotula interior rotula da barra de direcao',bieleta:'tirante tirantes estabilizadora terminal terminais terminal da barra estabilizadora',braco_susp:'triangulo braco oscilante',
  rolamento_embr:'rolamento de impulso',cil_escravo_embr:'bomba concentrica atuador embreagem',velas_incand:'aquecedoras incandescencia',fap:'dpf particulas',
  valvula_egr:'egr',medidor_ar:'caudalimetro debitometro maf',sonda_lambda:'sensor oxigenio',sensor_cambota:'pms',motor_arranque:'arranque starter',
  alternador:'dinamo',vaso_expansao:'deposito agua',radiador_aquec:'chaufagem aquecimento',amortecedores:'dianteiros frente',pastilhas:'dianteiras frente calços',
@@ -948,10 +1067,65 @@ const CAT_ALIAS={junta_homo_int:'lado caixa',kit_terminais:'terminal',kit_susp_f
  intercooler:'radiador do turbo',centralina:'ecu',bsi:'bsm',lamp_medios:'baixos',lamp_maximos:'altos',pinca:'pinca maxila',rolamento_roda:'cubo',
  cubo_roda:'rolamento',casquilhos:'silent-bloc silentbloc',casq_estab:'silent-bloc',casq_braco_tras:'silent-bloc',bomba_comb:'bomba gasolina gasoleo elevadora',
  filtro_comb:'gasoleo gasolina',bomba_alta:'bomba injecao',revisao:'manutencao',diagnostico:'maquina avarias'};
+const ALIAS_X={junta_homo:'cabeca da transmissao ponta da transmissao homocinetica exterior lado roda junta exterior',junta_homo_int:'cabeca interior tulipa',transmissao:'semieixo veio da transmissao transmissao completa',
+ kit_axial_term:'barra de direcao completa barra direcao terminal conjunto',axial:'barra de direcao',fole_homo:'borracha da transmissao coifa',fole_homo_int:'borracha da transmissao coifa',fole_direcao:'borracha coifa',
+ kit_braco_compl:'triangulo completo',braco_susp:'triangulo forquilha',cubo_rolamento:'cubo completo',kit_amort_completo:'mcpherson coluna completa',molas_tambor:'molas das maxilas',
+ disco_tambor_rol:'tambor com rolamento disco com rolamento',volante_rigido:'monomassa',kit_embr_conv:'monomassa conversao',casquilhos:'silent-bloc silentbloc casquilhos do triangulo',casq_hidraulico:'silent-bloc silentbloc hidraulico',
+ lamp_xenon:'d1s d2s d3s d4s xenon',lamp_medios:'h7 h4 h1 h11',lamp_maximos:'h1 h7 h4 h9',kit_bieletas:'tirantes terminais estabilizadora',caixa_dir_recond:'cremalheira',caixa_direcao:'cremalheira',
+ tripode:'tulipa',valvula_drv:'regulador pressao rail',kit_bomba_comb:'bomba gasolina gasoleo boia',rolamento_roda:'rolamento da roda dianteira',kit_manga:'manga completa',
+ bronzes_biela:'casquilhos de biela',bronzes_apoio:'casquilhos de apoio cambota',balanceiros:'martelos',retentor_cambota_t:'retentor traseiro lado volante',porca_cubo:'porca da transmissao porca do cubo'};
+Object.entries(ALIAS_X).forEach(([k,a])=>{CAT_ALIAS[k]=((CAT_ALIAS[k]||'')+' '+a).trim()});
 const CAT={},GROUP_IC={};
-CAT_DEF.forEach(([g,ic,c,items])=>{GROUP_IC[g]={ic,c};items.forEach(([k,n,km,m,x])=>{x=x||{};CAT[k]={n,ic:x.ic||ic,c:x.c||c,g,km:km||0,m:m||0,...(x.kit?{kit:x.kit}:{}),...(x.a?{a:x.a}:{})}})});
+CAT_DEF.forEach(([g,ic,c,items])=>{GROUP_IC[g]={ic,c};items.forEach(([k,n,km,m,x])=>{x=x||{};CAT[k]={n,ic:x.ic||ic,c:x.c||c,g,km:km||0,m:m||0,...(x.kit?{kit:x.kit}:{}),...(x.a?{a:x.a}:{}),...(x.un?{un:x.un}:{})}})});
 Object.entries(CAT_ALIAS).forEach(([k,a])=>{if(CAT[k])CAT[k].a=((CAT[k].a||'')+' '+a).trim()});
 const GROUPS=CAT_DEF.map(d=>d[0]);
+
+// nomes mais claros (a chave fica igual, o histórico mantém-se)
+Object.entries({transmissao:'Transmissão completa (semieixo)',junta_homo:'Junta homocinética exterior (lado roda)',fole_homo:'Fole da homocinética exterior (lado roda)',
+ kit_homo:'Kit junta homocinética exterior (junta + fole)',kit_fole_homo:'Kit fole da homocinética exterior (fole + abraçadeiras + massa)',fole_homo_int:'Fole da homocinética interior (lado caixa)',
+ kit_dir:'Barras de direção completas — os dois lados (axiais + terminais)',axial:'Barra axial de direção (rótula interior)',rotula_direcao:'Terminal de direção (ponteira / rótula exterior)',
+ retentor_cambota:'Retentor da cambota dianteiro',kit_rol_roda:'Kit rolamento de roda dianteira'}).forEach(([k,n])=>{if(CAT[k])CAT[k].n=n});
+// Conjuntos: escolher a peça inteira, um kit ou só um componente sem ter de escrever
+const CONJ=[
+ {id:'transm',n:'Transmissão (semieixo)',ic:'gear',g:'Transmissão',full:['transmissao','transmissao_recond','kit_transm_juntas','kit_homo','kit_homo_int','kit_foles_homo'],parts:['junta_homo','fole_homo','kit_fole_homo','junta_homo_int','fole_homo_int','kit_fole_homo_int','tripode','rolamento_transm','veio_intermedio','porca_cubo','retentor_transm','anel_abs','massa_homo']},
+ {id:'bdir',n:'Barra de direção',ic:'steer',g:'Direção',full:['kit_axial_term','kit_axial_term_fole','kit_dir','kit_axiais','kit_terminais'],parts:['axial','rotula_direcao','fole_direcao','kit_fole_dir','porca_terminal','barra_direcao_central']},
+ {id:'cdir',n:'Caixa e bomba de direção',ic:'steer',g:'Direção',full:['caixa_direcao','caixa_dir_recond'],parts:['vedantes_caixa_dir','apoios_caixa_dir','fole_direcao','bomba_direcao','bomba_dir_eletro','polia_bomba_dir','tubos_direcao','deposito_dir','pressostato_dir','oleo_dir','motor_dir_elet','coluna_direcao','coluna_dir_elet','cruzeta_dir','amort_direcao']},
+ {id:'braco',n:'Braço de suspensão',ic:'spring',g:'Suspensão',full:['kit_braco_compl','kit_bracos_par','kit_bracos','kit_susp_f'],parts:['braco_susp','rotula_susp','casquilhos','casq_hidraulico','braco_susp_sup','parafuso_excentrico']},
+ {id:'amortf',n:'Amortecedor e mola dianteiros',ic:'spring',g:'Suspensão',full:['kit_amort_completo','kit_amort_molas','kit_amort','kit_amort_f_par','kit_molas_f','kit_apoio_amort','kit_foles_amort'],parts:['amortecedores','molas','apoio_amort','rolamento_apoio','fole_amort','prato_mola','batente_susp']},
+ {id:'susp_t',n:'Suspensão traseira',ic:'spring',g:'Suspensão',full:['kit_amort_t','kit_amort_t_par','kit_molas_t','kit_bracos_t'],parts:['amortecedores_tras','molas_tras','apoio_amort_t','batentes_tras','braco_tras','casq_braco_tras','tirante','tirante_conv','barra_panhard','ponte_tras','casq_ponte','molas_lamina','grampo_mola']},
+ {id:'estab',n:'Barra estabilizadora',ic:'spring',g:'Suspensão',full:['kit_estab','kit_bieletas'],parts:['bieleta','casq_estab','barra_estab']},
+ {id:'cubo_f',n:'Roda dianteira: cubo, rolamento e manga',ic:'gear',g:'Suspensão',full:['kit_manga','cubo_rolamento','kit_rol_roda'],parts:['rolamento_roda','cubo_roda','manga','porca_cubo','anel_abs','sensor_abs']},
+ {id:'cubo_t',n:'Roda traseira: cubo e rolamento',ic:'gear',g:'Suspensão',full:['cubo_rolamento_t','kit_rol_roda_t'],parts:['rolamento_roda_t','cubo_roda_t','disco_tambor_rol','sensor_abs_t']},
+ {id:'trav_f',n:'Travões dianteiros',ic:'disc',g:'Travagem',full:['kit_trav_f','kit_trav_f_sens','kit_trav_comp','kit_pastilhas_f'],parts:['discos','pastilhas','sensor_desgaste','pinca','pinca_recond','kit_rep_pinca','pistao_pinca','guias_pinca','suporte_pinca','parafusos_pinca','molas_pastilhas','resguardo_disco','tubos_trav','kit_tubos_trav']},
+ {id:'trav_t',n:'Travões traseiros',ic:'disc',g:'Travagem',full:['kit_trav_t','kit_pastilhas_t','kit_discos_rol_t','kit_tambor','kit_tambor_rol','kit_maxilas_cil','kit_trav_mao'],parts:['discos_tras','pastilhas_tras','pinca_tras','maxilas','tambores','disco_tambor_rol','cil_roda','molas_tambor','regulador_tambor','maxilas_trav_mao','cabo_travao_mao','motor_travao_elet']},
+ {id:'trav_h',n:'Sistema de travagem (bomba, servo, ABS)',ic:'disc',g:'Travagem',full:[],parts:['bomba_trav','servofreio','bomba_vacuo','modulo_abs','valvula_repart','deposito_trav','tubos_trav_rig','liq_travoes','pedal_trav','alavanca_trav_mao','botao_trav_mao']},
+ {id:'embr',n:'Embraiagem e volante',ic:'clutch',g:'Transmissão',full:['kit_embr','kit_embr_hid','kit_embr_vol','kit_embr_bomba','kit_embr_conv','kit_volante'],parts:['disco_embr','prato_embr','rolamento_embr','cil_escravo_embr','bomba_embr','cabo_embr','tubo_embr','garfo_embr','volante','volante_rigido','casquilho_piloto','pedal_embr','sensor_embr','liq_embr']},
+ {id:'caixa',n:'Caixa de velocidades',ic:'clutch',g:'Transmissão',full:['caixa_vel','caixa_vel_recond','kit_rep_caixa','kit_retentores_caixa','kit_caixa_auto'],parts:['rolamentos_caixa','sincronizadores','carretos_caixa','selector_caixa','retentor_caixa','retentor_transm','cabo_mudancas','alavanca','casq_alavanca','apoio_caixa','oleo_caixa','oleo_caixa_auto','filtro_caixa','mecatronica','conversor','diferencial','rolamento_diferencial','satelites']},
+ {id:'cardan',n:'Cardan e tração 4x4',ic:'gear',g:'Transmissão',full:['cardan'],parts:['cruzeta_cardan','apoio_cardan','junta_cardan','caixa_transfer','haldex','oleo_transfer','oleo_haldex','oleo_diferencial']},
+ {id:'dist_c',n:'Distribuição por correia',ic:'belt',g:'Distribuição',full:['kit_distrib_vi','kit_distrib_ba','kit_distrib'],parts:['correia','tensor_distrib','tensor_hidraulico','rolo_distrib','bomba_agua','junta_bomba_agua','termostato','polia_arvore','roda_cambota','correia_bomba_oleo']},
+ {id:'dist_k',n:'Distribuição por corrente',ic:'belt',g:'Distribuição',full:['kit_corrente_compl','kit_corrente_ba','kit_corrente','kit_vvt'],parts:['corrente_distrib','tensor_corrente','guias_corrente','carretos_distrib','variador','eletrov_vvt','junta_tampa_distrib','tampa_distrib','corrente_bomba_oleo']},
+ {id:'acess',n:'Correia de acessórios',ic:'belt',g:'Distribuição',full:['kit_acess_compl','kit_acess'],parts:['correia_acess','tensor_acess','rolo_acess','polia_alt','amort_correia','polia_cambota','polia_bomba_agua']},
+ {id:'juntas',n:'Juntas e retentores do motor',ic:'cog',g:'Motor',full:['kit_juntas_motor','kit_cabeca','kit_tampa_valv','kit_carter'],parts:['junta_cabeca','parafusos_cabeca','junta_tampa','junta_carter','bujao_carter','junta_admissao','junta_coletor_esc','junta_tampa_distrib','junta_bomba_agua','junta_bomba_oleo','junta_permutador','retentor_cambota','retentor_cambota_t','retentor_arvore','retentores_valv']},
+ {id:'motor_int',n:'Interior do motor',ic:'cog',g:'Motor',full:['motor_completo','motor_recond','kit_motor_recon','cabeca_recond','kit_bronzes','kit_impulsores','kit_valvulas'],parts:['pistoes','segmentos','bronzes_biela','bronzes_apoio','bielas','cambota','valvulas','molas_valv','guias_valv','sedes_valv','impulsores','balanceiros','arvore_cames','bomba_oleo','pescador_oleo','veios_equil','cabeca','bloco']},
+ {id:'apoios',n:'Apoios do motor e da caixa',ic:'cog',g:'Motor',full:['kit_apoios_motor','kit_apoios'],parts:['apoio_motor','apoio_caixa','apoio_motor_sup']},
+ {id:'turbo',n:'Turbo e intercooler',ic:'air',g:'Turbo e escape',full:['kit_turbo_compl','turbo_recond','kit_turbo'],parts:['turbo','cartucho_turbo','atuador_turbo','juntas_turbo','tubos_oleo_turbo','eletrovalvula_turbo','dump_valve','coletor_adm_turbo','tubo_intercooler','intercooler','sensor_turbo']},
+ {id:'escape',n:'Escape, catalisador e FAP',ic:'pipe',g:'Turbo e escape',full:['escape_completo','kit_cat','kit_fap','kit_silenciador','kit_escape'],parts:['coletor_esc','junta_coletor_esc','downpipe','catalisador','catalisador_scr','fap','sensor_fap','aditivo_fap','flexivel_escape','panela_escape','silenciador','ponteira_escape','junta_escape','abracadeira_escape','apoios_escape','sonda_lambda','sonda_lambda_post']},
+ {id:'egr',n:'EGR',ic:'pipe',g:'Turbo e escape',full:['kit_egr'],parts:['valvula_egr','valvula_egr_lp','radiador_egr','tubo_egr','juntas_egr']},
+ {id:'refr',n:'Radiador, bomba de água e termóstato',ic:'thermo',g:'Refrigeração',full:['kit_rad','kit_bomba_agua','kit_termostato','kit_ventilador'],parts:['radiador','bomba_agua','junta_bomba_agua','termostato','termostato_eletr','caixa_termostato','tubos_radiador','vaso_expansao','tampa_vaso','tubo_vaso','ventilador','ventilador_aux','resistencia_vent','rele_vent','sensor_temp','refrigeracao']},
+ {id:'ac',n:'Ar condicionado',ic:'snow',g:'Climatização',full:['kit_ac','kit_condensador'],parts:['compressor_ac','embr_compressor','valvula_comp','condensador','condensador_ventilador','filtro_secador','valvula_exp','evaporador','tubos_ac','pressostato_ac','sensor_pressao_ac','orings_ac','gas_ac']},
+ {id:'inj',n:'Injeção diesel',ic:'fuel',g:'Alimentação e injeção',full:['kit_injetores','kit_inj'],parts:['injetores','injetor_recond','vedantes_inj','parafusos_inj','retorno_inj','bomba_alta','bomba_alta_recond','valvula_scv','valvula_drv','regulador_pressao','rampa_inj','tubo_alta','sensor_comb','filtro_comb']},
+ {id:'comb',n:'Bomba e depósito de combustível',ic:'fuel',g:'Alimentação e injeção',full:['kit_bomba_comb'],parts:['bomba_comb','boia_deposito','filtro_bomba_comb','filtro_comb','pre_filtro','tubos_comb','tubo_comb_rapido','deposito','tampa_deposito']},
+ {id:'ign',n:'Ignição e velas',ic:'plug',g:'Ignição e pré-aquecimento',full:['kit_ignicao','kit_velas_cabos','kit_incand'],parts:['velas','bobine','bobine_bloco','cabos_velas','cachimbo','velas_incand','vela_incand_1','rele_incand']},
+ {id:'carga',n:'Bateria, alternador e motor de arranque',ic:'battery',g:'Elétrica',full:['kit_alternador','alternador_recond','motor_arranque_recond'],parts:['bateria','bateria_agm','alternador','regulador_alt','escovas_alt','polia_alt','motor_arranque','bendix','cabo_massa','cabo_positivo','terminais_bateria','sensor_bateria']},
+ {id:'vidro',n:'Vidro elétrico',ic:'battery',g:'Elétrica',full:['kit_elevador_vidro'],parts:['elevador_vidro','motor_vidro','interruptor_vidros','modulo_vidros']},
+ {id:'porta',n:'Porta e fechos',ic:'shield',g:'Carroçaria e vidros',full:[],parts:['fechadura','fecho_central','puxador','cabo_fecho_porta','dobradica','limitador_porta','forra','borrachas','cablagem_porta','fecho_mala']},
+ {id:'espelho',n:'Espelho retrovisor',ic:'shield',g:'Carroçaria e vidros',full:['espelho'],parts:['vidro_espelho','capa_espelho','motor_espelho','pisca_espelho']},
+ {id:'limpa',n:'Limpa-vidros',ic:'shield',g:'Carroçaria e vidros',full:['kit_escovas'],parts:['escovas','escova_tras','braco_limpa','motor_limpa','mecanismo_limpa','bomba_limpa','esguicho','deposito_limpa','liq_limpa']},
+ {id:'farol',n:'Farol dianteiro',ic:'bulb',g:'Iluminação',full:['kit_farois','farol','kit_lamp_xenon'],parts:['lamp_medios','lamp_maximos','lamp_minimos','lamp_pisca_f','lamp_xenon','lamp_led','balastro','ignitor','modulo_led','motor_regul','vidro_farol','tampa_farol','suporte_farol','porta_lampadas']},
+ {id:'farolim',n:'Farolim traseiro',ic:'bulb',g:'Iluminação',full:['kit_farolins','farolim'],parts:['lamp_stop','lamp_farolim','lamp_pisca_t','lamp_marcha','lamp_nevoeiro_t','lamp_3stop','luz_matricula','lamp_matricula']},
+ {id:'rodas',n:'Pneus e jantes',ic:'tyre',g:'Rodas e pneus',full:['kit_pneus4','kit_pneus_f','kit_pneus_t','kit_parafusos_roda'],parts:['pneus','pneus_tras','pneus_inverno','jante','jante_liga','jante_ferro','valvulas_pneu','sensor_tpms','sensor_tpms_val','parafusos_roda','antirroubo','pesos','tampoes','suplente']}
+];
+const conjOf=k=>CONJ.filter(c=>c.full.includes(k)||c.parts.includes(k));
 const isKit=k=>!!(CAT[k]&&CAT[k].kit);
 const kitList=k=>isKit(k)?CAT[k].kit.filter(x=>CAT[x]).map(x=>CAT[x].n).join(', '):'';
 const fold=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -968,8 +1142,17 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 
 /* ================== VERSÃO / CHANGELOG ================== */
 // Regra: todas as alterações do mesmo dia ficam na mesma versão; um dia novo = versão nova (+0.1).
-const APP_VER='0.8';
+const APP_VER='0.9';
 const CHANGELOG=[
+ {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
+  'Escolher por conjunto: Transmissão, Barra de direção, Braço de suspensão, Travões, Embraiagem, Distribuição, Turbo, Escape e mais (37 conjuntos). Em cada um escolhes tudo, um kit ou só a peça que trocaste',
+  'Cerca de 170 peças e kits novos (agora 696 no total, 107 kits): barra de direção completa por lado, kits de juntas e foles da transmissão, braço completo, McPherson completo, cubo com rolamento, manga completa, peças recondicionadas, bronzes, juntas, e outras',
+  'Nomes mais claros: junta homocinética exterior (lado roda) e interior (lado caixa), barra axial (rótula interior), terminal (rótula exterior)',
+  'Pesquisa: "cabeça da transmissão", "triângulo", "cremalheira", "silent-bloc", "H7", "monomassa" e outros nomes de oficina',
+  'Pesquisa: "rótula da barra de direção" encontra a barra axial (rótula interior) e "rótula de direção" também mostra o terminal (ponteira)',
+  'Pesquisa: "terminais da barra estabilizadora" encontra a bieleta',
+  'Recibo: um valor de 0 € passa a aparecer por extenso como "zero euros"'
+ ]},
  {v:'0.8',d:'2026-10-17',t:'Dados partilhados entre aparelhos',items:[
   'Sincronização entre o telemóvel e o tablet através de um repositório privado teu no GitHub (Definições → Sincronizar aparelhos)',
   'Com os aparelhos abertos, o que gravas num aparece nos outros em cerca de 5 segundos (telemóvel, tablet e computador)',
@@ -1483,8 +1666,8 @@ function vRep(){
 }
 /* ================== ESCOLHER PEÇA (pesquisa) ================== */
 let PP={mode:'tipo',q:'',g:''},AP=null;
-function pickPart(mode){PP={mode,q:'',g:''};openSheet(`<h3>${mode==='tipo'?'O que foi feito':'Escolher peça'}</h3>
-  <div class="in" style="margin-top:12px">${I('search')}<input id="pp-q" placeholder="Pesquisar (ex: kit embraiagem, H7, bomba água)" oninput="PP.q=this.value;ppList()" autocomplete="off"></div>
+function pickPart(mode){PP={mode,q:'',g:'',cj:''};openSheet(`<h3>${mode==='tipo'?'O que foi feito':'Escolher peça'}</h3>
+  <div class="in" style="margin-top:12px">${I('search')}<input id="pp-q" placeholder="Pesquisar (ex: kit embraiagem, H7, bomba água)" oninput="PP.q=this.value;PP.cj='';ppList()" autocomplete="off"></div>
   <div class="ppg" id="pp-g"></div><div class="pplist" id="pp-l"></div>`);ppList()}
 function ppRow(k){const c=CAT[k],sub=isKit(k)?'Inclui: '+kitList(k):c.g;const nm=PP.mode==='tipo'?label(k):c.n;
  return `<button class="opt pprow" onclick="ppDone('${k}')"><span class="ico sm" style="--c:${c.c}">${I(c.ic)}</span><div class="mid"><b>${esc(nm)}</b><small>${esc(sub)}</small></div></button>`}
@@ -1496,22 +1679,36 @@ function ppList(){
   let sc=0;ws.forEach(w=>{sc+=n.startsWith(w)?0:n.includes(w)?1:a.includes(w)?2:ex.includes(w)?3:6});
   pw.forEach(w=>{if(n.includes(w))sc-=1});if(c.kit)sc+=.5;return sc};
  const match=k=>score(k)!==null;
- const gs=$('#pp-g');if(gs)gs.innerHTML=q?'':['',...GROUPS].map(g=>`<button class="${PP.g===g?'on':''}" onclick="PP.g='${g}';ppList()">${g||'Todas'}</button>`).join('');
- let ks=Object.keys(CAT).filter(k=>q?match(k):(!PP.g||CAT[k].g===PP.g));
- if(q){const sc={};ks.forEach(k=>sc[k]=score(k));ks.sort((a,b)=>sc[a]-sc[b]||CAT[a].n.length-CAT[b].n.length)}
+ const gs=$('#pp-g');if(gs)gs.innerHTML=q||PP.cj?'':['',...GROUPS].map(g=>`<button class="${PP.g===g?'on':''}" onclick="PP.g='${g}';ppList()">${g||'Todas'}</button>`).join('');
  const other=PP.mode==='tipo'?`<button class="opt pprow" onclick="ppDone('outro')"><span class="ico sm" style="--c:#64748b">${I('edit')}</span><div class="mid"><b>Outro… (escrever)</b><small>Reparação que não está na lista</small></div></button>`
   :`<button class="opt pprow" onclick="ppDone('')"><span class="ico sm" style="--c:#64748b">${I('edit')}</span><div class="mid"><b>Outra peça (escrever o nome)</b><small>Peça que não está na lista ou não identificada</small></div></button>`;
- let h=(!q&&!PP.g)?other:'';
- if(q)h+=ks.length?ks.slice(0,80).map(ppRow).join(''):`<p class="hint" style="padding:10px 4px">Nada encontrado. Usa "${PP.mode==='tipo'?'Outro':'Outra peça'}" e escreve o nome.</p>`;
- if(q)h+=other;
- else (PP.g?[PP.g]:GROUPS).forEach(g=>{const gk=ks.filter(k=>CAT[k].g===g);if(gk.length)h+=`<div class="pph">${g}</div>`+gk.map(ppRow).join('')});
+ // dentro de um conjunto: peça inteira / kits / só um componente
+ if(PP.cj){const c=CONJ.find(x=>x.id===PP.cj);if(c){const f=c.full.filter(k=>CAT[k]),pt=c.parts.filter(k=>CAT[k]);
+  $('#pp-l').innerHTML=`<button class="cjback" onclick="PP.cj='';ppList()">${I('back','s')} Conjuntos</button><div class="cjh"><span class="ico" style="--c:${(GROUP_IC[c.g]||{}).c||'#64748b'}">${I(c.ic)}</span><div><b>${esc(c.n)}</b><small>Escolhe tudo, um kit ou só a peça que trocaste. O lado (Esq./Dir.) escolhes a seguir.</small></div></div>`
+   +(f.length?`<div class="pph">Completo e kits</div>`+f.map(ppRow).join(''):'')+(pt.length?`<div class="pph">Só uma peça</div>`+pt.map(ppRow).join(''):'');
+  $('#pp-l').scrollTop=0;return}PP.cj=''}
+ const cjTile=c=>`<button class="cjt" onclick="PP.cj='${c.id}';ppList()"><span class="ico sm" style="--c:${(GROUP_IC[c.g]||{}).c||'#64748b'}">${I(c.ic)}</span><span><b>${esc(c.n)}</b><small>${c.full.filter(k=>CAT[k]).length+c.parts.filter(k=>CAT[k]).length} opções</small></span></button>`;
+ let ks=Object.keys(CAT).filter(k=>q?match(k):(!PP.g||CAT[k].g===PP.g));
+ if(q){const sc={};ks.forEach(k=>sc[k]=score(k));ks.sort((a,b)=>sc[a]-sc[b]||CAT[a].n.length-CAT[b].n.length)}
+ let h='';
+ if(q){
+  const cjs=CONJ.filter(c=>{const t=fold(c.n);return ws.length&&ws.every(w=>t.includes(w))});
+  if(cjs.length)h+=`<div class="cjg">${cjs.map(cjTile).join('')}</div>`;
+  h+=ks.length?ks.slice(0,80).map(ppRow).join(''):`<p class="hint" style="padding:10px 4px">Nada encontrado. Usa "${PP.mode==='tipo'?'Outro':'Outra peça'}" e escreve o nome.</p>`;
+  h+=other;
+ }else{
+  const cjs=CONJ.filter(c=>!PP.g||c.g===PP.g);
+  if(!PP.g)h+=other;
+  if(cjs.length)h+=`<div class="pph">Por conjunto</div><div class="cjg">${cjs.map(cjTile).join('')}</div>`;
+  (PP.g?[PP.g]:GROUPS).forEach(g=>{const gk=ks.filter(k=>CAT[k].g===g);if(gk.length)h+=`<div class="pph">${PP.g?'Todas as peças':g}</div>`+gk.map(ppRow).join('')});
+ }
  $('#pp-l').innerHTML=h;
 }
 function ppDone(k){
  if(PP.mode==='tipo'){F.tipo=k;closeSheet();render();return}
  AP={...(AP||{idx:null,nome:'',qtd:'1',un:'un',preco:'',pago:true,eixo:'',lado:''}),key:k};
  if(PP.pos){if(PP.pos.eixo)AP.eixo=PP.pos.eixo;if(PP.pos.lado)AP.lado=PP.pos.lado}
- if(AP.idx==null&&!AP.touchedUn)AP.un=k==='oleo'?'L':(isKit(k)?'jogo':'un');
+ if(AP.idx==null&&!AP.touchedUn)AP.un=k==='oleo'?'L':(CAT[k]&&CAT[k].un)||(isKit(k)?'jogo':'un');
  apSheet();
 }
 function addPeca(idx){
