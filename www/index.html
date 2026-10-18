@@ -475,6 +475,59 @@ textarea.msg{min-height:180px;font-size:13.5px;line-height:1.45}
 [data-layout=desktop] .row:hover,[data-layout=desktop] .tli:hover,[data-layout=desktop] .vcard:hover{border-color:var(--line2)}
 [data-layout=desktop] .hdr{padding-top:16px}
 [data-layout=desktop] .hello{padding-top:10px}
+
+/* ===== densidade compacta ===== */
+[data-dens=comp] .row{padding:9px 10px;margin-bottom:6px}
+[data-dens=comp] .sec{padding:14px 16px 7px}
+[data-dens=comp] .card.vfc,[data-dens=comp] .orcard{padding:11px}
+[data-dens=comp] .orcard{gap:7px;margin-bottom:7px}
+[data-dens=comp] .thumb{width:64px;height:46px}
+[data-dens=comp] .ms{padding:9px}
+[data-dens=comp] .ms b{margin-top:6px}
+[data-dens=comp] .vcard .photo{height:150px}
+[data-dens=comp] .opt{padding:10px 2px}
+[data-dens=comp] .rrow,[data-dens=comp] .vrow{padding:8px 0}
+[data-dens=comp] .task{padding-top:9px;padding-bottom:9px}
+[data-dens=comp] .dt td{padding:6px 14px}
+[data-dens=comp] .dt th{padding:7px 14px}
+[data-dens=comp] .dph{padding:10px 16px}
+[data-dens=comp] .dk{padding:12px 14px}
+[data-dens=comp] .dk>b{font-size:23px;margin-top:8px}
+[data-dens=comp] .dpanel{margin-bottom:14px}
+[data-dens=comp][data-layout=desktop] .nav button{padding:8px 14px}
+[data-dens=comp][data-layout=desktop] .hdr{padding:9px 0 8px}
+/* ===== alto contraste ===== */
+[data-hc]{--line:color-mix(in srgb,var(--tx) 30%,transparent);--line2:color-mix(in srgb,var(--tx) 48%,transparent);--mut:color-mix(in srgb,var(--tx) 80%,var(--bg));--tx2:var(--tx)}
+[data-hc] .bgfx{display:none}
+[data-hc] .card,[data-hc] .in,[data-hc] .ib,[data-hc] .seg{border-width:1.5px}
+[data-hc] small,[data-hc] .hint{font-weight:500}
+[data-hc] .tag{font-weight:750;outline:1px solid currentColor;outline-offset:-1px}
+[data-hc] .nav .on{outline:2px solid var(--pri);outline-offset:-2px}
+/* ===== barra lateral recolhida (computador) ===== */
+.ncol{display:none}
+[data-layout=desktop] .nav .ncol{display:flex;flex:none;align-items:center;gap:10px;padding:8px 14px;margin-top:6px;font-size:12.5px;color:var(--mut);border-radius:var(--rs)}
+[data-layout=desktop] .nav .ncol .i{width:16px;height:16px}
+[data-layout=desktop][data-side=mini] body{padding-left:76px}
+[data-layout=desktop][data-side=mini] .nav{width:76px;padding-left:10px;padding-right:10px}
+[data-layout=desktop][data-side=mini] .nav button{justify-content:center;padding:11px 0}
+[data-layout=desktop][data-side=mini] .nav button>span,[data-layout=desktop][data-side=mini] .nav .nkb,[data-layout=desktop][data-side=mini] .nfoot span:nth-child(2){display:none}
+[data-layout=desktop][data-side=mini] .nav .nfoot{align-items:center;padding:10px 0 2px}
+[data-layout=desktop][data-side=mini] .nfoot span:first-child::before{content:""}
+[data-layout=desktop][data-side=mini] .nav .on::before{left:-10px}
+[data-layout=desktop][data-side=mini] .nav .dotn{right:8px;top:6px;margin:0}
+[data-layout=desktop][data-side=mini] .toast{margin-left:38px}
+[data-layout=desktop][data-side=mini] .nbrand{justify-content:center;padding:0}[data-layout=desktop][data-side=mini] .nbrand>span{display:none}
+/* ===== Início à medida ===== */
+.dgrid.noside{grid-template-columns:minmax(0,1fr)}
+.hblk{padding:4px 12px}
+.hbr{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--line)}.hbr:last-child{border-bottom:0}
+.hbt{flex:1;display:flex;align-items:center;gap:10px;text-align:left;font-size:14.5px;font-weight:600;color:var(--tx);min-width:0;padding:6px 0}
+.hbc{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line2);display:grid;place-items:center;flex:none;color:var(--pri-tx);background:var(--pri);border-color:var(--pri)}
+.hbr.off .hbc{background:none;border-color:var(--line2)}.hbr.off .hbt{color:var(--mut);font-weight:500}
+.hbc .i{width:14px;height:14px}
+.ib.sm{width:34px;height:34px}.ib.sm .i{width:16px;height:16px}.ib:disabled{opacity:.35}
+.i.up{transform:rotate(-90deg)}
+.tgl.big{display:flex;align-items:flex-start;gap:12px;margin-top:14px;cursor:pointer}.tgl.big input{margin-top:3px;width:20px;height:20px;flex:none;accent-color:var(--pri)}.tgl.big b{display:block;font-weight:650}.tgl.big small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.4}
 /* ===== computador: layout largo ===== */
 [data-layout=desktop] .hdr{padding:14px 0 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);border-bottom:0;box-shadow:0 0 0 100vmax color-mix(in srgb,var(--bg) 92%,transparent),0 1px 0 100vmax var(--line);clip-path:inset(0 -100vmax -1px)}
 [data-layout=desktop] .hdr h1{flex:1;text-align:left;font-size:20px;padding-left:4px}
@@ -547,7 +600,7 @@ textarea.msg{min-height:180px;font-size:13.5px;line-height:1.45}
 .dvr>.dpanel{margin-top:8px}
 [data-layout=desktop] .dt .av{width:34px;height:34px;font-size:13px;flex:none}
 html.pc[data-layout=desktop] .nbrand{display:none}
-.nfoot{display:none}
+.nfoot,.nav .nfoot{display:none}
 [data-layout=tablet] .nav .nset,[data-layout=desktop] .nav .nset{margin-top:auto}
 [data-layout=tablet] .nav .nfoot,[data-layout=desktop] .nav .nfoot{display:flex;flex:none;border-radius:0;flex-direction:column;align-items:center;gap:1px;margin-top:6px;padding:10px 4px 2px;border-top:1px solid var(--line);font-size:10.5px;color:var(--mut);text-align:center;line-height:1.3}
 [data-layout=desktop] .nav .nfoot{align-items:flex-start;text-align:left;padding:12px 14px 2px;font-size:11.5px}
@@ -1156,6 +1209,11 @@ const APP_VER='0.9';
 const CHANGELOG=[
  {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
   'Peças: escolhe se o preço que escreves é com IVA ou sem IVA; sem IVA a app soma 23% e mostra a conta antes de guardar. Lembra-se da última escolha. O IVA é calculado sobre o total das peças, como na fatura da loja (sem diferenças de 1 cêntimo)',
+  'Aparência → Leitura e espaço: densidade Confortável ou Compacta (cabe mais no ecrã)',
+  'Aparência: Alto contraste (luz do dia), com texto mais forte e contornos marcados para ler ao sol',
+  'Computador: barra lateral recolhida só com ícones (botão no fundo da barra ou em Aparência)',
+  'Início à tua medida: escolhe que blocos aparecem e por que ordem; no telemóvel passa a haver também Ordens em aberto e Avisos de manutenção',
+  'Estas escolhas ficam em cada aparelho: o telemóvel pode estar compacto e o computador confortável',
   'Versão e número de compilação sempre à vista: no fundo da barra lateral (computador e tablet), na barra de título do computador e no fim do Início (telemóvel). Toca para ver o que mudou',
   'Computador e tablet: Definições passam para o fundo da barra lateral',
   'Fotos das peças: botão da câmara em cada peça (e "Ver fotos desta peça") abre fotos reais com o nome exato e o modelo do carro (precisa de internet)',
@@ -1487,8 +1545,8 @@ function render(){
 function nav(v){
  const map={sync:'set',or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:isDesk()?'clients':'fin',set:'set',clients:isDesk()?'clients':'set',intervals:'set',changelog:'set',updates:'set'};
  const a=map[v];
- const b=(k,ic,t,x='')=>`<button class="${a===k?'on':''}${x}" onclick="tab('${k}')">${I(ic)}<span>${t}</span></button>`;
- return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b>Garage<span>Pro</span></b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button></nav>`;
+ const b=(k,ic,t,x='')=>`<button class="${a===k?'on':''}${x}" onclick="tab('${k}')" title="${t}">${I(ic)}<span>${t}</span></button>`;
+ return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b>Garage<span>Pro</span></b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button>${isDesk()?`<button class="ncol" onclick="setPref('sideMini',${!(S.prefs||{}).sideMini})" title="${(S.prefs||{}).sideMini?'Expandir':'Recolher'} a barra lateral">${I((S.prefs||{}).sideMini?'chev':'back','s')}<span>Recolher</span></button>`:''}</nav>`;
 }
 const verBuild=()=>APP_BUILD?'compilação '+APP_BUILD:'desenvolvimento';
 const hdr=(t,right='',root=false)=>`<header class="hdr${root?' root':''}"><div class="hl"><button class="ib" onclick="back()">${I('back')}</button></div><h1>${t}</h1><div class="hr">${isDesk()?deskTools():''}${right}</div></header>`;
@@ -1510,6 +1568,21 @@ function vRow(v,showOwner=true){
  const right=c?stTag(bal(vMoves(v.id))):'';
  return `<div class="row card" onclick="openVeh('${v.id}')"><div class="thumb">${photo(v)}</div><div class="mid"><b>${esc(vName(v))}</b>${v.matricula?`<div class="pl-row">${plate(v,'sm')}</div>`:''}<small>${showOwner&&c?esc(c.nome)+' · ':''}${fmtN(v.km)} km</small>${u?`<small style="color:${COLS[u.st]}">${CAT[u.key].n}: ${u.text.toLowerCase()}</small>`:right?`<small>${right}</small>`:''}</div>${I('chev')}</div>`;
 }
+/* Blocos do Início (ordem e visibilidade escolhidas em Aparência) */
+const HOME_BLOCKS={kpi:'Números (a receber, adiantado, a pagar)',ordens:'Ordens em aberto',tarefas:'Por fazer',meus:'Os meus veículos',clientes:'Carros de clientes',avisos:'Avisos de manutenção'};
+function homeCfg(){
+ const c=(S.prefs||{}).home,keys=Object.keys(HOME_BLOCKS);
+ if(!c)return{order:keys,hide:isDesk()?[]:['avisos']};
+ const order=[...arr(c.order).filter(k=>HOME_BLOCKS[k]),...keys].filter((k,i,a)=>a.indexOf(k)===i);
+ return{order,hide:arr(c.hide).filter(k=>HOME_BLOCKS[k])};
+}
+const homeOn=k=>!homeCfg().hide.includes(k);
+function homeSave(c){S.prefs={...S.prefs,home:{order:c.order,hide:c.hide}};save();render()}
+function homeMove(k,d){const c=homeCfg(),i=c.order.indexOf(k),j=i+d;if(i<0||j<0||j>=c.order.length)return;[c.order[i],c.order[j]]=[c.order[j],c.order[i]];homeSave(c)}
+function homeToggle(k){const c=homeCfg();c.hide=c.hide.includes(k)?c.hide.filter(x=>x!==k):[...c.hide,k];homeSave(c)}
+function homeBlock(){const c=homeCfg();
+ return `<div class="sec"><h2>Início</h2><a onclick="S.prefs={...S.prefs};delete S.prefs.home;save();render()">Repor</a></div><div class="wrap"><p class="hint" style="margin-top:0">Escolhe o que aparece no Início e por que ordem.</p><div class="card hblk">${c.order.map((k,i)=>{const on=!c.hide.includes(k);
+  return `<div class="hbr${on?'':' off'}"><button class="hbt" onclick="homeToggle('${k}')" aria-label="${on?'Esconder':'Mostrar'} ${esc(HOME_BLOCKS[k])}"><span class="hbc">${on?I('check','s'):''}</span><span>${HOME_BLOCKS[k]}</span></button><button class="ib sm" ${i?'':'disabled'} onclick="homeMove('${k}',-1)" aria-label="Subir">${I('chev','s up')}</button><button class="ib sm" ${i<c.order.length-1?'':'disabled'} onclick="homeMove('${k}',1)" aria-label="Descer">${I('chevd','s')}</button></div>`}).join('')}</div></div>`}
 function vHome(){
  if(isDesk())return vHomeD();
  const n=allAlerts().length,mine=myVeh(),cv=cliVeh(),g=globalFin();
@@ -1517,18 +1590,21 @@ function vHome(){
  let h=`<header class="hdr"><div class="logo"><img class="lgimg" src="${LOGO}" alt=""><span class="lt">Garage<span>Pro</span></span></div><div class="hr"><button class="ib" onclick="go('search')">${I('search')}</button><button class="ib" onclick="openAlerts()">${I('bell')}${n?`<i class="badge">${n}</i>`:''}</button><button class="ib pri" onclick="plusMenu()">${I('plus')}</button></div></header>`;
  h+=`<div class="hello"><h2>${greet}</h2><p>${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'})}</p></div>`;
  h+=syBanner()+bakBanner();
- if(S.clients.length||S.moves.length)h+=`<div class="mstrip">
+ const B={
+  kpi:()=>(S.clients.length||S.moves.length)?`<div class="mstrip">
   <div class="card ms c-warn" onclick="UI.ftab='cli';tab('fin')"><span class="bub b-warn">${I('wallet')}</span><b>${fmtE(g.rec)}</b><small>A receber</small></div>
   <div class="card ms c-info" onclick="UI.ftab='cli';tab('fin')"><span class="bub b-info">${I('coins')}</span><b>${fmtE(g.adi)}</b><small>Adiantado</small></div>
-  <div class="card ms c-bad" onclick="UI.ftab='pp';tab('fin')"><span class="bub b-bad">${I('cart')}</span><b>${fmtE(g.pp)}</b><small>A pagar</small></div></div>`;
- {const pt=pendTasks().sort(sortTasks);if(pt.length)h+=`<div class="sec"><h2>Por fazer <span class="cnt">${pt.length}</span></h2><a onclick="tab('tasks')">Ver todas ${I('chev','s')}</a></div><div class="list">${pt.slice(0,3).map(t=>taskRow(t)).join('')}</div>`}
- h+=`<div class="sec"><h2>Os meus veículos</h2>${S.vehicles.length?`<a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a>`:''}</div>`;
- if(!S.vehicles.length)h+=emptyBox('car','Ainda não tens veículos.<br>Adiciona o primeiro ou experimenta com dados de exemplo.',`<button class="btn ghost sm" onclick="loadSample()">Carregar dados de exemplo</button>`);
- h+=mine.length?`<div class="vgrid">${mine.map(vCard).join('')}</div>`:'';
- h+=`<button class="add-veh" onclick="openVForm()">${I('plus')} Adicionar veículo</button>`;
- if(cv.length){
-  h+=`<div class="sec"><h2>Carros de clientes</h2><a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a></div><div class="list">${cv.slice(0,5).map(v=>vRow(v)).join('')}</div>`;
- }
+  <div class="card ms c-bad" onclick="UI.ftab='pp';tab('fin')"><span class="bub b-bad">${I('cart')}</span><b>${fmtE(g.pp)}</b><small>A pagar</small></div></div>`:'',
+  ordens:()=>{const o=S.records.filter(isOpen).sort(sortRecs);return o.length?`<div class="sec"><h2>Ordens em aberto <span class="cnt">${o.length}</span></h2><a onclick="tab('timeline')">Ver todas ${I('chev','s')}</a></div><div class="list">${o.slice(0,4).map(orCard).join('')}</div>`:''},
+  tarefas:()=>{const pt=pendTasks().sort(sortTasks);return pt.length?`<div class="sec"><h2>Por fazer <span class="cnt">${pt.length}</span></h2><a onclick="tab('tasks')">Ver todas ${I('chev','s')}</a></div><div class="list">${pt.slice(0,3).map(t=>taskRow(t)).join('')}</div>`:''},
+  meus:()=>`<div class="sec"><h2>Os meus veículos</h2>${S.vehicles.length?`<a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a>`:''}</div>`
+   +(S.vehicles.length?'':emptyBox('car','Ainda não tens veículos.<br>Adiciona o primeiro ou experimenta com dados de exemplo.',`<button class="btn ghost sm" onclick="loadSample()">Carregar dados de exemplo</button>`))
+   +(mine.length?`<div class="vgrid">${mine.map(vCard).join('')}</div>`:'')+`<button class="add-veh" onclick="openVForm()">${I('plus')} Adicionar veículo</button>`,
+  clientes:()=>cv.length?`<div class="sec"><h2>Carros de clientes</h2><a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a></div><div class="list">${cv.slice(0,5).map(v=>vRow(v)).join('')}</div>`:'',
+  avisos:()=>{const al=allAlerts();return al.length?`<div class="sec"><h2>Manutenção <span class="cnt">${al.length}</span></h2><a onclick="openAlerts()">Ver todos ${I('chev','s')}</a></div><div class="list one"><div class="card grpc">${al.slice(0,5).map(d=>`<div class="rrow" onclick="partSheet('${d.v.id}','${d.key}')"><i style="background:${COLS[d.st]}"></i><div class="mid"><b>${CAT[d.key].n}</b><small>${esc(vName(d.v))}</small></div><span class="dal" style="color:${COLS[d.st]}">${d.text}</span></div>`).join('')}</div></div>`:''}
+ };
+ const cf=homeCfg();cf.order.filter(k=>!cf.hide.includes(k)).forEach(k=>{h+=B[k]()});
+ if(!S.vehicles.length&&cf.hide.includes('meus'))h+=emptyBox('car','Ainda não tens veículos.',`<button class="btn ghost sm" onclick="openVForm()">Adicionar veículo</button>`);
  h+=`<button class="hver" onclick="go('changelog')">GaragePro v${APP_VER} · ${verBuild()}</button>`;
  return h+'<div style="height:10px"></div>';
 }
@@ -2703,27 +2779,23 @@ function vHomeD(){
  const mes=new Date().toLocaleDateString('pt-PT',{month:'long'});
  let h=`<header class="hdr dhome"><div class="dhello"><h1>${greet}</h1><p>${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'})}</p></div><div class="hr">${deskTools()}<button class="dbtn" onclick="plusMenu()">${I('plus','s')} Novo</button></div></header>`;
  h+=syBanner()+bakBanner();
- h+=`<div class="dkpi">
+ const B={};
+ B.kpi=()=>`<div class="dkpi">
   ${dKpi('wrench','pri','Ordens em aberto',ors.length,prontas?prontas+(prontas>1?' prontas':' pronta')+' para entregar':'Nenhuma pronta por entregar',"tab('timeline')")}
   ${dKpi('wallet','warn','A receber',fmtE(g.rec),g.adi>0.004?'Adiantado pelos clientes: '+fmtE(g.adi):'Dos clientes',"UI.ftab='cli';tab('fin')")}
   ${dKpi('in','ok','Recebido em '+mes,fmtE(g.rm),'Pagamentos registados este mês',"UI.ftab='cli';tab('fin')")}
   ${dKpi('cart','bad','A pagar',fmtE(g.pp),'Peças compradas por pagar',"UI.ftab='pp';tab('fin')")}
  </div>`;
- h+=`<div class="dgrid"><div class="dmain">`;
- h+=`<section class="card dpanel"><div class="dph"><h2>Ordens em aberto ${ors.length?`<span class="cnt">${ors.length}</span>`:''}</h2><a onclick="tab('timeline')">Ver todas ${I('chev','s')}</a></div>`;
- h+=ors.length?orTable(ors.slice(0,8)):`<div class="dempty">${I('check')}<div><b>Sem ordens em aberto</b><small>Quando um carro entrar na oficina, abre uma ordem para ele.</small></div><button class="dbtn ghost" onclick="newRep(null,null,'preventiva','curso')">${I('plus','s')} Nova ordem</button></div>`;
- h+=`</section>`;
- h+=`<div class="sec"><h2>Os meus veículos</h2>${S.vehicles.length?`<a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a>`:''}</div>`;
- if(!S.vehicles.length)h+=emptyBox('car','Ainda não tens veículos.<br>Adiciona o primeiro ou experimenta com dados de exemplo.',`<button class="btn ghost sm" onclick="loadSample()">Carregar dados de exemplo</button>`);
- h+=`<div class="vgrid">${mine.map(vCard).join('')}<button class="addtile" onclick="openVForm()">${I('plus')}<span>Adicionar veículo</span></button></div>`;
- if(cv.length){
-  h+=`<section class="card dpanel"><div class="dph"><h2>Carros de clientes <span class="cnt">${cv.length}</span></h2><a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a></div><div class="dtw"><table class="dt"><thead><tr><th>Carro</th><th>Cliente</th><th class="r">Km</th><th>Última visita</th><th>Conta</th></tr></thead><tbody>${cv.slice(0,8).map(v=>{const c=cli(v.owner),lv=lastVisit(v.id),st=stTag(bal(vMoves(v.id)));
-   return `<tr onclick="openVeh('${v.id}')"><td>${dVeh(v)}</td><td>${c?esc(c.nome):''}</td><td class="num r">${fmtN(v.km)}</td><td>${lv?`<b>${esc(recTitle(lv))}</b><small>${fmtD(lv.data)}</small>`:'<span class="mut">—</span>'}</td><td>${st||'<span class="mut">—</span>'}</td></tr>`}).join('')}</tbody></table></div></section>`;
- }
- h+=`</div><aside class="dside">`;
- h+=`<section class="card dpanel"><div class="dph"><h2>Por fazer ${pt.length?`<span class="cnt">${pt.length}</span>`:''}</h2><a onclick="taskSheet()">Nova ${I('plus','s')}</a></div>${pt.length?`<div class="list one">${pt.slice(0,6).map(t=>taskRow(t)).join('')}</div>${pt.length>6?`<a class="dmore" onclick="tab('tasks')">Ver as ${pt.length} tarefas</a>`:''}`:`<div class="empty sm">Nada por fazer.</div>`}</section>`;
- h+=`<section class="card dpanel"><div class="dph"><h2>Manutenção ${al.length?`<span class="cnt">${al.length}</span>`:''}</h2></div>${al.length?`<div class="grpc">${al.slice(0,7).map(d=>{const c=CAT[d.key];return `<div class="rrow" onclick="partSheet('${d.v.id}','${d.key}')"><i style="background:${COLS[d.st]}"></i><div class="mid"><b>${c.n}</b><small>${esc(vName(d.v))}</small></div><span class="dal" style="color:${COLS[d.st]}">${d.text}</span></div>`}).join('')}</div>${al.length>7?`<a class="dmore" onclick="openAlerts()">Ver todos os avisos</a>`:''}`:`<div class="empty sm">Está tudo em dia.</div>`}</section>`;
- h+=`</aside></div><div style="height:10px"></div>`;
+ B.ordens=()=>`<section class="card dpanel"><div class="dph"><h2>Ordens em aberto ${ors.length?`<span class="cnt">${ors.length}</span>`:''}</h2><a onclick="tab('timeline')">Ver todas ${I('chev','s')}</a></div>`+(ors.length?orTable(ors.slice(0,8)):`<div class="dempty">${I('check')}<div><b>Sem ordens em aberto</b><small>Quando um carro entrar na oficina, abre uma ordem para ele.</small></div><button class="dbtn ghost" onclick="newRep(null,null,'preventiva','curso')">${I('plus','s')} Nova ordem</button></div>`)+`</section>`;
+ B.meus=()=>`<div class="sec"><h2>Os meus veículos</h2>${S.vehicles.length?`<a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a>`:''}</div>`+(S.vehicles.length?'':emptyBox('car','Ainda não tens veículos.<br>Adiciona o primeiro ou experimenta com dados de exemplo.',`<button class="btn ghost sm" onclick="loadSample()">Carregar dados de exemplo</button>`))+`<div class="vgrid">${mine.map(vCard).join('')}<button class="addtile" onclick="openVForm()">${I('plus')}<span>Adicionar veículo</span></button></div>`;
+ B.clientes=()=>cv.length?`<section class="card dpanel"><div class="dph"><h2>Carros de clientes <span class="cnt">${cv.length}</span></h2><a onclick="tab('vehicles')">Ver todos ${I('chev','s')}</a></div><div class="dtw"><table class="dt"><thead><tr><th>Carro</th><th>Cliente</th><th class="r">Km</th><th>Última visita</th><th>Conta</th></tr></thead><tbody>${cv.slice(0,8).map(v=>{const c=cli(v.owner),lv=lastVisit(v.id),st=stTag(bal(vMoves(v.id)));
+   return `<tr onclick="openVeh('${v.id}')"><td>${dVeh(v)}</td><td>${c?esc(c.nome):''}</td><td class="num r">${fmtN(v.km)}</td><td>${lv?`<b>${esc(recTitle(lv))}</b><small>${fmtD(lv.data)}</small>`:'<span class="mut">—</span>'}</td><td>${st||'<span class="mut">—</span>'}</td></tr>`}).join('')}</tbody></table></div></section>`:'';
+ B.tarefas=()=>`<section class="card dpanel"><div class="dph"><h2>Por fazer ${pt.length?`<span class="cnt">${pt.length}</span>`:''}</h2><a onclick="taskSheet()">Nova ${I('plus','s')}</a></div>${pt.length?`<div class="list one">${pt.slice(0,6).map(t=>taskRow(t)).join('')}</div>${pt.length>6?`<a class="dmore" onclick="tab('tasks')">Ver as ${pt.length} tarefas</a>`:''}`:`<div class="empty sm">Nada por fazer.</div>`}</section>`;
+ B.avisos=()=>`<section class="card dpanel"><div class="dph"><h2>Manutenção ${al.length?`<span class="cnt">${al.length}</span>`:''}</h2></div>${al.length?`<div class="grpc">${al.slice(0,7).map(d=>{const c=CAT[d.key];return `<div class="rrow" onclick="partSheet('${d.v.id}','${d.key}')"><i style="background:${COLS[d.st]}"></i><div class="mid"><b>${c.n}</b><small>${esc(vName(d.v))}</small></div><span class="dal" style="color:${COLS[d.st]}">${d.text}</span></div>`}).join('')}</div>${al.length>7?`<a class="dmore" onclick="openAlerts()">Ver todos os avisos</a>`:''}`:`<div class="empty sm">Está tudo em dia.</div>`}</section>`;
+ const cf=homeCfg(),vis=cf.order.filter(k=>!cf.hide.includes(k)),SIDE=['tarefas','avisos'];
+ if(vis.includes('kpi'))h+=B.kpi();
+ const main=vis.filter(k=>k!=='kpi'&&!SIDE.includes(k)),side=vis.filter(k=>SIDE.includes(k));
+ h+=`<div class="dgrid${side.length?'':' noside'}"><div class="dmain">${main.map(k=>B[k]()).join('')}</div>${side.length?`<aside class="dside">${side.map(k=>B[k]()).join('')}</aside>`:''}</div><div style="height:10px"></div>`;
  return h;
 }
 function vVehD(v,c,rs,open,done){
@@ -3325,6 +3397,7 @@ function applyPrefs(){
  r.style.setProperty('--pri',light?a.l:a.d);
  r.style.setProperty('--pri-tx',a.tx||(!light&&a.txd)||'#fff');
  r.style.setProperty('--bgo',BG_INT[curInt()].o);
+ const P=S.prefs||{};r.dataset.dens=P.dens==='comp'?'comp':'conf';if(P.hc)r.dataset.hc='1';else delete r.dataset.hc;r.dataset.side=P.sideMini?'mini':'full';
  applyLayout();
  mountBg();
  try{pcTitleColors()}catch(_){}
@@ -3337,11 +3410,16 @@ function vAparencia(){
  let h=hdr('Aparência');
  h+=`<div class="sec"><h2>Estilo</h2></div><div class="wrap"><div class="stygrid">${Object.entries(STYLES).map(([k,s])=>`<button class="sty${st===k?' on':''}" onclick="setPref('style','${k}')"><div class="pv" style="background:${s.pv[0]};border-radius:${k==='oficina'?'2px':k==='desportivo'?'5px':'8px'}"><i style="left:6px;right:6px;top:8px;height:16px;background:${s.pv[1]};border-radius:${k==='oficina'?'1px':'4px'}"></i><i style="left:6px;width:${k==='desportivo'?'22px':'28px'};bottom:8px;height:8px;background:${s.pv[2]};border-radius:${k==='oficina'?'0':'3px'};${k==='desportivo'?'transform:skewX(-20deg)':''}"></i><i style="right:6px;width:16px;bottom:8px;height:8px;background:${s.pv[1]};border-radius:3px"></i></div><b>${s.n}</b><small>${s.d}</small></button>`).join('')}</div></div>`;
  h+=`<div class="sec"><h2>Modo</h2></div><div class="wrap"><div class="seg">${Object.entries(MODES).map(([k,n])=>`<button class="${md===k?'on':''}" onclick="setPref('mode','${k}')">${n}</button>`).join('')}</div>${md==='auto'?'<p class="hint">Segue o modo claro/escuro do telemóvel.</p>':''}</div>`;
+ {const P=S.prefs||{};
+  h+=`<div class="sec"><h2>Leitura e espaço</h2></div><div class="wrap"><label class="fl" style="margin-top:0">Densidade</label><div class="seg">${[['conf','Confortável'],['comp','Compacta']].map(([k,n])=>`<button class="${(P.dens==='comp'?'comp':'conf')===k?'on':''}" onclick="setPref('dens','${k}')">${n}</button>`).join('')}</div><p class="hint">${P.dens==='comp'?'Compacta: menos espaço entre linhas, cabe mais informação no ecrã.':'Confortável: mais espaço e botões maiores, melhor para o dedo.'}</p>
+   <label class="tgl big"><input type="checkbox" ${P.hc?'checked':''} onchange="setPref('hc',this.checked)"><span><b>Alto contraste (luz do dia)</b><small>Texto mais forte, contornos mais marcados e fundo liso. Para ler ao sol ou com o ecrã sujo.</small></span></label>
+   ${isDesk()?`<label class="tgl big"><input type="checkbox" ${P.sideMini?'checked':''} onchange="setPref('sideMini',this.checked)"><span><b>Barra lateral recolhida</b><small>Só ícones, para dar mais espaço. Também podes recolher no botão do fundo da barra.</small></span></label>`:''}</div>`;
+  h+=homeBlock();}
  const light=isLight();
  h+=`<div class="sec"><h2>Cor de destaque</h2></div><div class="wrap"><div class="swatches"><button class="sw auto${!ac?' on':''}" onclick="setPref('accent','')" aria-label="Cor do estilo">${!ac?I('check'):''}</button>${Object.entries(ACCENTS).map(([k,a])=>`<button class="sw${ac===k?' on':''}" style="background:${light?a.l:a.d};color:${a.tx||(!light&&a.txd)||'#fff'}" onclick="setPref('accent','${k}')" aria-label="${a.n}">${ac===k?I('check'):''}</button>`).join('')}</div><p class="hint">${ac?ACCENTS[ac].n:'Do estilo ('+ACCENTS[STYLES[st].acc].n.toLowerCase()+')'}</p></div>`;
  h+=`<div class="sec"><h2>Fundo</h2></div><div class="wrap"><div class="bggrid">${Object.entries(BGS).map(([k,b])=>`<button class="bgopt${bg===k?' on':''}" onclick="setPref('bg','${k}')"><div class="bgfx">${bgHTML(k)}</div><span class="fake"></span><span class="lab">${b.n}</span>${bg===k?`<span class="tick">${I('check')}</span>`:''}</button>`).join('')}</div>
   <label class="fl">Intensidade do fundo</label><div class="seg">${Object.entries(BG_INT).map(([k,x])=>`<button class="${it===k?'on':''}" onclick="setPref('bgInt','${k}')">${x.n}</button>`).join('')}</div>
-  </div>${layoutBlock()}<div class="wrap"><button class="btn ghost sm" style="margin-top:22px" onclick="S.prefs={...S.prefs,style:'sobrio',mode:'escuro',accent:'',bg:'tema',bgInt:'media',layout:'auto',zoom:'1'};save();applyPrefs();render();toast('Aparência reposta')">Repor predefinição</button></div><div style="height:12px"></div>`;
+  </div>${layoutBlock()}<div class="wrap"><button class="btn ghost sm" style="margin-top:22px" onclick="S.prefs={...S.prefs,style:'sobrio',mode:'escuro',accent:'',bg:'tema',bgInt:'media',layout:'auto',zoom:'1',dens:'conf',hc:false,sideMini:false};delete S.prefs.home;save();applyPrefs();render();toast('Aparência reposta')">Repor predefinição</button></div><div style="height:12px"></div>`;
  return h;
 }
 
@@ -3482,6 +3560,8 @@ function sanitize(s){
   ...(obj(p.shop)?{shop:{nome:sStr(p.shop.nome,80),nif:sStr(p.shop.nif,20),morada:sStr(p.shop.morada,160),local:sStr(p.shop.local,80),tel:sStr(p.shop.tel,30),email:sStr(p.shop.email,80),iva:['isento','incl','none'].includes(p.shop.iva)?p.shop.iva:'isento',rodape:sStr(p.shop.rodape,600),docModel:p.shop.docModel==='simples'?'simples':'completo',maoHora:sStr(p.shop.maoHora,10),logo:['app','custom','none'].includes(p.shop.logo)?p.shop.logo:'app',logoImg:typeof p.shop.logoImg==='string'&&FOTO_RE.test(p.shop.logoImg)?p.shop.logoImg:''}}:{}),
   ...(obj(p.docSeq)?{docSeq:Object.fromEntries(Object.entries(p.docSeq).filter(([k,v])=>/^\d{4}$/.test(k)).map(([k,v])=>[k,Math.max(0,Math.round(sNum(v)))]))}:{}),
   ...(typeof p.precoSemIva==='boolean'?{precoSemIva:p.precoSemIva}:{}),
+  ...(p.dens==='comp'?{dens:'comp'}:{}),...(p.hc===true?{hc:true}:{}),...(p.sideMini===true?{sideMini:true}:{}),
+  ...(obj(p.home)?{home:{order:arr(p.home.order).filter(k=>typeof k==='string'&&/^[a-z]{2,12}$/.test(k)).slice(0,12),hide:arr(p.home.hide).filter(k=>typeof k==='string'&&/^[a-z]{2,12}$/.test(k)).slice(0,12)}}:{}),
   lastExport:sStr(p.lastExport,30),bakSnooze:sDate(p.bakSnooze,''),firstUse:sDate(p.firstUse,todayISO()),pinFails:Math.max(0,Math.round(sNum(p.pinFails))),pinUntil:Math.max(0,sNum(p.pinUntil)),
   ...(obj(p.pin)&&/^[A-Za-z0-9+\/=]{16,64}$/.test(p.pin.salt)&&/^[A-Za-z0-9+\/=]{40,64}$/.test(p.pin.hash)&&[4,5,6].includes(p.pin.len)?{pin:{salt:p.pin.salt,hash:p.pin.hash,len:p.pin.len}}:{})};
  {const seq={...(s.prefs.docSeq||{})},num=x=>+String(x).split('/')[1]||0;
