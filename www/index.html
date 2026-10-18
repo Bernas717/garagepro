@@ -325,6 +325,7 @@ html.pc body{padding-top:36px}html.pc .hdr{top:36px}html.pc #ntbox{top:52px}html
 .cjg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:6px 0 4px}.cjt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--rs);border:1px solid var(--line);background:var(--card2);text-align:left;color:var(--tx);min-width:0}.cjt>span:last-child{min-width:0}.cjt b{display:block;font-size:13.5px;font-weight:650;line-height:1.25}.cjt small{display:block;color:var(--mut);font-size:11.5px;margin-top:2px}.cjt:hover{border-color:var(--line2)}
 .cjback{display:inline-flex;align-items:center;gap:6px;color:var(--pri);font-weight:600;font-size:14px;padding:8px 0}.cjh{display:flex;gap:12px;align-items:flex-start;padding:6px 2px 4px}.cjh b{display:block;font-size:16px;font-weight:700}.cjh small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.4}
 .pprw{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}.pprw .pprow{flex:1;min-width:0;border-bottom:0}.ppph{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--mut);border:1px solid var(--line);background:var(--card2)}.ppph:hover,.ppph:active{color:var(--pri);border-color:var(--pri)}.ppph .i{width:18px;height:18px}.phl{margin:8px 0 0}
+.aictx{font-size:12.5px;line-height:1.5;color:var(--tx2);background:var(--card2);border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;max-height:160px;overflow-y:auto}
 .pprow{padding:10px 2px}.pprow .mid{flex:1;min-width:0}.pprow b{display:block;font-weight:600;font-size:14.5px}.pprow small{display:block;color:var(--mut);font-size:12.5px;line-height:1.35;margin-top:1px}
 .shero{margin:6px 16px 0;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
 .shero b{font-size:18px;font-weight:var(--hw);display:block;font-family:var(--fh);text-transform:var(--htt);letter-spacing:var(--hls);font-style:var(--hst)}
@@ -1209,6 +1210,7 @@ const APP_VER='0.9';
 const CHANGELOG=[
  {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
   'Peças: escolhe se o preço que escreves é com IVA ou sem IVA; sem IVA a app soma 23% e mostra a conta antes de guardar. Lembra-se da última escolha. O IVA é calculado sobre o total das peças, como na fatura da loja (sem diferenças de 1 cêntimo)',
+  'Assistente de mecânica: na ficha do carro e na ordem, "Perguntar ao assistente" junta marca, modelo, motor, km, queixa, diagnóstico e histórico (sem dados do cliente) e abre o Claude com a pergunta pronta',
   'Aparência → Leitura e espaço: densidade Confortável ou Compacta (cabe mais no ecrã)',
   'Aparência: Alto contraste (luz do dia), com texto mais forte e contornos marcados para ler ao sol',
   'Computador: barra lateral recolhida só com ícones (botão no fundo da barra ou em Aparência)',
@@ -2458,6 +2460,7 @@ function vOR(id){
   if(st==='orcamento')h+=`<p class="hint">Orçamento: ainda não entra na conta do cliente nem nas peças montadas.</p>`;
   h+=`</div>`;
  }
+ h+=`<div class="wrap"><button class="lnk" onclick="askAI('${r.vid}','${id}')">${I('sparkle','s')} Perguntar ao assistente sobre esta avaria</button></div>`;
  h+=`<div class="wrap"><div class="grid2 np hbtns"><button class="btn ghost sm" onclick="DOC=null;docSheet('${id}')">${I('receipt','s')} ${st==='orcamento'?'Orçamento':'Folha / recibo'}</button>${p.client&&st!=='orcamento'?`<button class="btn sm" style="background:var(--ok)" onclick="orPayNow('${id}')">${I('in','s')} Pagamento</button>`:`<button class="btn ghost sm" onclick="editRecord('${id}')">${I('edit','s')} Editar</button>`}</div></div><div style="height:24px"></div>`;
  return h;
 }
@@ -2470,7 +2473,7 @@ function vVeh(id){
  let h=hdr('Ficha do carro',`<button class="ib" onclick="vehMenu('${v.id}')">${I('kebab')}</button>`);
  h+=vehCardHTML(v,c,rs,open);
  h+=`<div class="wrap"><div class="grid2 np hbtns"><button class="btn sm" onclick="newRep('${v.id}',null,'preventiva','curso')">${I('plus','s')} Nova ordem</button><button class="btn ghost sm" onclick="newRep('${v.id}',null,'preventiva','orcamento')">${I('receipt','s')} Orçamento</button></div>
-  <button class="lnk" onclick="newRep('${v.id}')">${I('wrench','s')} Registar trabalho já feito</button></div>`;
+  <button class="lnk" onclick="newRep('${v.id}')">${I('wrench','s')} Registar trabalho já feito</button><button class="lnk" onclick="askAI('${v.id}')">${I('sparkle','s')} Perguntar ao assistente de mecânica</button></div>`;
  if(open.length)h+=`<div class="sec"><h2>Em aberto <span class="cnt">${open.length}</span></h2></div><div class="list one">${open.map(orCard).join('')}</div>`;
  h+=vehAcctHTML(v,c);
  h+=vehRecHTML(v,c);
@@ -2801,7 +2804,7 @@ function vHomeD(){
 function vVehD(v,c,rs,open,done){
  let h=hdr('Ficha do carro',`<button class="ib" onclick="vehMenu('${v.id}')" aria-label="Mais opções">${I('kebab')}</button>`);
  h+=`<div class="dveh2"><aside class="dvl">${vehCardHTML(v,c,rs,open)}${vehAcctHTML(v,c)}${vehRecHTML(v,c)}</aside><div class="dvr">`;
- h+=`<div class="dact"><button class="dbtn" onclick="newRep('${v.id}',null,'preventiva','curso')">${I('plus','s')} Nova ordem</button><button class="dbtn ghost" onclick="newRep('${v.id}',null,'preventiva','orcamento')">${I('receipt','s')} Orçamento</button><button class="dbtn ghost" onclick="newRep('${v.id}')">${I('wrench','s')} Registar trabalho já feito</button></div>`;
+ h+=`<div class="dact"><button class="dbtn" onclick="newRep('${v.id}',null,'preventiva','curso')">${I('plus','s')} Nova ordem</button><button class="dbtn ghost" onclick="newRep('${v.id}',null,'preventiva','orcamento')">${I('receipt','s')} Orçamento</button><button class="dbtn ghost" onclick="newRep('${v.id}')">${I('wrench','s')} Registar trabalho já feito</button><button class="dbtn ghost" onclick="askAI('${v.id}')">${I('sparkle','s')} Assistente de mecânica</button></div>`;
  if(open.length)h+=`<div class="sec"><h2>Em aberto <span class="cnt">${open.length}</span></h2></div><div class="dorg">${open.map(orCard).join('')}</div>`;
  h+=`<section class="card dpanel"><div class="dph"><h2>Visitas ${done.length?`<span class="cnt">${done.length}</span>`:''}</h2><span class="dlinks"><a onclick="UI.vh='pecas';go('vhist',{id:'${v.id}'})">${I('cog','s')} Peças montadas</a>${c?`<a onclick="UI.vh='pag';go('vhist',{id:'${v.id}'})">${I('euro','s')} Pagamentos</a>`:''}</span></div>`;
  h+=done.length?`<div class="dtw"><table class="dt"><thead><tr><th>Data</th><th>N.º</th><th>Trabalho</th><th class="r">Km</th><th class="r">Total</th><th>Estado</th><th></th></tr></thead><tbody>${done.slice(0,15).map(r=>{const D=docData(r.id);
@@ -2819,6 +2822,48 @@ addEventListener('keydown',e=>{
  else if(e.key==='Escape'){if($('#sheet')){e.preventDefault();closeSheet()}else if(top.v==='search')back()}
 });
 
+
+/* ================== ASSISTENTE DE MECÂNICA ==================
+   Prepara a pergunta com os dados técnicos do carro (sem nome, telefone nem matrícula do cliente)
+   e abre o Claude já preenchido. A pergunta também fica copiada. */
+function aiCtx(vid,rid){
+ const v=veh(vid);if(!v)return '';const r=rid?S.records.find(x=>x.id===rid):null;
+ const L=[];
+ L.push('Carro: '+[v.marca,v.modelo].filter(Boolean).join(' ')+(v.ano?' de '+v.ano:'')+(v.motor?', motor '+v.motor:'')+(v.cv?', '+v.cv+' cv':'')+(v.comb?', '+v.comb:'')+(v.caixa?', caixa '+v.caixa:'')+(v.km?', '+fmtN(v.km)+' km':''));
+ if(r){
+  if(r.queixa)L.push('Queixa do cliente: '+r.queixa);
+  if(r.diag)L.push('O que já verifiquei / diagnóstico: '+r.diag);
+  const D=docData(r.id);if(D&&D.lines.length)L.push('Peças e trabalhos nesta ordem: '+D.lines.map(l=>l.d).join('; '));
+ }
+ const hs=S.records.filter(x=>x.vid===v.id&&x.estado!=='orcamento'&&(!r||x.id!==r.id)).sort(sortRecs).slice(0,6);
+ if(hs.length)L.push('Histórico recente: '+hs.map(x=>fmtD(x.data)+' '+recTitle(x)+(x.km?' ('+fmtN(x.km)+' km)':'')).join('; '));
+ const up=upcoming(v).filter(d=>d.st!=='ok').slice(0,3);
+ if(up.length)L.push('Manutenção em atraso ou próxima: '+up.map(d=>CAT[d.key].n+' — '+d.text).join('; '));
+ return L.join('\n');
+}
+let AIQ={vid:'',rid:'',q:''};
+function askAI(vid,rid){
+ const r=rid?S.records.find(x=>x.id===rid):null;
+ AIQ={vid,rid:rid||'',q:AIQ.vid===vid&&AIQ.rid===(rid||'')?AIQ.q:''};
+ const ctx=aiCtx(vid,rid);
+ openSheet(`<h3>Assistente de mecânica</h3><p class="hint">Escreve a dúvida. Eu junto os dados do carro e abro o Claude com tudo preenchido.</p>
+  <label class="fl">O que queres saber?</label><textarea class="ta" id="ai-q" rows="4" placeholder="${r&&r.queixa?'Ex: o que pode causar isto e por onde começo?':'Ex: faz um barulho ao travar, por onde começo?'}" oninput="AIQ.q=this.value">${esc(AIQ.q)}</textarea>
+  <div class="ppg">${['Por onde começo o diagnóstico?','Que peças posso precisar?','Como se faz esta reparação, passo a passo?','Quanto tempo demora e o que custa mais ou menos?'].map(t=>`<button onclick="const e=$('#ai-q');e.value=(e.value.trim()?e.value.trim()+' ':'')+'${t}';AIQ.q=e.value">${t}</button>`).join('')}</div>
+  <label class="fl">Dados que vão junto <small class="c-mut">sem nome, telefone nem matrícula</small></label><div class="aictx">${esc(ctx).replace(/\n/g,'<br>')}</div>
+  <button class="btn" onclick="aiSend()">${I('sparkle','s')} Abrir no Claude</button><button class="btn ghost sm" style="margin-top:10px" onclick="aiSend(true)">${I('receipt','s')} Só copiar</button>`);
+ setTimeout(()=>{const e=$('#ai-q');e&&e.focus()},250);
+}
+function aiPrompt(){
+ const q=(($('#ai-q')||{}).value||AIQ.q||'').trim()||'Ajuda-me a diagnosticar e a reparar este carro.';
+ return 'Assistente de mecânica (GaragePro). Sou mecânico em aprendizagem. Responde em português de Portugal, de forma prática e por passos; diz o nome das peças como se diz em Portugal; não inventes binários de aperto nem especificações — se não tiveres certeza, diz onde confirmar; avisa os cuidados de segurança.\n\n'+aiCtx(AIQ.vid,AIQ.rid)+'\n\nPergunta: '+q;
+}
+async function aiCopy(t){try{await navigator.clipboard.writeText(t);return true}catch(_){try{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch(__){return false}}}
+async function aiSend(onlyCopy){
+ const t=aiPrompt(),ok=await aiCopy(t);
+ if(onlyCopy){toast(ok?'Pergunta copiada. Cola no Claude.':'Não foi possível copiar');return}
+ closeSheet();toast(ok?'Pergunta copiada. Se não aparecer escrita no Claude, cola-a.':'A abrir o Claude…');
+ openExt('https://claude.ai/new?q='+encodeURIComponent(t.slice(0,6000)));
+}
 /* ================== CLIENTE ================== */
 function vClient(id){
  const c=cli(id);if(!c){stack=[{v:'home'},{v:'fin'}];return vFin()}
