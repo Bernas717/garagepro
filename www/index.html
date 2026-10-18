@@ -1155,7 +1155,7 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 const APP_VER='0.9';
 const CHANGELOG=[
  {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
-  'Peças: escolhe se o preço que escreves é com IVA ou sem IVA; sem IVA a app soma 23% e mostra a conta antes de guardar. Lembra-se da última escolha',
+  'Peças: escolhe se o preço que escreves é com IVA ou sem IVA; sem IVA a app soma 23% e mostra a conta antes de guardar. Lembra-se da última escolha. O IVA é calculado sobre o total das peças, como na fatura da loja (sem diferenças de 1 cêntimo)',
   'Versão e número de compilação sempre à vista: no fundo da barra lateral (computador e tablet), na barra de título do computador e no fim do Início (telemóvel). Toca para ver o que mudou',
   'Computador e tablet: Definições passam para o fundo da barra lateral',
   'Fotos das peças: botão da câmara em cada peça (e "Ver fotos desta peça") abre fotos reais com o nome exato e o modelo do carro (precisa de internet)',
@@ -1736,7 +1736,7 @@ function ppDone(k){
  apSheet();
 }
 function addPeca(idx){
- if(idx!=null){const p=F.pecas[idx];AP={idx,key:p.key||'',nome:p.nome,ref:p.ref||'',qtd:decIn(p.qtd),un:p.un,preco:p.preco||'',pago:p.pago!==false,eixo:p.eixo||'',lado:p.lado||'',touchedUn:true};apSheet();return}
+ if(idx!=null){const p=F.pecas[idx];AP={idx,key:p.key||'',nome:p.nome,ref:p.ref||'',qtd:decIn(p.qtd),un:p.un,preco:p.pl||p.preco||'',siva:!!p.pl,pago:p.pago!==false,eixo:p.eixo||'',lado:p.lado||'',touchedUn:true};apSheet();return}
  AP={idx:null,key:'',nome:'',qtd:'1',un:'un',preco:'',pago:true,eixo:'',lado:'',siva:!!(S.prefs||{}).precoSemIva};pickPart('peca');
 }
 function apKeep(){if(!$('#ap-n'))return;AP.nome=$('#ap-n').value;AP.ref=$('#ap-r').value;AP.qtd=$('#ap-q').value;AP.un=$('#ap-u').value;AP.preco=$('#ap-p').value;AP.touchedUn=true}
@@ -1759,18 +1759,28 @@ function apSheet(noAnim){
 }
 const IVA_TX=23;
 const comIva=v=>Math.round(v*(100+IVA_TX))/100;
+/* IVA somado sobre o TOTAL das peças sem IVA (como na fatura da loja), repartido pelas linhas sem perder cêntimos */
+function ivaFix(pecas){
+ const L=arr(pecas).map((p,i)=>({p,n:Math.round((pDec(p.pl)||0)*100)})).filter(x=>x.n>0);if(!L.length)return;
+ const f=100+IVA_TX,sum=L.reduce((a,x)=>a+x.n,0),tot=Math.floor((sum*f+50)/100);
+ L.forEach(x=>{const r=x.n*f;x.c=Math.floor(r/100);x.r=r%100});
+ let rem=tot-L.reduce((a,x)=>a+x.c,0);
+ [...L].sort((a,b)=>b.r-a.r).forEach(x=>{if(rem>0){x.c++;rem--}});
+ L.forEach(x=>{x.p.preco=decIn(x.c/100)});
+}
 function apIvaHint(){const e=$('#ap-iva');if(!e||!AP)return;const v=pDec(($('#ap-p')||{}).value);
- e.innerHTML=AP.siva?(v>0?`${fmtE(v)} + IVA ${IVA_TX}% (${fmtE(comIva(v)-v)}) = <b>${fmtE(comIva(v))}</b>. É este o valor que fica na reparação.`:`Escreve o preço da fatura sem IVA; a app soma ${IVA_TX}%.`):'O valor fica tal como o escreveste.'}
+ e.innerHTML=AP.siva?(v>0?`${fmtE(v)} + IVA ${IVA_TX}% (${fmtE(comIva(v)-v)}) = <b>${fmtE(comIva(v))}</b>. Com várias peças sem IVA, o IVA é calculado sobre o total, como na fatura da loja.`:`Escreve o preço da fatura sem IVA; a app soma ${IVA_TX}%.`):'O valor fica tal como o escreveste.'}
 function savePeca(){
  const key=AP.key&&CAT[AP.key]?AP.key:'';
  const nome=$('#ap-n').value.trim()||(CAT[key]?CAT[key].n:'');
  if(!nome)return toast('Escreve o nome da peça');
- let pr=pDec($('#ap-p').value);
- if(AP.siva&&pr>0)pr=comIva(pr);
+ let pr=pDec($('#ap-p').value);const net=AP.siva&&pr>0?pr:0;
+ if(net)pr=comIva(pr);
  if(AP.idx==null&&!!(S.prefs||{}).precoSemIva!==!!AP.siva){S.prefs={...S.prefs,precoSemIva:!!AP.siva};save()}
  const ref=$('#ap-r').value.trim().slice(0,40);
- const p={key,nome,...(ref?{ref}:{}),qtd:pDec($('#ap-q').value)||1,un:$('#ap-u').value,preco:pr>0?decIn(pr):'',pago:AP.pago!==false,...(AP.eixo?{eixo:AP.eixo}:{}),...(AP.lado?{lado:AP.lado}:{})};
+ const p={key,nome,...(ref?{ref}:{}),qtd:pDec($('#ap-q').value)||1,un:$('#ap-u').value,preco:pr>0?decIn(pr):'',pago:AP.pago!==false,...(AP.eixo?{eixo:AP.eixo}:{}),...(AP.lado?{lado:AP.lado}:{}),...(net?{pl:decIn(net)}:{})};
  if(AP.idx!=null)F.pecas[AP.idx]=p;else F.pecas.push(p);
+ ivaFix(F.pecas);
  AP=null;closeSheet();render();
 }
 function saveRecord(then){
@@ -1923,6 +1933,7 @@ function syncJobMoves(r){
  const add=(lk,tipo,val,desc,pago,fp)=>{const x=pDec(val);if(!(x>0))return;const o=byLk[lk];
   const m={id:o?o.id:uid(),tipo,valor:Math.round(x*100)/100,data:r.data,desc:String(desc).slice(0,120),vid:r.vid,cid:own,rid:r.id,lk};
   if(tipo==='comprei')m.pago=pago!==false;if(tipo==='recebi')m.fp=fp||'num';S.moves.push(m)};
+ ivaFix(F.pecas);
  F.pecas.forEach((p,i)=>add('p'+i,'comprei',p.preco,p.nome,p.pago));
  if(!F.pecas.length)add('pg','comprei',F.pg,'Peças — '+title,F.pgPago);
  if(own){add('mo','cobrar',F.mo,'Mão de obra — '+title);add('rc','recebi',F.rc,'Pagamento — '+title,null,F.rcFp)}
@@ -3460,7 +3471,7 @@ function sanitize(s){
  const rmap=new Map();
  s.records=s.records.filter(obj).map(r=>{const vid=mV(r.vid);if(!vid)return null;const tipo=CAT[r.tipo]||r.tipo==='outro'?r.tipo:'outro';
   return{id:fixId(r.id,rmap),vid,kind:r.kind==='peca'?'peca':'manutencao',tipo,titulo:sStr(tipo==='outro'?(r.titulo||(CAT[r.tipo]?'':r.tipo)):r.titulo,80),motivo:r.motivo==='avaria'?'avaria':'preventiva',data:sDate(r.data),km:Math.round(sNum(r.km))>0?Math.round(sNum(r.km)):null,
-   pecas:arr(r.pecas).filter(obj).slice(0,50).map(p=>({key:CAT[p.key]?p.key:'',nome:sStr(p.nome,80),qtd:sNum(p.qtd)>0?sNum(p.qtd):1,un:UNITS.includes(p.un)?p.un:'un',...(p.ref?{ref:sStr(p.ref,40)}:{}),...(['f','t'].includes(p.eixo)?{eixo:p.eixo}:{}),...(['e','d','a'].includes(p.lado)?{lado:p.lado}:{})})),notas:sStr(r.notas,2000),estado:['orcamento','aprovada','curso','pronta'].includes(r.estado)?r.estado:'pronta',queixa:sStr(r.queixa,300),diag:sStr(r.diag,2000),moH:Math.max(0,sNum(r.moH)),moP:Math.max(0,sNum(r.moP)),moL:arr(r.moL).filter(obj).slice(0,20).map(l=>({d:sStr(l.d,120),h:Math.max(0,sNum(l.h)),p:Math.max(0,sNum(l.p)),v:Math.max(0,sNum(l.v))})),entrega:sDate(r.entrega,''),...(typeof r.orNo==='string'&&/^\d{4}\/\d{4,6}$/.test(r.orNo)?{orNo:r.orNo}:{}),...(typeof r.docNo==='string'&&/^\d{4}\/\d{4,6}$/.test(r.docNo)?{docNo:r.docNo}:{})}}).filter(Boolean);
+   pecas:arr(r.pecas).filter(obj).slice(0,50).map(p=>({key:CAT[p.key]?p.key:'',nome:sStr(p.nome,80),qtd:sNum(p.qtd)>0?sNum(p.qtd):1,un:UNITS.includes(p.un)?p.un:'un',...(p.ref?{ref:sStr(p.ref,40)}:{}),...(['f','t'].includes(p.eixo)?{eixo:p.eixo}:{}),...(['e','d','a'].includes(p.lado)?{lado:p.lado}:{}),...(pDec(p.pl)>0?{pl:sStr(p.pl,14)}:{})})),notas:sStr(r.notas,2000),estado:['orcamento','aprovada','curso','pronta'].includes(r.estado)?r.estado:'pronta',queixa:sStr(r.queixa,300),diag:sStr(r.diag,2000),moH:Math.max(0,sNum(r.moH)),moP:Math.max(0,sNum(r.moP)),moL:arr(r.moL).filter(obj).slice(0,20).map(l=>({d:sStr(l.d,120),h:Math.max(0,sNum(l.h)),p:Math.max(0,sNum(l.p)),v:Math.max(0,sNum(l.v))})),entrega:sDate(r.entrega,''),...(typeof r.orNo==='string'&&/^\d{4}\/\d{4,6}$/.test(r.orNo)?{orNo:r.orNo}:{}),...(typeof r.docNo==='string'&&/^\d{4}\/\d{4,6}$/.test(r.docNo)?{docNo:r.docNo}:{})}}).filter(Boolean);
  s.moves=s.moves.filter(obj).map(m=>{const tipo=['recebi','comprei','cobrar'].includes(m.tipo)?m.tipo:null;if(!tipo)return null;const vid=mV(m.vid);let cid=mC(m.cid);if(vid&&!cid)cid=ownerOf(vid);
   const o={id:fixId(m.id),tipo,valor:Math.abs(sNum(m.valor)),data:sDate(m.data),desc:sStr(m.desc,120),vid,cid};if(tipo==='comprei')o.pago=m.pago!==false;if(tipo==='recebi'&&FP[m.fp])o.fp=m.fp;const rid=m.rid!=null&&rmap.has(String(m.rid))?rmap.get(String(m.rid)):'';if(rid&&s.records.some(r=>r&&r.id===rid)){o.rid=rid;if(typeof m.lk==='string'&&/^(p\d{1,2}|pg|mo|rc)$/.test(m.lk))o.lk=m.lk}return o}).filter(Boolean);
  s.tasks=s.tasks.filter(obj).map(t=>({id:fixId(t.id),titulo:sStr(t.titulo,120).trim()||'Tarefa',vid:mV(t.vid),prio:t.prio==='urgente'?'urgente':'normal',prazo:sDate(t.prazo,''),notas:sStr(t.notas,1000),feito:!!t.feito,criado:sDate(t.criado),feitoEm:t.feito?sDate(t.feitoEm):'',sug:typeof t.sug==='string'&&/^[\w-]{1,40}:[a-z0-9_]{1,30}$/.test(t.sug)?t.sug:'',passos:arr(t.passos).filter(obj).slice(0,30).map(x=>({t:sStr(x.t,120).trim(),f:!!x.f})).filter(x=>x.t)}));
