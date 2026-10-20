@@ -1206,8 +1206,17 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 
 /* ================== VERSÃO / CHANGELOG ================== */
 // Regra: todas as alterações do mesmo dia ficam na mesma versão; um dia novo = versão nova (+0.1).
-const APP_VER='0.9';
+const APP_VER='1.0';
 const CHANGELOG=[
+ {v:'1.0',d:'2026-10-20',t:'Mais rápida e mais segura',items:[
+  'Desempenho: com muitos dados (300 carros, 4000 reparações) o Início abre 50 vezes mais depressa (de cerca de 3 s para 0,05 s) e as Finanças 30 vezes mais depressa',
+  'Reparações: mostra as 120 mais recentes e um botão "Mostrar mais", para a lista abrir logo',
+  'Computador: Electron atualizado para uma versão com suporte e correções de segurança (a anterior já não recebia correções desde 2025)',
+  'Computador: a janela recusa permissões que a app não usa (câmara, microfone, localização) e só abre ficheiros da própria app',
+  'Correção: as datas de manutenção "de X em X meses" já não saltam dias no fim do mês (31/01 + 1 mês = 28/02)',
+  'Correção: um erro raro ao sair da pesquisa de intervalos antes de acabar de escrever',
+  'Verificação de segurança completa: nenhum texto (nomes, notas, peças, dados sincronizados) consegue executar código na app'
+ ]},
  {v:'0.9',d:'2026-10-18',t:'Lista de peças completa',items:[
   'Peças: escolhe se o preço que escreves é com IVA ou sem IVA; sem IVA a app soma 23% e mostra a conta antes de guardar. Lembra-se da última escolha. O IVA é calculado sobre o total das peças, como na fatura da loja (sem diferenças de 1 cêntimo)',
   'Assistente de mecânica: na ficha do carro e na ordem, "Perguntar ao assistente" junta marca, modelo, motor, km, queixa, diagnóstico e histórico (sem dados do cliente) e abre o Claude com a pergunta pronta',
@@ -1366,11 +1375,15 @@ const todayISO=()=>iso(new Date());
 const pd=s=>new Date(s+'T00:00:00');
 const fmtD=s=>{if(!s)return'';const[y,m,d]=s.split('-');return`${d}/${m}/${y}`};
 const fmtMonth=s=>pd(s.slice(0,7)+'-01').toLocaleDateString('pt-PT',{month:'long',year:'numeric'});
-const addM=(d,m)=>{const x=new Date(d);x.setMonth(x.getMonth()+m);return x};
+const addM=(d,m)=>{const x=new Date(d),dd=x.getDate();x.setDate(1);x.setMonth(x.getMonth()+m);x.setDate(Math.min(dd,new Date(x.getFullYear(),x.getMonth()+1,0).getDate()));return x}; // 31/01 + 1 mês = 28/02 (não 03/03)
 const today0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
 const fmtDur=d=>{d=Math.max(0,Math.round(d));if(d<60)return d+(d===1?' dia':' dias');const m=Math.round(d/30.44);if(m<24)return m+' meses';const y=Math.floor(m/12),r=m%12;return y+' anos'+(r?' e '+r+(r===1?' mês':' meses'):'')};
-const veh=id=>id?S.vehicles.find(v=>v.id===id):null;
-const cli=id=>id?S.clients.find(c=>c.id===id):null;
+/* Cache válida só durante um render(): evita percorrer todos os movimentos/registos centenas de vezes por ecrã */
+let MZ=null;
+const mz=(k,f)=>MZ?(k in MZ?MZ[k]:(MZ[k]=f())):f();
+const byId=(k,list)=>mz(k,()=>new Map(list.map(x=>[x.id,x])));
+const veh=id=>id?(MZ?byId('veh',S.vehicles).get(id):S.vehicles.find(v=>v.id===id)):null;
+const cli=id=>id?(MZ?byId('cli',S.clients).get(id):S.clients.find(c=>c.id===id)):null;
 const isCV=v=>!!(v&&cli(v.owner));
 const vName=v=>v?`${v.marca} ${v.modelo}`.trim():'';
 const vSub=v=>[v.ano,v.motor,v.cv?v.cv+' CV':''].filter(Boolean).join(' • ');
@@ -1442,8 +1455,15 @@ const MT={
 };
 const mvCli=m=>{if(m.cid)return cli(m.cid);const v=veh(m.vid);return v?cli(v.owner):null};
 function bal(ms){let comp=0,cob=0,rec=0,pp=0;ms.forEach(m=>{const x=+m.valor||0;if(m.tipo==='comprei'){comp+=x;if(!m.pago)pp+=x}else if(m.tipo==='cobrar')cob+=x;else rec+=x});return{comp,cob,rec,pp,tot:comp+cob,s:comp+cob-rec}}
-const vMoves=vid=>{const v=veh(vid),o=(v&&v.owner)||'';return liveMoves(S.moves.filter(m=>m.vid===vid&&(m.cid||'')===o))};
-const cMoves=cid=>liveMoves(S.moves.filter(m=>{const c=mvCli(m);return c&&c.id===cid}));
+const groupBy=(list,kf)=>{const g=new Map();list.forEach(x=>{const k=kf(x);if(k==null||k==='')return;let a=g.get(k);if(!a)g.set(k,a=[]);a.push(x)});return g};
+const vMoves=vid=>{
+ if(!MZ){const v=veh(vid),o=(v&&v.owner)||'';return liveMoves(S.moves.filter(m=>m.vid===vid&&(m.cid||'')===o))}
+ return mz('vm:'+vid,()=>{const v=veh(vid),o=(v&&v.owner)||'';return liveMoves((mz('mvByV',()=>groupBy(S.moves,m=>m.vid)).get(vid)||[]).filter(m=>(m.cid||'')===o))}).slice();
+};
+const cMoves=cid=>{
+ if(!MZ)return liveMoves(S.moves.filter(m=>{const c=mvCli(m);return c&&c.id===cid}));
+ return mz('cm:'+cid,()=>liveMoves(mz('mvByC',()=>groupBy(S.moves,m=>{const c=mvCli(m);return c?c.id:null})).get(cid)||[])).slice();
+};
 const cBal=cid=>bal(cMoves(cid));
 function globalFin(){
  let rec=0,adi=0;
@@ -1486,7 +1506,10 @@ const getInt=k=>S.intervals[k]||{km:CAT[k].km,m:CAT[k].m};
 const ivText=iv=>{const a=[];if(iv.km)a.push(fmtN(iv.km)+' km');if(iv.m)a.push(iv.m+(iv.m===1?' mês':' meses'));return a.length?a.join(' ou '):'Sem intervalo'};
 function replaced(r){const s=new Set(),add=k=>{if(!CAT[k])return;if(CAT[k].kit)CAT[k].kit.forEach(x=>{if(CAT[x])s.add(x)});else s.add(k)};add(r.tipo);arr(r.pecas).forEach(p=>add(p.key));return[...s]}
 function vKeys(v){const s=new Set();S.records.forEach(r=>{if(r.vid===v.id&&r.km&&isDone(r))replaced(r).forEach(k=>s.add(k))});return[...s]}
-function hist(vid,key){return S.records.filter(r=>r.vid===vid&&r.km&&isDone(r)&&replaced(r).includes(key)).sort((a,b)=>(b.km-a.km)||b.data.localeCompare(a.data))}
+function hist(vid,key){
+ const rs=MZ?(mz('recByV',()=>groupBy(S.records,r=>r.vid)).get(vid)||[]):S.records;
+ const rep=r=>MZ?mz('rep:'+r.id,()=>replaced(r)):replaced(r);
+ return rs.filter(r=>r.vid===vid&&r.km&&isDone(r)&&rep(r).includes(key)).sort((a,b)=>(b.km-a.km)||b.data.localeCompare(a.data))}
 function due(v,key){
  const h=hist(v.id,key);if(!h.length)return null;
  const last=h[0],iv=getInt(key),d={v,key,last,hist:h,none:false};
@@ -1536,10 +1559,12 @@ function openVeh(id,t='resumo'){UI.cur=id;UI.vtab=t;go('veh',{id});if(['hist','r
 function openCli(id){go('client',{id})}
 function render(){
  const top=stack[stack.length-1];let h='';
+ MZ={};
  try{
   const V={sync:vSync,or:()=>vOR(top.id),vhist:()=>vVHist(top.id),shop:vShop,transfer:vTransfer,aparencia:vAparencia,search:vSearch,home:vHome,tasks:vTasks,vehicles:vVehicles,veh:()=>vVeh(top.id),rep:()=>F?vRep():vHome(),vform:()=>VF?vVForm():vHome(),timeline:vTimeline,fin:vFin,client:()=>vClient(top.id),set:vSet,clients:vClients,intervals:vIntervals,changelog:vChangelog,updates:vUpdates};
   h=(V[top.v]||vHome)();
  }catch(e){console.error(e);h=`<div class="empty">Erro: ${esc(e.message)}</div>`}
+ finally{MZ=null}
  $('#app').dataset.view=top.v;
  $('#app').innerHTML=h+nav(top.v);
  a11y($('#app'));
@@ -1901,7 +1926,8 @@ function vTimeline(){
  let h=hdr('Reparações',`<button class="ib" onclick="tlFilter()">${I('filter')}${UI.tlVeh!=='all'?'<i class="badge dotb"></i>':''}</button><button class="ib pri" onclick="newRep()">${I('plus')}</button>`,true);
  h+=`<div class="fchips">${[['all','Todas'],['meus','Meus carros'],['cli','Clientes'],['av','Avarias']].map(t=>`<button class="${UI.tlType===t[0]?'on':''}" onclick="UI.tlType='${t[0]}';render()">${t[1]}</button>`).join('')}</div>`;
  if(UI.tlVeh!=='all')h+=`<div class="wrap" style="margin-bottom:10px"><span class="tag t-pri" style="font-size:13px;padding:6px 10px">${esc(vName(veh(UI.tlVeh)))} <a onclick="UI.tlVeh='all';render()" style="margin-left:6px;cursor:pointer">✕</a></span></div>`;
- h+=rs.length?tlList(rs,UI.tlVeh==='all'&&S.vehicles.length>1):emptyBox('wrench','Sem reparações.');
+ const lim=UI.tlLim||120;
+ h+=rs.length?tlList(rs.slice(0,lim),UI.tlVeh==='all'&&S.vehicles.length>1)+(rs.length>lim?`<div class="wrap"><button class="btn ghost sm" onclick="UI.tlLim=${lim+300};render()">Mostrar mais (${rs.length-lim} restantes)</button></div>`:''):emptyBox('wrench','Sem reparações.');
  return h;
 }
 function tlFilter(){
@@ -1995,7 +2021,7 @@ function delMove(){if(!confirm('Apagar este movimento?'))return;S.moves=S.moves.
 
 /* ================== TRABALHOS (reparação + valores) — v0.7 ================== */
 // Os valores de uma reparação são movimentos normais ligados por m.rid (e m.lk: p0..p49 peça, pg peças sem detalhe, mo mão de obra, rc pagamento).
-const jobMoves=rid=>S.moves.filter(m=>m.rid===rid);
+const jobMoves=rid=>MZ?(mz('mvByR',()=>groupBy(S.moves,m=>m.rid)).get(rid)||[]).slice():S.moves.filter(m=>m.rid===rid);
 function loadJobMoney(r){
  const ms=jobMoves(r.id),g=lk=>ms.find(m=>m.lk===lk);
  F.pecas.forEach((p,i)=>{const m=g('p'+i);p.preco=m?decIn(m.valor):'';p.pago=m?m.pago!==false:true});
@@ -2400,13 +2426,13 @@ const EST={orcamento:{n:'Orçamento',c:'vio'},aprovada:{n:'Aprovada',c:'info'},c
 const EST_STEPS=['orcamento','aprovada','curso','pronta','paga'];
 const recEst=r=>EST[r&&r.estado]?r.estado:'pronta';
 const isDone=r=>recEst(r)==='curso'||recEst(r)==='pronta'; // conta para peças montadas
-const orcIds=()=>new Set(S.records.filter(r=>r.estado==='orcamento').map(r=>r.id));
+const orcIds=()=>mz('orc',()=>new Set(S.records.filter(r=>r.estado==='orcamento').map(r=>r.id)));
 const liveMoves=ms=>{const o=orcIds();return o.size?ms.filter(m=>!(m.rid&&o.has(m.rid))):ms};
 const orNoTxt=r=>r&&(r.docNo||r.orNo)?'OR '+(r.docNo||r.orNo):'';
 function orPay(r){
  const v=veh(r.vid),c=v&&cli(v.owner),tot=jobCharge(r.id);
  if(!c||recEst(r)==='orcamento')return{tot,pago:0,falta:0,client:!!c};
- const a=allocPay(vMoves(v.id),S.records.filter(x=>x.vid===v.id&&x.estado!=='orcamento'))[r.id];
+ const a=mz('ap:'+v.id,()=>allocPay(vMoves(v.id),(MZ?(mz('recByV',()=>groupBy(S.records,x=>x.vid)).get(v.id)||[]):S.records).filter(x=>x.vid===v.id&&x.estado!=='orcamento')))[r.id];
  return{tot,pago:a?a.pago:0,falta:a?a.falta:0,client:true};
 }
 function orStage(r){const e=recEst(r);if(e!=='pronta')return e;const p=orPay(r);return p.client&&p.falta>0.004?'pronta':'paga'}
@@ -2949,7 +2975,7 @@ function vClients(){
 function vIntervals(){
  let h=hdr('Intervalos');
  h+=`<div class="wrap"><div class="note">${I('info')}<span>Define de quanto em quanto tempo ou km cada peça deve ser trocada. Conta o que chegar primeiro. É isto que alimenta os avisos.</span></div></div>`;
- h+=`<div class="wrap"><div class="in">${I('search')}<input placeholder="Pesquisar peça" value="${esc(UI.ivq||'')}" oninput="UI.ivq=this.value;clearTimeout(window._ivt);window._ivt=setTimeout(()=>{render();const x=document.querySelector('.wrap .in input');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},250)"></div></div>`;
+ h+=`<div class="wrap"><div class="in">${I('search')}<input placeholder="Pesquisar peça" value="${esc(UI.ivq||'')}" oninput="UI.ivq=this.value;clearTimeout(window._ivt);window._ivt=setTimeout(()=>{if((stack[stack.length-1]||{}).v!=='intervals')return;render();const x=document.querySelector('#app[data-view=intervals] .wrap .in input');if(x){x.focus();x.setSelectionRange(x.value.length,x.value.length)}},250)"></div></div>`;
  const ivq=fold(UI.ivq||'').trim().split(/\s+/).filter(Boolean);
  GROUPS.forEach(g=>{const ks=Object.keys(CAT).filter(k=>CAT[k].g===g&&!isKit(k)&&(!ivq.length||ivq.every(w=>fold(CAT[k].n+' '+g+' '+(CAT[k].a||'')).includes(w))));if(!ks.length)return;h+=`<div class="sec"><h2>${g}</h2></div><div class="card grp">${ks.map(k=>`<button class="opt" onclick="ivSheet('${k}')"><span class="ico sm" style="--c:${CAT[k].c}">${I(CAT[k].ic)}</span>${CAT[k].n}<span class="rv">${ivText(getInt(k))}</span></button>`).join('')}</div>`});
  return h+'<div style="height:10px"></div>';
@@ -3163,6 +3189,7 @@ function saveTask(toggle){
  if(!TK.titulo.trim())return toast('Escreve o que é preciso fazer');
  const t={...TK,titulo:TK.titulo.trim(),notas:(TK.notas||'').trim(),passos:(TK.passos||[]).map(p=>({t:p.t.trim(),f:!!p.f})).filter(p=>p.t)};
  if(!t.id){t.id=uid();t.criado=todayISO();t.feitoEm=''}
+ if(typeof t.sug!=='string')t.sug='';
  const i=S.tasks.findIndex(x=>x.id===t.id);
  if(i>=0)S.tasks[i]=t;else S.tasks.push(t);
  save();
@@ -3286,7 +3313,7 @@ function searchHTML(q){
 function vSearch(){
  let h=`<header class="hdr"><div class="hl"><button class="ib" onclick="back()">${I('back')}</button></div><div class="in" style="flex:1;height:44px">${I('search')}<input id="q" type="search" placeholder="Matrícula, cliente, peça…" value="${esc(UI.q||'')}" oninput="UI.q=this.value;$('#sres').innerHTML=searchHTML(this.value);a11y($('#sres'))" autocomplete="off"></div></header>`;
  h+=`<div id="sres">${searchHTML(UI.q||'')}</div><div style="height:10px"></div>`;
- setTimeout(()=>{const e=$('#q');if(e&&document.activeElement!==e){e.focus();e.setSelectionRange(e.value.length,e.value.length)}},60);
+ setTimeout(()=>{const e=$('#q');if(e&&document.activeElement!==e){e.focus();try{e.setSelectionRange(e.value.length,e.value.length)}catch(_){}}},60);
  return h;
 }
 

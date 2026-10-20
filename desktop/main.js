@@ -56,6 +56,7 @@ function createWindow() {
   win.webContents.on('will-navigate', (e, url) => {
     if (!url.startsWith('app://garagepro/')) { e.preventDefault(); if (/^(https?:|mailto:|tel:)/i.test(url)) shell.openExternal(url); }
   });
+  win.webContents.on('will-attach-webview', (e) => e.preventDefault());
   win.loadURL('app://garagepro/index.html');
 }
 
@@ -63,12 +64,18 @@ app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(
 
 app.whenReady().then(() => {
   Menu.setApplicationMenu(null);
+  // A app não precisa de câmara, microfone, localização, etc.: recusa tudo exceto notificações e copiar texto
+  const { session } = require('electron');
+  const OK_PERM = new Set(['notifications', 'clipboard-sanitized-write', 'fullscreen']);
+  session.defaultSession.setPermissionRequestHandler((_wc, perm, cb) => cb(OK_PERM.has(perm)));
+  session.defaultSession.setPermissionCheckHandler((_wc, perm) => OK_PERM.has(perm));
   const root = path.join(__dirname, 'app');
   protocol.handle('app', (req) => {
     const u = new URL(req.url);
     const rel = decodeURIComponent(u.pathname).replace(/^\/+/, '') || 'index.html';
     const file = path.normalize(path.join(root, rel));
-    if (!file.startsWith(root)) return new Response('Proibido', { status: 403 });
+    // só ficheiros dentro da pasta da app (com separador, para não aceitar pastas vizinhas como "app2")
+    if (file !== root && !file.startsWith(root + path.sep)) return new Response('Proibido', { status: 403 });
     return net.fetch(pathToFileURL(file).toString());
   });
   ipcMain.handle('gp-check', async () => 'As atualizações só funcionam na app instalada');
