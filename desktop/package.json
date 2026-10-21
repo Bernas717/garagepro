@@ -1,8 +1,8 @@
 {
   "name": "garagepro-pc",
-  "productName": "GaragePro",
+  "productName": "7Chaves",
   "version": "0.0.0",
-  "description": "GaragePro — gestão de mecânica (versão para computador)",
+  "description": "7Chaves — gestão de mecânica (versão para computador)",
   "author": "BBTecnoDev",
   "main": "main.js",
   "private": true,
@@ -19,17 +19,17 @@
   },
   "build": {
     "appId": "pt.bbtecnodev.garagepro.pc",
-    "productName": "GaragePro",
+    "productName": "7Chaves",
     "copyright": "BBTecnoDev",
     "directories": { "output": "dist", "buildResources": "build" },
     "files": ["main.js", "preload.js", "app/**/*", "package.json"],
-    "win": { "target": "nsis", "icon": "build/icon.png", "artifactName": "GaragePro-PC-Setup-${version}.${ext}" },
+    "win": { "target": "nsis", "icon": "build/icon.png", "artifactName": "7Chaves-PC-Setup-${version}.${ext}" },
     "nsis": {
       "oneClick": true,
       "perMachine": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "GaragePro",
+      "shortcutName": "7Chaves",
       "deleteAppDataOnUninstall": false
     },
     "publish": [{ "provider": "generic", "url": "https://github.com/__REPO__/releases/latest/download" }]

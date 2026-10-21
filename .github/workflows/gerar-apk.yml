@@ -221,7 +221,7 @@ jobs:
           echo "$KS_B64" | tr -d '\r\n ' | base64 -d > chave.jks
           BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
           IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
-          OUT=GaragePro-v${{ steps.v.outputs.versao }}-b${{ github.run_number }}.apk
+          OUT=7Chaves-v${{ steps.v.outputs.versao }}-b${{ github.run_number }}.apk
           "$ANDROID_HOME/build-tools/$BT/zipalign" -f -p 4 "$IN" alinhado.apk
           "$ANDROID_HOME/build-tools/$BT/apksigner" sign --ks chave.jks --ks-key-alias garagepro \
             --ks-pass env:KS_PASS --key-pass env:KS_PASS --out "$OUT" alinhado.apk
@@ -233,7 +233,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
-          name: GaragePro v${{ steps.v.outputs.versao }} (compilação ${{ github.run_number }})
+          name: 7Chaves v${{ steps.v.outputs.versao }} (compilação ${{ github.run_number }})
           body_path: notas.md
           files: ${{ env.APK }}
           make_latest: true

@@ -1,10 +1,12 @@
-// GaragePro para computador (Windows) — abre a mesma app (www/index.html) numa janela própria.
+// 7Chaves (antes GaragePro) para computador (Windows) — abre a mesma app (www/index.html) numa janela própria.
 const { app, BrowserWindow, protocol, net, shell, ipcMain, Menu, Notification, screen } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
 
 const APP_ID = 'pt.bbtecnodev.garagepro.pc';
+// Os dados ficam sempre na pasta antiga "GaragePro", para não se perderem com a mudança de nome
+app.setPath('userData', path.join(app.getPath('appData'), 'GaragePro'));
 // Origem fixa e segura (app://garagepro) para os dados (IndexedDB) ficarem sempre no mesmo sítio
 protocol.registerSchemesAsPrivileged([{ scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true, stream: true } }]);
 
@@ -35,7 +37,7 @@ function createWindow() {
   const st = loadState();
   win = new BrowserWindow({
     x: st.x, y: st.y, width: st.width || 1360, height: st.height || 860, minWidth: 380, minHeight: 600,
-    show: false, backgroundColor: '#0b0d10', title: 'GaragePro', icon: ICON,
+    show: false, backgroundColor: '#0b0d10', title: '7Chaves', icon: ICON,
     titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#0b0d10', symbolColor: '#eceef2', height: 36 },
     webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, sandbox: true, nodeIntegration: false, spellcheck: false }
@@ -91,7 +93,7 @@ ipcMain.handle('gp-titlebar', (_e, o) => {
   try { if (win && o && /^#[0-9a-f]{3,8}$/i.test(o.color) && /^#[0-9a-f]{3,8}$/i.test(o.symbolColor)) { win.setTitleBarOverlay({ color: o.color, symbolColor: o.symbolColor, height: 36 }); win.setBackgroundColor(o.color); } } catch (_) {}
   return true;
 });
-ipcMain.handle('gp-notify', (_e, o) => { winNotify(String(o && o.title || 'GaragePro').slice(0, 120), String(o && o.body || '').slice(0, 300)); return true; });
+ipcMain.handle('gp-notify', (_e, o) => { winNotify(String(o && o.title || '7Chaves').slice(0, 120), String(o && o.body || '').slice(0, 300)); return true; });
 function winNotify(title, body, onClick) {
   if (!Notification.isSupported()) return;
   const n = new Notification({ title, body, icon: ICON, silent: false });
@@ -115,7 +117,7 @@ function setupUpdates() {
   autoUpdater.on('update-downloaded', (i) => {
     updState = 'Versão ' + i.version + ' pronta — instala ao fechar a app'; updReady = i.version;
     send('gp-update', { state: 'downloaded', version: i.version });
-    winNotify('GaragePro ' + i.version + ' pronto a instalar', 'Clica para reiniciar e atualizar. Os teus dados mantêm-se.', () => autoUpdater.quitAndInstall());
+    winNotify('7Chaves ' + i.version + ' pronto a instalar', 'Clica para reiniciar e atualizar. Os teus dados mantêm-se.', () => autoUpdater.quitAndInstall());
   });
   ipcMain.removeHandler('gp-check');
   ipcMain.handle('gp-check', async () => { try { await autoUpdater.checkForUpdates(); } catch (_) {} return updState; });

@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>GaragePro</title>
+<title>7Chaves</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 /* ===== Tokens (v0.6) — estilo × modo × cor de destaque. O JS define --pri/--pri-tx e os data-attributes ===== */
@@ -606,7 +606,7 @@ html.pc[data-layout=desktop] .nbrand{display:none}
 [data-layout=tablet] .nav .nfoot,[data-layout=desktop] .nav .nfoot{display:flex;flex:none;border-radius:0;flex-direction:column;align-items:center;gap:1px;margin-top:6px;padding:10px 4px 2px;border-top:1px solid var(--line);font-size:10.5px;color:var(--mut);text-align:center;line-height:1.3}
 [data-layout=desktop] .nav .nfoot{align-items:flex-start;text-align:left;padding:12px 14px 2px;font-size:11.5px}
 .nfoot span:first-child{font-weight:700;color:var(--tx2)}
-[data-layout=desktop] .nfoot span:first-child::before{content:"GaragePro "}
+[data-layout=desktop] .nfoot span:first-child::before{content:"7Chaves "}
 .nav .nfoot:hover{background:none}.nfoot:hover span:first-child{color:var(--pri)}
 .nkb{margin-top:4px;opacity:.85;white-space:nowrap;font-size:10.5px}
 .hver{display:block;text-align:center;color:var(--mut);font-size:12px;padding:18px 0 6px;width:100%}
@@ -1206,8 +1206,13 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 
 /* ================== VERSÃO / CHANGELOG ================== */
 // Regra: todas as alterações do mesmo dia ficam na mesma versão; um dia novo = versão nova (+0.1).
-const APP_VER='1.0';
+const APP_VER='1.1';
 const CHANGELOG=[
+ {v:'1.1',d:'2026-10-21',t:'Novo nome: 7Chaves',items:[
+  'A app passa a chamar-se 7Chaves ("guardado a sete chaves", e a chave do mecânico)',
+  'Os teus dados, a sincronização, as cópias de segurança e as atualizações continuam iguais: nada se perde com a mudança de nome',
+  'As cópias automáticas continuam na pasta Documentos/GaragePro do telemóvel e os ficheiros de cópia continuam a terminar em .garagepro'
+ ]},
  {v:'1.0',d:'2026-10-20',t:'Mais rápida e mais segura',items:[
   'Desempenho: com muitos dados (300 carros, 4000 reparações) o Início abre 50 vezes mais depressa (de cerca de 3 s para 0,05 s) e as Finanças 30 vezes mais depressa',
   'Reparações: mostra as 120 mais recentes e um botão "Mostrar mais", para a lista abrir logo',
@@ -1573,7 +1578,7 @@ function nav(v){
  const map={sync:'set',or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:isDesk()?'clients':'fin',set:'set',clients:isDesk()?'clients':'set',intervals:'set',changelog:'set',updates:'set'};
  const a=map[v];
  const b=(k,ic,t,x='')=>`<button class="${a===k?'on':''}${x}" onclick="tab('${k}')" title="${t}">${I(ic)}<span>${t}</span></button>`;
- return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b>Garage<span>Pro</span></b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button>${isDesk()?`<button class="ncol" onclick="setPref('sideMini',${!(S.prefs||{}).sideMini})" title="${(S.prefs||{}).sideMini?'Expandir':'Recolher'} a barra lateral">${I((S.prefs||{}).sideMini?'chev':'back','s')}<span>Recolher</span></button>`:''}</nav>`;
+ return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b><span>7</span>Chaves</b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button>${isDesk()?`<button class="ncol" onclick="setPref('sideMini',${!(S.prefs||{}).sideMini})" title="${(S.prefs||{}).sideMini?'Expandir':'Recolher'} a barra lateral">${I((S.prefs||{}).sideMini?'chev':'back','s')}<span>Recolher</span></button>`:''}</nav>`;
 }
 const verBuild=()=>APP_BUILD?'compilação '+APP_BUILD:'desenvolvimento';
 const hdr=(t,right='',root=false)=>`<header class="hdr${root?' root':''}"><div class="hl"><button class="ib" onclick="back()">${I('back')}</button></div><h1>${t}</h1><div class="hr">${isDesk()?deskTools():''}${right}</div></header>`;
@@ -1614,7 +1619,7 @@ function vHome(){
  if(isDesk())return vHomeD();
  const n=allAlerts().length,mine=myVeh(),cv=cliVeh(),g=globalFin();
  const hr=new Date().getHours(),greet=hr<12?'Bom dia':hr<20?'Boa tarde':'Boa noite';
- let h=`<header class="hdr"><div class="logo"><img class="lgimg" src="${LOGO}" alt=""><span class="lt">Garage<span>Pro</span></span></div><div class="hr"><button class="ib" onclick="go('search')">${I('search')}</button><button class="ib" onclick="openAlerts()">${I('bell')}${n?`<i class="badge">${n}</i>`:''}</button><button class="ib pri" onclick="plusMenu()">${I('plus')}</button></div></header>`;
+ let h=`<header class="hdr"><div class="logo"><img class="lgimg" src="${LOGO}" alt=""><span class="lt"><span>7</span>Chaves</span></div><div class="hr"><button class="ib" onclick="go('search')">${I('search')}</button><button class="ib" onclick="openAlerts()">${I('bell')}${n?`<i class="badge">${n}</i>`:''}</button><button class="ib pri" onclick="plusMenu()">${I('plus')}</button></div></header>`;
  h+=`<div class="hello"><h2>${greet}</h2><p>${new Date().toLocaleDateString('pt-PT',{weekday:'long',day:'numeric',month:'long'})}</p></div>`;
  h+=syBanner()+bakBanner();
  const B={
@@ -1632,7 +1637,7 @@ function vHome(){
  };
  const cf=homeCfg();cf.order.filter(k=>!cf.hide.includes(k)).forEach(k=>{h+=B[k]()});
  if(!S.vehicles.length&&cf.hide.includes('meus'))h+=emptyBox('car','Ainda não tens veículos.',`<button class="btn ghost sm" onclick="openVForm()">Adicionar veículo</button>`);
- h+=`<button class="hver" onclick="go('changelog')">GaragePro v${APP_VER} · ${verBuild()}</button>`;
+ h+=`<button class="hver" onclick="go('changelog')">7Chaves v${APP_VER} · ${verBuild()}</button>`;
  return h+'<div style="height:10px"></div>';
 }
 function plusMenu(){
@@ -2409,7 +2414,7 @@ function vShop(){
  h+=`<div class="wrap"><div class="note" style="margin-top:8px">${I('receipt')}<span>Aparecem no topo das folhas de reparação e dos recibos.</span></div>`;
  h+=f('nome','Nome da oficina / profissional','Ex: BB Mecânica')+f('nif','NIF','Ex: 123456789','inputmode="numeric"')+f('morada','Morada','Ex: Rua das Flores, 12')+f('local','Código postal e localidade','Ex: 2000-000 Santarém')
   +f('maoHora','Preço por hora da mão de obra (€)','Ex: 20','inputmode="decimal"')+`<div class="grid2 np"><div>${f('tel','Telefone','Ex: 912 345 678','inputmode="tel"')}</div><div>${f('email','E-mail','opcional','inputmode="email"')}</div></div>`;
- h+=`<label class="fl">Logótipo</label><div class="seg">${[['app','GaragePro'],['custom','O meu'],['none','Sem']].map(t=>`<button class="${SHP.logo===t[0]?'on':''}" onclick="SHP.logo='${t[0]}';${t[0]==='custom'&&!SHP.logoImg?`$('#shp-logo').click()`:'render()'}">${t[1]}</button>`).join('')}</div>
+ h+=`<label class="fl">Logótipo</label><div class="seg">${[['app','7Chaves'],['custom','O meu'],['none','Sem']].map(t=>`<button class="${SHP.logo===t[0]?'on':''}" onclick="SHP.logo='${t[0]}';${t[0]==='custom'&&!SHP.logoImg?`$('#shp-logo').click()`:'render()'}">${t[1]}</button>`).join('')}</div>
   ${SHP.logo==='custom'?`<div class="shplogo">${SHP.logoImg?`<img src="${SHP.logoImg}" alt="">`:''}<button class="btn ghost sm" style="margin:0" onclick="$('#shp-logo').click()">${I('camera','s')} ${SHP.logoImg?'Trocar imagem':'Escolher imagem'}</button></div>`:''}
   <input type="file" id="shp-logo" accept="image/*" hidden onchange="shopLogo(this)">`;
  h+=`<label class="fl">IVA</label><div class="in">${I('receipt')}<select onchange="SHP.iva=this.value">${Object.entries(IVA_OPTS).map(([k,n])=>`<option value="${k}" ${SHP.iva===k?'selected':''}>${n}</option>`).join('')}</select>${CHV}</div>`;
@@ -2641,7 +2646,7 @@ async function syPull(){
 async function syPush(){
  const it=syItems(S);const o={app:'GaragePro-sync',v:1,appVer:APP_VER,build:APP_BUILD,at:Date.now(),dev:SY.cfg.dev,items:it,u:SY.meta.u,tomb:SY.meta.tomb,docSeq:(S.prefs||{}).docSeq||{}};
  const json=JSON.stringify(o),bytes=canGzip()?await gzipBytes(json):new TextEncoder().encode(json);
- const r=await gh(`/repos/${SY.cfg.repo}/contents/${SY_FILE}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'GaragePro: sincronização '+new Date().toISOString().slice(0,19).replace('T',' '),content:bytesB64(bytes),...(SY.sha?{sha:SY.sha}:{})})});
+ const r=await gh(`/repos/${SY.cfg.repo}/contents/${SY_FILE}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'7Chaves: sincronização '+new Date().toISOString().slice(0,19).replace('T',' '),content:bytesB64(bytes),...(SY.sha?{sha:SY.sha}:{})})});
  if(r.status===409||r.status===422)return false; // alguém gravou entretanto
  if(!r.ok)throw r;
  const j=await r.json();SY.sha=j.content&&j.content.sha||'';SY.etag='';SY.dirty=false;return true;
@@ -2770,7 +2775,7 @@ function syNotifyChanges(keys,first){
 function pcShell(){
  if(!isPC())return;
  document.documentElement.classList.add('pc');
- if(!$('#pcbar')){const b=document.createElement('div');b.id='pcbar';b.innerHTML=`<img src="${LOGO}" alt=""><b>Garage<span>Pro</span></b><span class="pcver" onclick="go('changelog')" title="Ver o que mudou">v${APP_VER}${APP_BUILD?' · '+APP_BUILD:''}</span><span class="pcst" id="pcst"></span>`;document.body.prepend(b)}
+ if(!$('#pcbar')){const b=document.createElement('div');b.id='pcbar';b.innerHTML=`<img src="${LOGO}" alt=""><b><span>7</span>Chaves</b><span class="pcver" onclick="go('changelog')" title="Ver o que mudou">v${APP_VER}${APP_BUILD?' · '+APP_BUILD:''}</span><span class="pcst" id="pcst"></span>`;document.body.prepend(b)}
  pcTitleColors();
  try{window.gpDesktop.onUpdate(u=>pcUpdate(u))}catch(_){}
 }
@@ -2785,7 +2790,7 @@ function pcUpdate(u){
  if(!u||!u.state)return;
  if(u.state==='available'&&_pcUpdShown!=='a'+u.version){_pcUpdShown='a'+u.version;notify({icon:'download',tone:'pri',title:'Nova versão '+u.version,text:'A descarregar em segundo plano. Aviso quando estiver pronta.'})}
  if(u.state==='downloaded'&&_pcUpdShown!=='d'+u.version){_pcUpdShown='d'+u.version;UI.pcUpd='Versão '+u.version+' pronta a instalar';
-  notify({icon:'download',tone:'ok',title:'GaragePro '+u.version+' pronto',text:'Reinicia para atualizar. Os teus dados mantêm-se.',timeout:0,os:true,actions:[{label:'Reiniciar e atualizar',primary:true,fn:()=>window.gpDesktop.installNow()},{label:'Mais tarde',fn:()=>{}}]})}
+  notify({icon:'download',tone:'ok',title:'7Chaves '+u.version+' pronto',text:'Reinicia para atualizar. Os teus dados mantêm-se.',timeout:0,os:true,actions:[{label:'Reiniciar e atualizar',primary:true,fn:()=>window.gpDesktop.installNow()},{label:'Mais tarde',fn:()=>{}}]})}
 }
 
 /* ================== COMPUTADOR (ecrã largo) ================== */
@@ -2881,7 +2886,7 @@ function askAI(vid,rid){
 }
 function aiPrompt(){
  const q=(($('#ai-q')||{}).value||AIQ.q||'').trim()||'Ajuda-me a diagnosticar e a reparar este carro.';
- return 'Assistente de mecânica (GaragePro). Sou mecânico em aprendizagem. Responde em português de Portugal, de forma prática e por passos; diz o nome das peças como se diz em Portugal; não inventes binários de aperto nem especificações — se não tiveres certeza, diz onde confirmar; avisa os cuidados de segurança.\n\n'+aiCtx(AIQ.vid,AIQ.rid)+'\n\nPergunta: '+q;
+ return 'Assistente de mecânica (7Chaves). Sou mecânico em aprendizagem. Responde em português de Portugal, de forma prática e por passos; diz o nome das peças como se diz em Portugal; não inventes binários de aperto nem especificações — se não tiveres certeza, diz onde confirmar; avisa os cuidados de segurança.\n\n'+aiCtx(AIQ.vid,AIQ.rid)+'\n\nPergunta: '+q;
 }
 async function aiCopy(t){try{await navigator.clipboard.writeText(t);return true}catch(_){try{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch(__){return false}}}
 async function aiSend(onlyCopy){
@@ -2939,7 +2944,7 @@ function delCli(id){
 /* ================== DEFINIÇÕES ================== */
 function vSet(){
  let h=hdr('Definições','',true);
- h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>GaragePro</b><small>Versão ${APP_VER}${APP_BUILD?' (compilação '+APP_BUILD+')':''} · gestão de mecânica</small></div></div>`;
+ h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>7Chaves</b><small>Versão ${APP_VER}${APP_BUILD?' (compilação '+APP_BUILD+')':''} · gestão de mecânica</small></div></div>`;
  h+=`<div class="sec"><h2>Oficina</h2></div><div class="card grp">
   <button class="opt" onclick="go('clients')"><span class="bub b-pri">${I('users')}</span>Clientes<span class="rv">${S.clients.length} ${I('chev','s')}</span></button>
   <button class="opt" onclick="SHP=null;go('shop')"><span class="bub b-ok">${I('receipt')}</span>Dados da oficina<span class="rv">${shop().nome?esc(shop().nome):'Para folhas e recibos'} ${I('chev','s')}</span></button>
@@ -3333,7 +3338,7 @@ function lockNow(){
 }
 function lkRender(msg){
  const d=$('#lock');if(!d)return;const p=S.prefs.pin,len=p.len||4,wait=lkWait();
- d.innerHTML=`<div class="lkbox"><img class="lgimg" src="${LOGO}" alt="GaragePro"><h2>GaragePro</h2><p class="hint" id="lkmsg">${msg||(wait?'Demasiadas tentativas. Espera '+wait+' s.':'Introduz o PIN')}</p>
+ d.innerHTML=`<div class="lkbox"><img class="lgimg" src="${LOGO}" alt="7Chaves"><h2>7Chaves</h2><p class="hint" id="lkmsg">${msg||(wait?'Demasiadas tentativas. Espera '+wait+' s.':'Introduz o PIN')}</p>
   <div class="dots">${Array.from({length:len},(_,i)=>`<i class="${i<LK.buf.length?'on':''}"></i>`).join('')}</div>
   <div class="kp">${[1,2,3,4,5,6,7,8,9,'',0,'⌫'].map(k=>k===''?'<span></span>':`<button aria-label="${k==='⌫'?'Apagar dígito':k}" onclick="lkKey('${k}')">${k}</button>`).join('')}</div>
   <button class="lkforgot" onclick="lkForgot()">Esqueci-me do PIN</button></div>`;
@@ -3537,7 +3542,7 @@ async function exportData(withPhotos=true){
  const name=`garagepro-${todayISO()}.${bk.ext}`;
  const FS=plug('Filesystem'),SH=plug('Share');
  if(isNative()&&FS&&SH){
-  try{const w=await FS.writeFile({path:name,data:bytesB64(bk.bytes),directory:'CACHE'});await SH.share({title:'Cópia GaragePro',text:name,url:w.uri,dialogTitle:'Enviar cópia (Quick Share, WhatsApp, Drive…)'});markExported();toast('Cópia enviada');return}
+  try{const w=await FS.writeFile({path:name,data:bytesB64(bk.bytes),directory:'CACHE'});await SH.share({title:'Cópia 7Chaves',text:name,url:w.uri,dialogTitle:'Enviar cópia (Quick Share, WhatsApp, Drive…)'});markExported();toast('Cópia enviada');return}
   catch(e){if(/cancel/i.test(String(e&&e.message||e)))return;toast('Não foi possível partilhar a cópia')}
   return;
  }
@@ -3548,7 +3553,7 @@ async function exportData(withPhotos=true){
 async function importFile(f){
  if(!f)return;
  if(f.size>60*1024*1024)return toast('Ficheiro demasiado grande');
- const bad='Este ficheiro não é uma cópia da GaragePro';
+ const bad='Este ficheiro não é uma cópia da 7Chaves';
  let txt;
  try{const buf=new Uint8Array(await f.arrayBuffer());txt=buf[0]===0x1f&&buf[1]===0x8b?await gunzipText(buf):new TextDecoder().decode(buf)}catch(_){return toast(bad)}
  let o;try{o=JSON.parse(txt)}catch(_){return toast(bad)}
@@ -3558,7 +3563,7 @@ async function importFile(f){
 }
 /* arrastar ficheiro para a janela (PC / tablet) */
 let _dragN=0;
-function dropOverlay(on){let d=$('#dropov');if(on&&!d){d=document.createElement('div');d.id='dropov';d.innerHTML=`<div>${I('upload')}<b>Larga aqui para importar</b><small>Cópia da GaragePro (.garagepro ou .json)</small></div>`;document.body.appendChild(d)}if(!on&&d)d.remove()}
+function dropOverlay(on){let d=$('#dropov');if(on&&!d){d=document.createElement('div');d.id='dropov';d.innerHTML=`<div>${I('upload')}<b>Larga aqui para importar</b><small>Cópia da 7Chaves (.garagepro ou .json)</small></div>`;document.body.appendChild(d)}if(!on&&d)d.remove()}
 const hasFiles=e=>e.dataTransfer&&[...(e.dataTransfer.types||[])].includes('Files');
 addEventListener('dragenter',e=>{if(!hasFiles(e)||$('#lock'))return;e.preventDefault();_dragN++;dropOverlay(true)});
 addEventListener('dragover',e=>{if(!hasFiles(e))return;e.preventDefault();e.dataTransfer.dropEffect='copy'});
@@ -3726,7 +3731,7 @@ async function installUpdate(){
  toast('A abrir no Chrome… se pedir confirmação, escolhe Transferir mesmo assim');
 }
 function permSheet(){
- openSheet(`<h3>Falta uma autorização</h3><p class="hint">Para se atualizar sozinha, a GaragePro precisa de autorização do Android para instalar apps. Só é preciso fazer isto uma vez.</p>
+ openSheet(`<h3>Falta uma autorização</h3><p class="hint">Para se atualizar sozinha, a 7Chaves precisa de autorização do Android para instalar apps. Só é preciso fazer isto uma vez.</p>
   <ol class="steps"><li>Carrega em <b>Abrir definições</b>.</li><li>Ativa <b>Permitir desta origem</b>.</li><li>Volta à app e carrega outra vez em <b>Descarregar e instalar</b>.</li></ol>
   <button class="btn" onclick="closeSheet();plug('Instalador').abrirPermissao()">${I('shield')} Abrir definições</button>`);
 }
@@ -3737,7 +3742,7 @@ async function vUpdatesLoad(){UI.autobak=DBOK?((await DB.get('autobak'))||[]):[]
 const isPC=()=>!!window.gpDesktop;
 function vUpdatesPC(){
  let h=hdr('Atualizações');
- h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>GaragePro v${APP_VER}</b><small>${APP_BUILD?'Compilação '+APP_BUILD+' · ':''}Computador (Windows)</small></div></div>`;
+ h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>7Chaves v${APP_VER}</b><small>${APP_BUILD?'Compilação '+APP_BUILD+' · ':''}Computador (Windows)</small></div></div>`;
  h+=`<div class="wrap"><div class="note">${I('info')}<span>A versão do computador procura atualizações sozinha ao abrir. Descarrega em segundo plano e pergunta se queres reiniciar; se disseres "Mais tarde", instala quando fechares a app.</span></div>`;
  if(UI.pcUpd)h+=`<div class="card upd"><span class="bub b-pri">${I('download')}</span><div><b>${esc(UI.pcUpd)}</b></div></div>`;
  h+=`<button class="btn" onclick="pcCheck()">${I('history')} Procurar atualizações agora</button></div>`;
@@ -3749,7 +3754,7 @@ function vUpdates(){
  if(UI.autobak===undefined){UI.autobak=null;vUpdatesLoad()}
  const nat=isNative(),p=S.prefs||{};
  let h=hdr('Atualizações');
- h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>GaragePro v${APP_VER}</b><small>${APP_BUILD?'Compilação '+APP_BUILD:'Versão de desenvolvimento'} · ${nat?'App instalada (APK)':'A correr no browser'}</small></div></div>`;
+ h+=`<div class="card shero"><img class="lgimg" src="${LOGO}" alt=""><div><b>7Chaves v${APP_VER}</b><small>${APP_BUILD?'Compilação '+APP_BUILD:'Versão de desenvolvimento'} · ${nat?'App instalada (APK)':'A correr no browser'}</small></div></div>`;
  h+='<div class="wrap">';
  if(!nat)h+=`<div class="note">${I('info')}<span>Estás a usar a versão do browser. As atualizações automáticas funcionam no <b>APK</b> instalado no telemóvel.${repoOK()?` Podes descarregar o APK mais recente <a class="c-pri" href="https://github.com/${UPDATE_REPO}/releases/latest" target="_blank">aqui</a>.`:''}</span></div>`;
  const st=UP.st;
