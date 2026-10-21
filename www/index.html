@@ -477,6 +477,34 @@ textarea.msg{min-height:180px;font-size:13.5px;line-height:1.45}
 [data-layout=desktop] .hdr{padding-top:16px}
 [data-layout=desktop] .hello{padding-top:10px}
 
+
+/* ===== fundos animados (só transform/opacity: leves para a bateria) ===== */
+.bgfx{container-type:size}
+.bgfx .aur{position:absolute;right:auto;bottom:auto;width:110cqmax;height:110cqmax;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--pri) 24%,transparent),transparent);will-change:transform}
+.bgfx .a1{left:-45cqmax;top:-55cqmax;animation:gpAurA 28s ease-in-out infinite alternate}
+.bgfx .a2{left:auto;top:auto;right:-55cqmax;bottom:-60cqmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--pri) 16%,transparent),transparent);animation:gpAurB 36s ease-in-out infinite alternate}
+.bgfx .a3{left:20cqw;top:30cqh;width:60cqmax;height:60cqmax;background:radial-gradient(closest-side,color-mix(in srgb,var(--vio,#8b5cf6) 10%,transparent),transparent);animation:gpAurC 22s ease-in-out infinite alternate}
+@keyframes gpAurA{to{transform:translate(35cqmax,25cqmax) scale(1.15)}}
+@keyframes gpAurB{to{transform:translate(-30cqmax,-20cqmax) scale(.9)}}
+@keyframes gpAurC{to{transform:translate(-25cqw,-20cqh) scale(1.3)}}
+.bgfx .road{top:auto;left:0;right:0;bottom:0;height:60%;overflow:hidden;perspective:300px;opacity:.12;-webkit-mask-image:linear-gradient(0deg,#000,transparent);mask-image:linear-gradient(0deg,#000,transparent)}
+.bgfx .lane{position:absolute;left:50%;width:40%;margin-left:-20%;top:-100%;height:300%;transform:rotateX(62deg);transform-origin:50% 100%;background:linear-gradient(90deg,var(--tx) 0 3px,transparent 3px calc(100% - 3px),var(--tx) calc(100% - 3px)),repeating-linear-gradient(180deg,var(--pri) 0 40px,transparent 40px 90px);background-size:100% 100%,6px 100%;background-position:0 0,center 0;background-repeat:no-repeat,repeat-y;animation:gpRoad 1.4s linear infinite}
+@keyframes gpRoad{to{transform:rotateX(62deg) translateY(90px)}}
+.bgfx .gear{position:absolute;color:var(--tx);opacity:.06;animation:gpSpin 70s linear infinite;will-change:transform}
+.bgfx .gear .i{width:100%;height:100%;stroke-width:1.1}
+.bgfx .g1{left:auto;bottom:auto;width:75cqmin;height:75cqmin;right:-25cqmin;top:-20cqmin}
+.bgfx .g2{right:auto;top:auto;width:48cqmin;height:48cqmin;left:-16cqmin;bottom:-14cqmin;animation-direction:reverse;animation-duration:50s;color:var(--pri);opacity:.08}
+.bgfx .g3{left:auto;top:auto;width:30cqmin;height:30cqmin;right:12cqmin;bottom:18cqmin;animation-duration:35s;opacity:.04}
+@keyframes gpSpin{to{transform:rotate(360deg)}}
+.bgfx .spk{position:absolute;top:auto;right:auto;bottom:-6px;width:3px;height:3px;border-radius:50%;background:var(--pri);box-shadow:0 0 6px 1px var(--pri);opacity:0;animation-name:gpSpark;animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform,opacity}
+@keyframes gpSpark{0%{transform:translate(0,0);opacity:0}12%{opacity:.8}70%{opacity:.5}100%{transform:translate(18px,-105cqh);opacity:0}}
+.bgfx .bgimg{width:100%;height:100%;object-fit:cover}
+.bgfx .bgdim{background:color-mix(in srgb,var(--bg) 62%,transparent)}
+.bgfx .bgnone{display:grid;place-items:center;font-size:11px;font-weight:600;color:var(--mut);border:1.5px dashed var(--line2);border-radius:inherit;margin:34px 6px 22px}
+.bgimgbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.bgimgbar .btn{margin:0;width:auto;padding:0 14px;cursor:pointer}
+.bgopt.anim::after{content:"▶ animado";position:absolute;right:6px;top:40px;z-index:3;font-size:9.5px;font-weight:700;padding:2px 6px;border-radius:99px;background:color-mix(in srgb,var(--pri) 85%,#000);color:#fff}
+[data-anim=off] .bgfx *,[data-paused] .bgfx *{animation-play-state:paused!important}
+@media (prefers-reduced-motion:reduce){.bgfx *{animation:none!important}}
 /* ===== densidade compacta ===== */
 [data-dens=comp] .row{padding:9px 10px;margin-bottom:6px}
 [data-dens=comp] .sec{padding:14px 16px 7px}
@@ -1211,6 +1239,7 @@ const CHANGELOG=[
  {v:'1.1',d:'2026-10-21',t:'Novo nome: 7Chaves',items:[
   'A app passa a chamar-se 7Chaves ("guardado a sete chaves", e a chave do mecânico)',
   'Os teus dados, a sincronização, as cópias de segurança e as atualizações continuam iguais: nada se perde com a mudança de nome',
+  'Fundos animados em Aparência: Aurora, Estrada, Engrenagens e Faíscas, ou uma imagem ou GIF teu como fundo (fica só neste aparelho). Podes desligar o movimento a qualquer momento',
   'Logótipo novo, com o nome: ícone do telemóvel e do Windows, ecrã do PIN e recibos. Nos sítios pequenos ao lado do nome (barra lateral, Início) aparece só o símbolo',
   'As cópias automáticas continuam na pasta Documentos/GaragePro do telemóvel e os ficheiros de cópia continuam a terminar em .garagepro'
  ]},
@@ -3378,6 +3407,7 @@ function lkWipe(){
  save();$('#lock')&&$('#lock').remove();UI.cur=null;tab('home');toast('Dados apagados');
 }
 document.addEventListener('visibilitychange',()=>{
+ if(document.hidden)document.documentElement.dataset.paused='1';else delete document.documentElement.dataset.paused;
  if(document.hidden)_hiddenAt=Date.now();
  else if(pinOn()&&_hiddenAt&&Date.now()-_hiddenAt>60000)lockNow();
 });
@@ -3450,7 +3480,8 @@ const ACCENTS={
  grafite:{n:'Grafite',d:'#cbd5e1',l:'#334155',txd:'#0b0d10'}
 };
 const MODES={escuro:'Escuro',claro:'Claro',auto:'Automático'};
-const BGS={tema:{n:'Do estilo'},liso:{n:'Liso'},brilho:{n:'Brilho'},grao:{n:'Grão'},carbono:{n:'Carbono'},chapa:{n:'Chapa'},linhas:{n:'Linhas'}};
+const BGS={tema:{n:'Do estilo'},liso:{n:'Liso'},brilho:{n:'Brilho'},grao:{n:'Grão'},carbono:{n:'Carbono'},chapa:{n:'Chapa'},linhas:{n:'Linhas'},aurora:{n:'Aurora',anim:1},estrada:{n:'Estrada',anim:1},engrenagens:{n:'Engrenagens',anim:1},faiscas:{n:'Faíscas',anim:1},minha:{n:'Imagem tua'}};
+let BGIMG=''; // imagem/GIF de fundo escolhida pelo utilizador (só neste aparelho, não vai na sincronização)
 const BG_INT={suave:{n:'Suave',o:.5},media:{n:'Média',o:.8},forte:{n:'Forte',o:1}};
 const curStyle=()=>STYLES[(S.prefs||{}).style]?S.prefs.style:'sobrio';
 const curMode=()=>MODES[(S.prefs||{}).mode]?S.prefs.mode:'escuro';
@@ -3467,8 +3498,24 @@ function bgHTML(k,style){
  if(k==='carbono')return '<div class="mk carbon"></div><div class="glow" style="opacity:.6"></div>'+F;
  if(k==='chapa')return '<div class="mk plate2"></div>'+F+G;
  if(k==='linhas')return '<div class="lines"></div><div class="glow" style="opacity:.7"></div>';
+ if(k==='aurora')return '<div class="aur a1"></div><div class="aur a2"></div><div class="aur a3"></div>'+G;
+ if(k==='estrada')return '<div class="road"><div class="lane"></div></div><div class="glow" style="opacity:.6"></div>';
+ if(k==='engrenagens')return `<span class="gear g1">${I('cog')}</span><span class="gear g2">${I('cog')}</span><span class="gear g3">${I('cog')}</span>`+F;
+ if(k==='faiscas'){let h='';for(let i=0;i<16;i++){const l=(i*37+11)%100,d=(i*1.7)%9,t=6+(i*13)%7;h+=`<i class="spk" style="left:${l}%;animation-delay:-${d.toFixed(1)}s;animation-duration:${t}s"></i>`}return h+'<div class="glow" style="opacity:.5"></div>'}
+ if(k==='minha')return BGIMG?`<img class="bgimg" src="${BGIMG}" alt=""><div class="bgdim"></div>`:'<div class="bgnone">Escolher imagem</div>';
  return '';
 }
+async function pickBgImg(inp){
+ const f=inp.files&&inp.files[0];if(!f)return;
+ try{
+  let url;
+  if(/image\/(gif|webp)/.test(f.type)){if(f.size>6*1024*1024)return toast('GIF demasiado grande (máximo 6 MB)');url=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(f)})}
+  else url=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const k=Math.min(1,1800/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};img.onerror=rej;img.src=fr.result};fr.onerror=rej;fr.readAsDataURL(f)});
+  if(!/^data:image\/(jpeg|png|gif|webp);base64,/.test(url))return toast('Formato de imagem não suportado');
+  BGIMG=url;await DB.set('bgimg',url);setPref('bg','minha');toast('Fundo aplicado');
+ }catch(_){toast('Não foi possível ler a imagem')}
+}
+async function delBgImg(){BGIMG='';try{await DB.set('bgimg','')}catch(_){}setPref('bg','tema');toast('Imagem de fundo removida')}
 function mountBg(){let d=$('body>.bgfx');if(!d){d=document.createElement('div');d.className='bgfx';document.body.prepend(d)}d.innerHTML=bgHTML(curBg())}
 function applyPrefs(){
  const r=document.documentElement,st=curStyle(),light=isLight();
@@ -3477,7 +3524,7 @@ function applyPrefs(){
  r.style.setProperty('--pri',light?a.l:a.d);
  r.style.setProperty('--pri-tx',a.tx||(!light&&a.txd)||'#fff');
  r.style.setProperty('--bgo',BG_INT[curInt()].o);
- const P=S.prefs||{};r.dataset.dens=P.dens==='comp'?'comp':'conf';if(P.hc)r.dataset.hc='1';else delete r.dataset.hc;r.dataset.side=P.sideMini?'mini':'full';
+ const P=S.prefs||{};r.dataset.anim=P.anim===false?'off':'on';r.dataset.dens=P.dens==='comp'?'comp':'conf';if(P.hc)r.dataset.hc='1';else delete r.dataset.hc;r.dataset.side=P.sideMini?'mini':'full';
  applyLayout();
  mountBg();
  try{pcTitleColors()}catch(_){}
@@ -3497,7 +3544,9 @@ function vAparencia(){
   h+=homeBlock();}
  const light=isLight();
  h+=`<div class="sec"><h2>Cor de destaque</h2></div><div class="wrap"><div class="swatches"><button class="sw auto${!ac?' on':''}" onclick="setPref('accent','')" aria-label="Cor do estilo">${!ac?I('check'):''}</button>${Object.entries(ACCENTS).map(([k,a])=>`<button class="sw${ac===k?' on':''}" style="background:${light?a.l:a.d};color:${a.tx||(!light&&a.txd)||'#fff'}" onclick="setPref('accent','${k}')" aria-label="${a.n}">${ac===k?I('check'):''}</button>`).join('')}</div><p class="hint">${ac?ACCENTS[ac].n:'Do estilo ('+ACCENTS[STYLES[st].acc].n.toLowerCase()+')'}</p></div>`;
- h+=`<div class="sec"><h2>Fundo</h2></div><div class="wrap"><div class="bggrid">${Object.entries(BGS).map(([k,b])=>`<button class="bgopt${bg===k?' on':''}" onclick="setPref('bg','${k}')"><div class="bgfx">${bgHTML(k)}</div><span class="fake"></span><span class="lab">${b.n}</span>${bg===k?`<span class="tick">${I('check')}</span>`:''}</button>`).join('')}</div>
+ h+=`<div class="sec"><h2>Fundo</h2></div><div class="wrap"><div class="bggrid">${Object.entries(BGS).map(([k,b])=>`<button class="bgopt${bg===k?' on':''}${b.anim?' anim':''}" onclick="${k==='minha'&&!BGIMG?`$('#bgpick').click()`:`setPref('bg','${k}')`}"><div class="bgfx">${bgHTML(k)}</div><span class="fake"></span><span class="lab">${b.n}</span>${bg===k?`<span class="tick">${I('check')}</span>`:''}</button>`).join('')}</div>
+  ${bg==='minha'||!BGIMG?`<div class="bgimgbar"><label class="btn ghost sm">${I('camera','s')} ${BGIMG?'Trocar imagem ou GIF':'Usar uma imagem ou GIF meu'}<input type="file" id="bgpick" accept="image/*" hidden onchange="pickBgImg(this)"></label>${BGIMG?`<button class="btn ghost sm" onclick="delBgImg()">${I('trash','s')} Remover</button>`:''}</div>`:''}
+  ${BGS[bg]&&(BGS[bg].anim||bg==='minha')?`<label class="tgl big"><input type="checkbox" ${(S.prefs||{}).anim!==false?'checked':''} onchange="setPref('anim',this.checked)"><span><b>Movimento no fundo</b><small>Desliga se o telemóvel aquecer ou gastar bateria. Também para sozinho quando a app está em segundo plano.</small></span></label>`:''}
   <label class="fl">Intensidade do fundo</label><div class="seg">${Object.entries(BG_INT).map(([k,x])=>`<button class="${it===k?'on':''}" onclick="setPref('bgInt','${k}')">${x.n}</button>`).join('')}</div>
   </div>${layoutBlock()}<div class="wrap"><button class="btn ghost sm" style="margin-top:22px" onclick="S.prefs={...S.prefs,style:'sobrio',mode:'escuro',accent:'',bg:'tema',bgInt:'media',layout:'auto',zoom:'1',dens:'conf',hc:false,sideMini:false};delete S.prefs.home;save();applyPrefs();render();toast('Aparência reposta')">Repor predefinição</button></div><div style="height:12px"></div>`;
  return h;
@@ -3640,7 +3689,7 @@ function sanitize(s){
   ...(obj(p.shop)?{shop:{nome:sStr(p.shop.nome,80),nif:sStr(p.shop.nif,20),morada:sStr(p.shop.morada,160),local:sStr(p.shop.local,80),tel:sStr(p.shop.tel,30),email:sStr(p.shop.email,80),iva:['isento','incl','none'].includes(p.shop.iva)?p.shop.iva:'isento',rodape:sStr(p.shop.rodape,600),docModel:p.shop.docModel==='simples'?'simples':'completo',maoHora:sStr(p.shop.maoHora,10),logo:['app','custom','none'].includes(p.shop.logo)?p.shop.logo:'app',logoImg:typeof p.shop.logoImg==='string'&&FOTO_RE.test(p.shop.logoImg)?p.shop.logoImg:''}}:{}),
   ...(obj(p.docSeq)?{docSeq:Object.fromEntries(Object.entries(p.docSeq).filter(([k,v])=>/^\d{4}$/.test(k)).map(([k,v])=>[k,Math.max(0,Math.round(sNum(v)))]))}:{}),
   ...(typeof p.precoSemIva==='boolean'?{precoSemIva:p.precoSemIva}:{}),
-  ...(p.dens==='comp'?{dens:'comp'}:{}),...(p.hc===true?{hc:true}:{}),...(p.sideMini===true?{sideMini:true}:{}),
+  ...(p.dens==='comp'?{dens:'comp'}:{}),...(p.anim===false?{anim:false}:{}),...(p.hc===true?{hc:true}:{}),...(p.sideMini===true?{sideMini:true}:{}),
   ...(obj(p.home)?{home:{order:arr(p.home.order).filter(k=>typeof k==='string'&&/^[a-z]{2,12}$/.test(k)).slice(0,12),hide:arr(p.home.hide).filter(k=>typeof k==='string'&&/^[a-z]{2,12}$/.test(k)).slice(0,12)}}:{}),
   lastExport:sStr(p.lastExport,30),bakSnooze:sDate(p.bakSnooze,''),firstUse:sDate(p.firstUse,todayISO()),pinFails:Math.max(0,Math.round(sNum(p.pinFails))),pinUntil:Math.max(0,sNum(p.pinUntil)),
   ...(obj(p.pin)&&/^[A-Za-z0-9+\/=]{16,64}$/.test(p.pin.salt)&&/^[A-Za-z0-9+\/=]{40,64}$/.test(p.pin.hash)&&[4,5,6].includes(p.pin.len)?{pin:{salt:p.pin.salt,hash:p.pin.hash,len:p.pin.len}}:{})};
@@ -3797,7 +3846,7 @@ let tT;function toast(t){let e=$('.toast');if(!e){e=document.createElement('div'
 
 /* ================== ARRANQUE ================== */
 (async function init(){
- try{await DB.open();const s=await DB.get('state');if(s){const was=s.ver||1;S=normalize(s);if(was<3)save()}}
+ try{await DB.open();const s=await DB.get('state');if(s){const was=s.ver||1;S=normalize(s);if(was<3)save()}try{const bi=await DB.get('bgimg');BGIMG=typeof bi==='string'&&/^data:image\/(jpeg|png|gif|webp);base64,/.test(bi)?bi:''}catch(_){}}
  catch(e){DBOK=false;try{const s=localStorage.getItem('garagepro');if(s)S=normalize(JSON.parse(s))}catch(_){}}
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
  await syLoadLocal();
