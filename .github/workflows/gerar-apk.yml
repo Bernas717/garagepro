@@ -127,7 +127,8 @@ jobs:
               @PluginMethod
               public void descarregarEInstalar(final PluginCall call) {
                   final String url = call.getString("url");
-                  if (url == null || !url.startsWith("https://github.com/")) {
+                  // só APKs das versões deste repositório
+                  if (url == null || !url.matches("^https://github\\.com/${{ github.repository }}/releases/download/[A-Za-z0-9._-]+/[A-Za-z0-9._-]+\\.apk$")) {
                       call.reject("Endereço inválido");
                       return;
                   }
@@ -218,6 +219,7 @@ jobs:
           KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
+          trap 'rm -f chave.jks alinhado.apk' EXIT   # a chave nunca fica no disco, mesmo se a assinatura falhar
           echo "$KS_B64" | tr -d '\r\n ' | base64 -d > chave.jks
           BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
           IN=android/app/build/outputs/apk/release/app-release-unsigned.apk
@@ -230,7 +232,7 @@ jobs:
           echo "APK=$OUT" >> $GITHUB_ENV
 
       - name: Publicar versão (Release)
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
           name: 7Chaves v${{ steps.v.outputs.versao }} (compilação ${{ github.run_number }})
@@ -280,7 +282,7 @@ jobs:
         run: npx electron-builder --win nsis --x64 --publish never
 
       - name: Juntar à versão (Release)
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
           tag_name: v${{ steps.v.outputs.versao }}-b${{ github.run_number }}
           files: |

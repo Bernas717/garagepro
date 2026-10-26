@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://api.github.com https://api.anthropic.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://api.github.com; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -325,29 +325,6 @@ html.pc body{padding-top:36px}html.pc .hdr{top:36px}html.pc #ntbox{top:52px}html
 .cjg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:6px 0 4px}.cjt{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--rs);border:1px solid var(--line);background:var(--card2);text-align:left;color:var(--tx);min-width:0}.cjt>span:last-child{min-width:0}.cjt b{display:block;font-size:13.5px;font-weight:650;line-height:1.25}.cjt small{display:block;color:var(--mut);font-size:11.5px;margin-top:2px}.cjt:hover{border-color:var(--line2)}
 .cjback{display:inline-flex;align-items:center;gap:6px;color:var(--pri);font-weight:600;font-size:14px;padding:8px 0}.cjh{display:flex;gap:12px;align-items:flex-start;padding:6px 2px 4px}.cjh b{display:block;font-size:16px;font-weight:700}.cjh small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;line-height:1.4}
 .pprw{display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line)}.pprw .pprow{flex:1;min-width:0;border-bottom:0}.ppph{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;color:var(--mut);border:1px solid var(--line);background:var(--card2)}.ppph:hover,.ppph:active{color:var(--pri);border-color:var(--pri)}.ppph .i{width:18px;height:18px}.phl{margin:8px 0 0}
-.aiwrap{max-width:820px;margin:0 auto}
-.aibar{display:flex;gap:8px;align-items:center;margin-top:4px}.aibar .in{flex:1;height:42px;min-width:0}.aibar select{min-width:0;flex:1}
-.aimod{flex:none;height:42px;padding:0 14px;border-radius:var(--rb);border:1px solid var(--line2);background:var(--card);font-size:13px;font-weight:600;color:var(--tx2)}
-.aiintro{padding:22px 18px;text-align:left}.aiintro h3{margin:12px 0 6px;font-size:19px}.aiintro p{color:var(--tx2);line-height:1.5;margin:0}.aiintro ul{color:var(--tx2);font-size:13.5px;line-height:1.5;padding-left:18px;margin:12px 0 0}.aiintro li{margin:4px 0}
-.aiempty{text-align:center;padding:34px 6px 10px;color:var(--tx2)}.aiempty .bub{width:48px;height:48px;margin:0 auto 10px}.aiempty p{margin:0 auto 16px;max-width:420px;line-height:1.5}
-.aiqs{display:flex;flex-direction:column;gap:8px;max-width:460px;margin:0 auto}.aiqs button{padding:12px 14px;border-radius:var(--rb);border:1px solid var(--line2);background:var(--card);font-size:14px;color:var(--tx);text-align:left}
-.aimsgs{display:flex;flex-direction:column;gap:12px;padding:16px 0 8px}
-.aim{display:flex;scroll-margin-bottom:150px}.aim.u{justify-content:flex-end}
-.aib{max-width:88%;padding:11px 14px;border-radius:18px;line-height:1.5;font-size:15px;overflow-wrap:anywhere}
-.aim.u .aib{background:var(--pri);color:var(--pri-tx);border-bottom-right-radius:6px}
-.aim.a .aib{background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px;max-width:100%}
-.aib p{margin:0 0 8px}.aib p:last-child,.aib ul:last-child,.aib ol:last-child{margin-bottom:0}.aib h4{margin:12px 0 6px;font-size:15.5px}.aib h4:first-child{margin-top:0}.aib ul,.aib ol{margin:0 0 8px;padding-left:22px}.aib li{margin:3px 0}.aib code{font-family:var(--fm,monospace);font-size:.9em;background:var(--card2);padding:1px 5px;border-radius:5px}.aib hr{border:0;border-top:1px solid var(--line);margin:10px 0}
-.aib.err{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}.aib.err .lnk{display:block;margin-top:6px;padding:0}
-.aiph{display:inline-flex;align-items:center;gap:4px;font-size:12px;opacity:.85;margin-right:6px}
-.aidots{display:inline-flex;gap:4px;padding:4px 0}.aidots i{width:7px;height:7px;border-radius:50%;background:var(--mut);animation:aid 1.2s infinite}.aidots i:nth-child(2){animation-delay:.15s}.aidots i:nth-child(3){animation-delay:.3s}
-@keyframes aid{0%,80%,100%{opacity:.25}40%{opacity:1}}
-.aicomp{position:sticky;bottom:calc(68px + env(safe-area-inset-bottom));padding:8px 0 4px;background:linear-gradient(transparent,var(--bg) 14px);z-index:5}
-[data-layout=tablet] .aicomp,[data-layout=desktop] .aicomp{bottom:0;padding-bottom:12px}
-.aiin{display:flex;align-items:flex-end;gap:8px;background:var(--card);border:1px solid var(--line2);border-radius:24px;padding:6px}
-.aiin textarea{flex:1;border:0;background:transparent;color:var(--tx);font:inherit;font-size:15px;resize:none;padding:9px 4px;max-height:160px;outline:none;min-height:22px}
-.aiin .ib{flex:none;width:40px;height:40px;border-radius:50%}
-.aiprev{position:relative;display:inline-block;margin-bottom:8px}.aiprev img{height:84px;border-radius:12px;display:block;border:1px solid var(--line2)}.aiprev .ib{position:absolute;top:-8px;right:-8px;background:var(--sheet)}
-.aifoot{font-size:11.5px;color:var(--mut);text-align:center;margin:6px 0 0}
 .aictx{font-size:12.5px;line-height:1.5;color:var(--tx2);background:var(--card2);border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;max-height:160px;overflow-y:auto}
 .pprow{padding:10px 2px}.pprow .mid{flex:1;min-width:0}.pprow b{display:block;font-weight:600;font-size:14.5px}.pprow small{display:block;color:var(--mut);font-size:12.5px;line-height:1.35;margin-top:1px}
 .shero{margin:6px 16px 0;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
@@ -751,8 +728,6 @@ euro:'<path d="M4 10h12M4 14h9M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4
 sliders:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',
 history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/>',
 sparkle:'<path d="M12 3l1.9 5.8L20 10l-6.1 1.2L12 17l-1.9-5.8L4 10l6.1-1.2z"/><path d="M19 17l.7 2.1L22 20l-2.3.6L19 23l-.7-2.4L16 20l2.3-.9z"/>',
-key:'<circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 21 2M16 7l3 3M19 4l2 2"/>',
-send:'<path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>',
 info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
 list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
 phone2:'<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/>',
@@ -1261,12 +1236,14 @@ const label=k=>k==='oleo'?'Mudança de óleo':(CAT[k]?CAT[k].n:'Outro');
 // Regra: todas as alterações do mesmo dia ficam na mesma versão; um dia novo = versão nova (+0.1).
 const APP_VER='1.2';
 const CHANGELOG=[
- {v:'1.2',d:'2026-10-26',t:'Assistente de mecânica dentro da app',items:[
-  'Novo separador Assistente: escreves a dúvida e a resposta aparece ali mesmo, em português de Portugal',
-  'Escolhes o carro e o assistente já sabe a marca, o motor, os km, o histórico e a manutenção em atraso. Nome, telefone e matrícula do cliente nunca são enviados',
-  'Podes juntar uma foto (uma peça, uma fuga, a luz no painel) para o assistente ver',
-  'Usa a tua chave da API da Anthropic, paga à parte por uso. A chave e a conversa ficam só neste aparelho: não vão para a sincronização, cópias nem exportações',
-  'Na ordem de reparação, o botão do assistente passa a perguntar aqui na app (continua a dar para abrir no Claude)'
+ {v:'1.2',d:'2026-10-26',t:'Segurança e estabilidade',items:[
+  'O separador do assistente com chave paga foi retirado. Se chegaste a guardar uma chave, a app apaga-a deste aparelho ao abrir. O botão que prepara a pergunta e abre o Claude continua nas ordens e nos carros',
+  'Sincronização: quando há um erro (sem rede, chave do GitHub errada), a app espera cada vez mais entre tentativas em vez de insistir de 5 em 5 segundos. Gasta menos bateria e dados',
+  'Fundo com imagem própria: se a imagem não existir neste aparelho (por exemplo depois de restaurar uma cópia), volta ao fundo do tema em vez de mostrar um quadro vazio',
+  'O fundo deixa de ser refeito sempre que mudas uma opção: com GIFs grandes, as definições ficam mais rápidas',
+  'Já dá para escolher outra vez a mesma imagem de fundo depois de a trocar',
+  'Atualizações no Android: a app só aceita instalar APKs das versões oficiais da 7Chaves no GitHub',
+  'Computador: só a própria app pode usar as notificações e as atualizações do Windows'
  ]},
  {v:'1.1',d:'2026-10-21',t:'Novo nome: 7Chaves',items:[
   'A app passa a chamar-se 7Chaves ("guardado a sete chaves", e a chave do mecânico)',
@@ -1483,7 +1460,8 @@ let F=null,VF=null,MV=null,DBOK=true;
 const DB={db:null,
  open(){return new Promise((res,rej)=>{const r=indexedDB.open('garagepro',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>{this.db=r.result;res()};r.onerror=()=>rej(r.error)})},
  get(k){return new Promise((res,rej)=>{const q=this.db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})},
- set(k,v){return new Promise((res,rej)=>{const tx=this.db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+ set(k,v){return new Promise((res,rej)=>{const tx=this.db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})},
+ del(k){return new Promise((res,rej)=>{const tx=this.db.transaction('kv','readwrite');tx.objectStore('kv').delete(k);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
 };
 // Converte dados de versões anteriores (dinheiro dentro das reparações) para o formato atual (Finanças separadas)
 function normalize(o){return sanitize(migrate(o))}
@@ -1630,7 +1608,7 @@ function render(){
  const top=stack[stack.length-1];let h='';
  MZ={};
  try{
-  const V={sync:vSync,or:()=>vOR(top.id),vhist:()=>vVHist(top.id),shop:vShop,transfer:vTransfer,aparencia:vAparencia,search:vSearch,home:vHome,tasks:vTasks,vehicles:vVehicles,veh:()=>vVeh(top.id),rep:()=>F?vRep():vHome(),vform:()=>VF?vVForm():vHome(),timeline:vTimeline,fin:vFin,client:()=>vClient(top.id),set:vSet,clients:vClients,intervals:vIntervals,changelog:vChangelog,updates:vUpdates,assist:vAssist};
+  const V={sync:vSync,or:()=>vOR(top.id),vhist:()=>vVHist(top.id),shop:vShop,transfer:vTransfer,aparencia:vAparencia,search:vSearch,home:vHome,tasks:vTasks,vehicles:vVehicles,veh:()=>vVeh(top.id),rep:()=>F?vRep():vHome(),vform:()=>VF?vVForm():vHome(),timeline:vTimeline,fin:vFin,client:()=>vClient(top.id),set:vSet,clients:vClients,intervals:vIntervals,changelog:vChangelog,updates:vUpdates};
   h=(V[top.v]||vHome)();
  }catch(e){console.error(e);h=`<div class="empty">Erro: ${esc(e.message)}</div>`}
  finally{MZ=null}
@@ -1639,10 +1617,10 @@ function render(){
  a11y($('#app'));
 }
 function nav(v){
- const map={sync:'set',or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:isDesk()?'clients':'fin',set:'set',clients:isDesk()?'clients':'set',intervals:'set',changelog:'set',updates:'set',assist:'assist'};
+ const map={sync:'set',or:'timeline',vhist:'vehicles',shop:'set',transfer:'set',aparencia:'set',search:'home',home:'home',tasks:'tasks',vehicles:'vehicles',veh:'vehicles',vform:'vehicles',timeline:'timeline',rep:'timeline',fin:'fin',client:isDesk()?'clients':'fin',set:'set',clients:isDesk()?'clients':'set',intervals:'set',changelog:'set',updates:'set'};
  const a=map[v];
  const b=(k,ic,t,x='')=>`<button class="${a===k?'on':''}${x}" onclick="tab('${k}')" title="${t}">${I(ic)}<span>${t}</span></button>`;
- return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b><span>7</span>Chaves</b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${b('assist','sparkle',isDesk()||document.documentElement.dataset.layout==='tablet'?'Assistente':'IA')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button>${isDesk()?`<button class="ncol" onclick="setPref('sideMini',${!(S.prefs||{}).sideMini})" title="${(S.prefs||{}).sideMini?'Expandir':'Recolher'} a barra lateral">${I((S.prefs||{}).sideMini?'chev':'back','s')}<span>Recolher</span></button>`:''}</nav>`;
+ return `<nav class="nav"><div class="nbrand"><img class="lgimg" src="${LOGO}" alt=""><span><b><span>7</span>Chaves</b></span></div>${b('home','home','Início')}${b('vehicles','car','Veículos')}${b('tasks','list','Tarefas')}${b('timeline','wrench','Reparações')}${b('fin','euro','Finanças')}${isDesk()?b('clients','users','Clientes'):''}${b('set','sliders','Definições',' nset').replace('</button>',updBadge()?'<i class="dotn"></i></button>':'</button>')}<button class="nfoot" onclick="go('changelog')" title="Ver o que mudou nesta versão"><span>v${APP_VER}</span><span>${verBuild()}</span>${isDesk()?'<span class="nkb">Ctrl K pesquisar · F11 ecrã inteiro</span>':''}</button>${isDesk()?`<button class="ncol" onclick="setPref('sideMini',${!(S.prefs||{}).sideMini})" title="${(S.prefs||{}).sideMini?'Expandir':'Recolher'} a barra lateral">${I((S.prefs||{}).sideMini?'chev':'back','s')}<span>Recolher</span></button>`:''}</nav>`;
 }
 const verBuild=()=>APP_BUILD?'compilação '+APP_BUILD:'desenvolvimento';
 const hdr=(t,right='',root=false)=>`<header class="hdr${root?' root':''}"><div class="hl"><button class="ib" onclick="back()">${I('back')}</button></div><h1>${t}</h1><div class="hr">${isDesk()?deskTools():''}${right}</div></header>`;
@@ -2745,8 +2723,9 @@ async function syncNow(manual){
    if(await syPush())break;
    SY.etag='';
   }
-  SY.last=Date.now();SY.err='';
- }catch(e){SY.err=e instanceof Response?syErr(e):(e&&e.name==='TypeError'?syErr(null):String(e&&e.message||e).slice(0,120))}
+  SY.last=Date.now();SY.err='';SY.fail=0;SY.next=0;
+ }catch(e){SY.fail=(SY.fail||0)+1;SY.next=Date.now()+Math.min(300000,5000*2**Math.min(SY.fail,6)); // com erro, espera cada vez mais (até 5 min) em vez de insistir de 5 em 5 s
+  SY.err=e instanceof Response?syErr(e):(e&&e.name==='TypeError'?syErr(null):String(e&&e.message||e).slice(0,120))}
  finally{SY.busy=false;SY.firstDone=true;sySaveLocal();try{pcStatus()}catch(_){}}
  if(changed){if(syQuiet())render();else toast('Dados atualizados a partir do outro aparelho')}
  else if(manual||(stack[stack.length-1]||{}).v==='sync')render();
@@ -2754,7 +2733,7 @@ async function syncNow(manual){
 async function saveQuiet(){if(DBOK){try{await DB.set('state',S)}catch(_){}}else{try{localStorage.setItem('garagepro',JSON.stringify(S))}catch(_){}}}
 function syStart(){
  clearInterval(SY.poll);if(!syOn())return;
- SY.poll=setInterval(()=>{if(document.visibilityState==='visible')syncNow()},5000);
+ SY.poll=setInterval(()=>{if(document.visibilityState==='visible'&&!(SY.fail&&Date.now()<SY.next))syncNow()},5000);
 }
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&syOn())syncNow()});
 addEventListener('online',()=>{if(syOn())syncNow()});
@@ -2945,7 +2924,7 @@ function askAI(vid,rid){
   <label class="fl">O que queres saber?</label><textarea class="ta" id="ai-q" rows="4" placeholder="${r&&r.queixa?'Ex: o que pode causar isto e por onde começo?':'Ex: faz um barulho ao travar, por onde começo?'}" oninput="AIQ.q=this.value">${esc(AIQ.q)}</textarea>
   <div class="ppg">${['Por onde começo o diagnóstico?','Que peças posso precisar?','Como se faz esta reparação, passo a passo?','Quanto tempo demora e o que custa mais ou menos?'].map(t=>`<button onclick="const e=$('#ai-q');e.value=(e.value.trim()?e.value.trim()+' ':'')+'${t}';AIQ.q=e.value">${t}</button>`).join('')}</div>
   <label class="fl">Dados que vão junto <small class="c-mut">sem nome, telefone nem matrícula</small></label><div class="aictx">${esc(ctx).replace(/\n/g,'<br>')}</div>
-  <button class="btn" onclick="askHere()">${I('sparkle','s')} Perguntar aqui na app</button><button class="btn ghost sm" style="margin-top:10px" onclick="aiSend()">Abrir no Claude</button><button class="btn ghost sm" style="margin-top:10px" onclick="aiSend(true)">${I('receipt','s')} Só copiar</button>`);
+  <button class="btn" onclick="aiSend()">${I('sparkle','s')} Abrir no Claude</button><button class="btn ghost sm" style="margin-top:10px" onclick="aiSend(true)">${I('receipt','s')} Só copiar</button>`);
  setTimeout(()=>{const e=$('#ai-q');e&&e.focus()},250);
 }
 function aiPrompt(){
@@ -2959,192 +2938,6 @@ async function aiSend(onlyCopy){
  closeSheet();toast(ok?'Pergunta copiada. Se não aparecer escrita no Claude, cola-a.':'A abrir o Claude…');
  openExt('https://claude.ai/new?q='+encodeURIComponent(t.slice(0,6000)));
 }
-/* ================== ASSISTENTE (CONVERSA NA APP) ==================
-   Fala diretamente com a API da Anthropic usando a chave do próprio utilizador.
-   A chave fica só neste aparelho (IndexedDB 'aikey'): nunca vai para S, cópias, exportações nem sincronização.
-   A conversa também fica só aqui ('aichat'). Ao Claude vão só os dados técnicos do carro (aiCtx). */
-const AI_MODELS={'claude-haiku-4-5-20251001':{n:'Rápido',d:'Haiku 4.5 · respostas rápidas, o mais barato'},'claude-sonnet-5':{n:'Equilibrado',d:'Sonnet 5 · bom raciocínio, custo médio (recomendado)'},'claude-opus-5-5':{n:'Mais completo',d:'Opus 5.5 · para avarias difíceis, o mais caro'}};
-const AI_DEF='claude-sonnet-5';
-const AI_SYS=`És o assistente de mecânica da app 7Chaves. Quem te escreve está a aprender mecânica e repara os carros dele e de clientes. Ajuda-o como um mecânico experiente ajuda um aprendiz na oficina: direto, prático, por passos, sem jargão desnecessário.
-
-Língua: português de Portugal, sempre ("travões", "pastilhas", "embraiagem", "junta homocinética", "barra axial", "terminal de direção", "bieleta", "casquilhos (silent-blocs)", "correia de distribuição", "velas de incandescência"). Nunca termos do Brasil. Na primeira vez que falares de uma peça, diz numa frase o que é e onde fica.
-
-Diagnóstico: 1) causas prováveis, da mais provável e barata de verificar para a mais cara, cada uma com uma linha a dizer porque encaixa neste carro; 2) testes para confirmar, com a ferramenta e o que indica cada resultado; 3) o que perguntar ou verificar antes de desmontar (códigos OBD, a frio/quente, a travar, em curva); 4) reparação provável: peças, kit ou peça solta, dificuldade para quem está a aprender e tempo aproximado. Se a pergunta for simples, responde simples.
-
-Procedimentos: primeiro ferramentas, peças e consumíveis; depois passos numerados e curtos; pontos onde é fácil errar (marcas de distribuição, porcas autoblocantes e parafusos que não se reaproveitam); no fim, como testar.
-
-Valores: NUNCA inventes binários de aperto, folgas, capacidades, pressões ou referências. Se não tiveres a certeza para aquele motor, diz que não tens e onde confirmar (manual do fabricante, Haynes, Autodata, TecDoc, etiqueta ou peça antiga). Valores típicos só marcados como típicos.
-
-Segurança, sempre que se aplique: carro levantado só em cavaletes; travões e direção testados a baixa velocidade e pedal firme antes de sair; desligar a bateria antes de mexer em airbags; gás do ar condicionado só com máquina própria; common-rail com pressão altíssima; cabos laranja de híbridos e elétricos são alta tensão; não abrir o vaso de expansão a quente. Se algo for perigoso para quem está a aprender, diz abertamente e sugere uma oficina especializada.
-
-Preços: só intervalos aproximados, a depender da marca e da loja. IVA e questões legais: o essencial e confirmar com um contabilista.
-
-Estilo: começa pela resposta mais útil. Se ele estiver a ir por um caminho errado ou caro (trocar peças ao calhas), diz logo. Lê-se num telemóvel: listas e passos curtos, títulos com ## só quando ajudam, negrito com **. Se te mandar uma foto, diz o que vês e o que não consegues confirmar pela foto.`;
-let AIK='',AIC={vid:'',model:AI_DEF,msgs:[]},AIDRAFT='',AIIMG='',AIBUSY=false,AIAB=null;
-const aiKeyOK=k=>/^sk-ant-[A-Za-z0-9_\-]{20,300}$/.test(k);
-function aiClean(c){
- const o={vid:'',model:AI_DEF,msgs:[]};if(!c||typeof c!=='object')return o;
- if(typeof c.vid==='string'&&ID_RE.test(c.vid))o.vid=c.vid;
- if(AI_MODELS[c.model])o.model=c.model;
- o.msgs=arr(c.msgs).filter(m=>m&&(m.r==='u'||m.r==='a')&&typeof m.t==='string').slice(-60).map(m=>({r:m.r,t:m.t.slice(0,20000),img:!!m.img,err:typeof m.err==='string'?m.err.slice(0,300):''}));
- return o;
-}
-async function aiLoad(){
- try{
-  const k=DBOK?await DB.get('aikey'):localStorage.getItem('7chaves-aikey');AIK=typeof k==='string'&&aiKeyOK(k)?k:'';
-  const c=DBOK?await DB.get('aichat'):JSON.parse(localStorage.getItem('7chaves-aichat')||'null');AIC=aiClean(c);
- }catch(_){}
-}
-async function aiSaveChat(){const c={vid:AIC.vid,model:AIC.model,msgs:AIC.msgs.filter(m=>!m.live).slice(-60).map(m=>({r:m.r,t:m.t,img:!!m.img,err:m.err||''}))};try{if(DBOK)await DB.set('aichat',c);else localStorage.setItem('7chaves-aichat',JSON.stringify(c))}catch(_){}}
-async function aiSetKey(){
- const e=$('#aik'),k=((e&&e.value)||'').replace(/\s+/g,'');
- if(!aiKeyOK(k))return toast('Essa chave não parece certa. Começa por sk-ant-');
- AIK=k;try{if(DBOK)await DB.set('aikey',k);else localStorage.setItem('7chaves-aikey',k)}catch(_){}
- if(e)e.value='';closeSheet();render();toast('Chave guardada neste aparelho');
-}
-async function aiDelKey(){
- if(!confirm('Remover a chave deste aparelho? Para voltar a usar o assistente terás de a colar outra vez.'))return;
- AIK='';try{if(DBOK)await DB.set('aikey','');else localStorage.removeItem('7chaves-aikey')}catch(_){}
- closeSheet();render();toast('Chave removida');
-}
-function aiNew(){if(AIBUSY&&AIAB)AIAB.abort();AIC.msgs=[];AIIMG='';aiSaveChat();render()}
-function aiPickVeh(id){AIC.vid=id&&veh(id)?id:'';aiSaveChat();render()}
-function aiModel(m){if(!AI_MODELS[m])return;AIC.model=m;aiSaveChat();closeSheet();render();toast('Modelo: '+AI_MODELS[m].n)}
-const aiMask=k=>k?k.slice(0,10)+'…'+k.slice(-4):'';
-function aiSettings(){
- openSheet(`<h3>Assistente</h3>
-  <label class="fl">Modelo</label><div class="card" style="padding:4px 0">${Object.entries(AI_MODELS).map(([id,m])=>`<button class="opt" onclick="aiModel('${id}')"><span class="bub ${AIC.model===id?'b-pri':'b-mut'}">${I(AIC.model===id?'check':'sparkle')}</span>${m.n}<span class="rv" style="max-width:62%;white-space:normal;text-align:right">${m.d}</span></button>`).join('')}</div>
-  <label class="fl">Chave da API</label><div class="aictx">${AIK?esc(aiMask(AIK))+' · guardada só neste aparelho':'Sem chave'}</div>
-  <p class="hint">A chave nunca vai para a sincronização, para as cópias de segurança nem para as exportações. Não a mandes a ninguém, nem a mim numa conversa.</p>
-  <button class="btn ghost" onclick="aiKeySheet()">${I('key','s')} ${AIK?'Trocar a chave':'Colar a chave'}</button>
-  ${AIK?`<button class="btn ghost sm" style="margin-top:10px;color:var(--bad)" onclick="aiDelKey()">Remover a chave deste aparelho</button>`:''}
-  <button class="btn ghost sm" style="margin-top:10px" onclick="openExt('https://console.anthropic.com/settings/usage')">Ver gastos na conta Anthropic</button>`);
-}
-function aiKeySheet(){
- openSheet(`<h3>Chave da API da Anthropic</h3>
-  <p class="hint">1. Entra em console.anthropic.com e põe algum crédito (paga-se por uso; uma pergunta normal custa cêntimos).<br>2. Em <b>API Keys</b>, cria uma chave e copia-a.<br>3. Cola-a aqui. Fica guardada só neste aparelho.</p>
-  <button class="btn ghost sm" style="margin-top:6px" onclick="openExt('https://console.anthropic.com/settings/keys')">Abrir a página das chaves</button>
-  <label class="fl">Chave</label><div class="in">${I('key')}<input id="aik" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk-ant-…" onkeydown="if(event.key==='Enter')aiSetKey()"></div>
-  <p class="hint">Dica: na consola da Anthropic podes pôr um limite de gasto por mês.</p>
-  <button class="btn" onclick="aiSetKey()">Guardar neste aparelho</button>`);
- setTimeout(()=>{const e=$('#aik');e&&e.focus()},250);
-}
-/* Markdown simples: escapa primeiro, só depois acrescenta etiquetas fixas */
-function aiMD(s){
- const inl=t=>t.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\s][^*]*)\*/g,'$1<i>$2</i>');
- let out='',list='';const close=()=>{if(list){out+=`</${list}>`;list=''}};
- for(const raw of esc(s).split('\n')){
-  const l=raw.trimEnd();let m;
-  if(!l.trim()){close();continue}
-  if((m=l.match(/^\s*#{1,4}\s+(.*)$/))){close();out+=`<h4>${inl(m[1])}</h4>`}
-  else if((m=l.match(/^\s*[-*•]\s+(.*)$/))){if(list!=='ul'){close();out+='<ul>';list='ul'}out+=`<li>${inl(m[1])}</li>`}
-  else if((m=l.match(/^\s*(\d{1,2})[.)]\s+(.*)$/))){if(list!=='ol'){close();out+=`<ol start="${+m[1]}">`;list='ol'}out+=`<li>${inl(m[2])}</li>`}
-  else if(/^\s*(-{3,}|\*{3,})\s*$/.test(l)){close();out+='<hr>'}
-  else{close();out+=`<p>${inl(l)}</p>`}
- }
- close();return out;
-}
-function aiBubble(m,i){
- if(m.r==='u')return `<div class="aim u"><div class="aib">${m.img?`<span class="aiph">${I('camera','s')} foto</span>`:''}${esc(m.t).replace(/\n/g,'<br>')}</div></div>`;
- if(m.err)return `<div class="aim a"><div class="aib err">${esc(m.err)}${i===AIC.msgs.length-1?`<button class="lnk" onclick="aiRetry()">Tentar outra vez</button>`:''}</div></div>`;
- return `<div class="aim a"><div class="aib"${m.live?' id="aist"':''}>${m.t?aiMD(m.t):'<span class="aidots"><i></i><i></i><i></i></span>'}</div></div>`;
-}
-function vAssist(){
- const m=AI_MODELS[AIC.model]||AI_MODELS[AI_DEF];
- let h=hdr('Assistente',`${AIK&&AIC.msgs.length?`<button class="ib" onclick="aiNew()" title="Nova conversa">${I('plus')}</button>`:''}<button class="ib" onclick="aiSettings()" title="Definições do assistente">${I('sliders')}</button>`,true);
- if(!AIK)return h+`<div class="wrap aiwrap"><div class="card aiintro"><span class="bub b-vio" style="width:52px;height:52px">${I('sparkle')}</span><h3>Assistente de mecânica</h3>
-  <p>Pergunta o que quiseres sobre avarias, peças e reparações. Responde aqui mesmo, em português de Portugal e já a saber os dados do carro que escolheres.</p>
-  <ul><li>Usa o Claude através da tua própria chave da Anthropic. Paga-se à parte, por uso (cêntimos por pergunta).</li><li>A chave fica só neste aparelho.</li><li>Ao Claude vão só a marca, modelo, motor, km e o histórico técnico. Nunca o nome, telefone ou matrícula do cliente.</li></ul>
-  <button class="btn" onclick="aiKeySheet()">${I('key','s')} Configurar a chave</button>
-  <button class="btn ghost sm" style="margin-top:10px" onclick="askAI(AIC.vid||(S.vehicles[0]||{}).id||'')" ${S.vehicles.length?'':'disabled'}>Sem chave: abrir a pergunta no Claude</button></div></div>`;
- const vs=[...S.vehicles].sort((a,b)=>vName(a).localeCompare(vName(b),'pt'));
- h+=`<div class="wrap aiwrap"><div class="aibar"><div class="in sm">${I('car')}<select onchange="aiPickVeh(this.value)" aria-label="Carro"><option value="">Sem carro (pergunta geral)</option>${vs.map(v=>`<option value="${v.id}" ${AIC.vid===v.id?'selected':''}>${esc(vName(v))}${v.owner?' · cliente':''}</option>`).join('')}</select>${CHV}</div><button class="aimod" onclick="aiSettings()">${m.n}</button></div>`;
- if(!AIC.msgs.length){
-  const qs=AIC.vid?['Que manutenção está a faltar a este carro?','Que avarias são comuns neste motor?','Faz barulho ao travar. Por onde começo?','Como troco as pastilhas da frente, passo a passo?']:['Que ferramentas devo ter para começar?','Como sei se as pastilhas estão gastas?','O que significa a luz do motor acesa?','Como leio códigos de avaria OBD?'];
-  h+=`<div class="aiempty"><span class="bub b-vio">${I('sparkle')}</span><p>${AIC.vid?'Pergunta sobre o '+esc(vName(veh(AIC.vid)))+'. Os dados técnicos e o histórico vão junto.':'Escolhe um carro acima para eu saber o motor e o histórico, ou pergunta à vontade.'}</p><div class="aiqs">${qs.map(q=>`<button onclick="AIDRAFT=${esc(JSON.stringify(q))};aiChat()">${esc(q)}</button>`).join('')}</div></div>`;
- }else h+=`<div class="aimsgs">${AIC.msgs.map(aiBubble).join('')}</div>`;
- h+=`<div class="aicomp">${AIIMG?`<div class="aiprev"><img src="${AIIMG}" alt="Foto a enviar"><button class="ib sm" onclick="AIIMG='';render()" aria-label="Tirar a foto">${I('x','s')}</button></div>`:''}<div class="aiin"><button class="ib" onclick="$('#aiph').click()" title="Juntar uma foto" ${AIBUSY?'disabled':''}>${I('camera')}</button><textarea id="aiq" rows="1" placeholder="Escreve a tua dúvida…" oninput="AIDRAFT=this.value;aiGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey&&isDesk()){event.preventDefault();aiChat()}">${esc(AIDRAFT)}</textarea>${AIBUSY?`<button class="ib pri" onclick="AIAB&&AIAB.abort()" title="Parar">${I('x')}</button>`:`<button class="ib pri" onclick="aiChat()" title="Enviar">${I('send')}</button>`}</div><input type="file" id="aiph" accept="image/*" hidden onchange="aiPhoto(this)"><p class="aifoot">As respostas podem ter erros. Confirma binários e especificações no manual.</p></div></div>`;
- return h;
-}
-function aiGrow(e){e.style.height='auto';e.style.height=Math.min(e.scrollHeight,160)+'px'}
-function aiScroll(){requestAnimationFrame(()=>{const l=$('.aimsgs');if(l)l.lastElementChild&&l.lastElementChild.scrollIntoView({block:'end'})})}
-async function aiPhoto(inp){
- const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
- if(!/^image\//.test(f.type))return toast('Escolhe uma imagem');
- try{
-  const url=await new Promise((ok,ko)=>{const r=new FileReader();r.onload=()=>ok(r.result);r.onerror=ko;r.readAsDataURL(f)});
-  const img=await new Promise((ok,ko)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=ko;i.src=url});
-  const M=1280,s=Math.min(1,M/Math.max(img.width,img.height)),c=document.createElement('canvas');
-  c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-  AIIMG=c.toDataURL('image/jpeg',.82);render();
- }catch(_){toast('Não foi possível ler essa imagem')}
-}
-function aiPatch(){const m=AIC.msgs[AIC.msgs.length-1],e=$('#aist');if(e&&m&&m.live){e.innerHTML=aiMD(m.t)||'<span class="aidots"><i></i><i></i><i></i></span>';aiScroll()}}
-function aiApiMsgs(img){
- const out=[];
- AIC.msgs.filter(m=>!m.err&&!m.live&&m.t).slice(-24).forEach((m,i,a)=>{
-  const role=m.r==='u'?'user':'assistant';
-  let content=m.t;
-  if(m.img){content=i===a.length-1&&img?[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}},{type:'text',text:m.t||'O que vês nesta foto?'}]:m.t+'\n[mandei uma foto nesta mensagem]'}
-  const last=out[out.length-1];
-  if(last&&last.role===role){const tx=c=>typeof c==='string'?[{type:'text',text:c}]:c;last.content=[...tx(last.content),...tx(content)]}
-  else out.push({role,content});
- });
- while(out.length&&out[0].role!=='user')out.shift();
- return out;
-}
-function aiErr(st,body){
- const t=String(body||'');
- if(st===0)return 'Sem ligação à internet. Tenta outra vez quando tiveres rede.';
- if(st===401)return 'A chave não foi aceite. Confirma-a nas definições do assistente.';
- if(st===403)return 'Esta chave não tem permissão para usar este modelo.';
- if(st===400&&/credit|balance/i.test(t))return 'Não há crédito na conta da Anthropic. Põe crédito em console.anthropic.com.';
- if(st===404)return 'Este modelo não está disponível na tua conta. Escolhe outro nas definições.';
- if(st===413)return 'A mensagem ou a foto é demasiado grande.';
- if(st===429)return 'Demasiados pedidos seguidos ou limite de gasto atingido. Espera um pouco.';
- if(st===529||st>=500)return 'O serviço está sobrecarregado. Tenta daqui a pouco.';
- return 'Erro '+st+'. Tenta outra vez.';
-}
-function aiRetry(){if(AIBUSY)return;const l=AIC.msgs[AIC.msgs.length-1];if(l&&l.err)AIC.msgs.pop();aiChat(true)}
-async function aiChat(retry){
- if(AIBUSY)return;if(!AIK)return aiKeySheet();
- const e=$('#aiq');if(e)AIDRAFT=e.value;
- const q=AIDRAFT.trim(),img=AIIMG;
- if(!retry){if(!q&&!img)return;AIC.msgs.push({r:'u',t:q,img:!!img});AIDRAFT='';}
- const msgs=aiApiMsgs(retry?'':img);AIIMG='';
- if(!msgs.length)return;
- const sys=AI_SYS+(AIC.vid&&veh(AIC.vid)?'\n\nDados do carro em causa, vindos da app (não peças o que já está aqui):\n'+aiCtx(AIC.vid):'');
- const out={r:'a',t:'',live:true};AIC.msgs.push(out);
- AIBUSY=true;AIAB=new AbortController();render();aiScroll();
- let st=0;
- try{
-  const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal:AIAB.signal,headers:{'content-type':'application/json','x-api-key':AIK,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:AIC.model,max_tokens:2500,system:sys,messages:msgs,stream:true})});
-  st=res.status;
-  if(!res.ok){let b='';try{b=await res.text()}catch(_){}throw Object.assign(new Error('http'),{st,b})}
-  const rd=res.body.getReader(),dec=new TextDecoder();let buf='',stop='';
-  for(;;){
-   const{done,value}=await rd.read();if(done)break;
-   buf+=dec.decode(value,{stream:true});
-   let i;while((i=buf.indexOf('\n'))>=0){
-    const line=buf.slice(0,i).trim();buf=buf.slice(i+1);
-    if(!line.startsWith('data:'))continue;
-    let ev;try{ev=JSON.parse(line.slice(5))}catch(_){continue}
-    if(ev.type==='content_block_delta'&&ev.delta&&ev.delta.type==='text_delta'){out.t+=ev.delta.text;aiPatch()}
-    else if(ev.type==='message_delta'&&ev.delta&&ev.delta.stop_reason)stop=ev.delta.stop_reason;
-    else if(ev.type==='error')throw Object.assign(new Error('sse'),{st:ev.error&&ev.error.type==='overloaded_error'?529:500,b:JSON.stringify(ev.error||{})});
-   }
-  }
-  if(stop==='max_tokens')out.t+='\n\n*(Resposta cortada por ser longa. Pede "continua".)*';
-  if(!out.t.trim())throw Object.assign(new Error('empty'),{st:500});
- }catch(err){
-  if(err&&err.name==='AbortError'){if(!out.t.trim())out.err='Parado.';else out.t+='\n\n*(parado)*'}
-  else{const s=err&&err.st!=null?err.st:0;if(out.t.trim())out.t+='\n\n*(a ligação falhou a meio)*';else out.err=aiErr(s,err&&err.b)}
- }
- delete out.live;AIBUSY=false;AIAB=null;
- await aiSaveChat();
- if(($('#app')||{}).dataset&&$('#app').dataset.view==='assist'){render();aiScroll();const t=$('#aiq');t&&isDesk()&&t.focus()}
-}
-function askHere(){AIC.vid=AIQ.vid&&veh(AIQ.vid)?AIQ.vid:'';AIDRAFT=(($('#ai-q')||{}).value||AIQ.q||'').trim();if(AIQ.rid){const r=S.records.find(x=>x.id===AIQ.rid);if(r&&(r.queixa||r.diag))AIDRAFT=(r.queixa?'Queixa: '+r.queixa+'\n':'')+(r.diag?'Já verifiquei: '+r.diag+'\n':'')+AIDRAFT}AIC.msgs=[];closeSheet();tab('assist');setTimeout(()=>{const t=$('#aiq');if(t){aiGrow(t);t.focus()}},200)}
 /* ================== CLIENTE ================== */
 function vClient(id){
  const c=cli(id);if(!c){stack=[{v:'home'},{v:'fin'}];return vFin()}
@@ -3250,7 +3043,7 @@ function ivSheet(key){
 }
 function saveIv(key){S.intervals[key]={km:pInt($('#iv-km').value)||0,m:pInt($('#iv-m').value)||0};save();closeSheet();render();toast('Intervalo guardado')}
 $('#fileImport').addEventListener('change',e=>{const f=e.target.files[0];e.target.value='';importFile(f)});
-function wipe(){if(!confirm('Apagar TODOS os veículos, clientes, reparações e finanças?'+(syOn()?' Com a sincronização ligada, apaga também nos outros aparelhos.':'')+' Esta ação não pode ser desfeita.'))return;S={vehicles:[],records:[],clients:[],moves:[],tasks:[],intervals:{},prefs:S.prefs||{bg:'tema'},ver:3};UI.cur=null;UI.tlVeh='all';AIC.msgs=[];AIC.vid='';aiSaveChat();save();tab('home');toast('Dados apagados')}
+function wipe(){if(!confirm('Apagar TODOS os veículos, clientes, reparações e finanças?'+(syOn()?' Com a sincronização ligada, apaga também nos outros aparelhos.':'')+' Esta ação não pode ser desfeita.'))return;S={vehicles:[],records:[],clients:[],moves:[],tasks:[],intervals:{},prefs:S.prefs||{bg:'tema'},ver:3};UI.cur=null;UI.tlVeh='all';save();tab('home');toast('Dados apagados')}
 function loadSample(){
  if(S.vehicles.length&&!confirm('Adicionar dados de exemplo aos teus dados?'))return;
  const ago=(mo,dd=0)=>{const d=addM(new Date(),-mo);d.setDate(d.getDate()-dd);return iso(d)};
@@ -3622,7 +3415,6 @@ function lkWipe(){
  const keep={bg:S.prefs.bg,bgInt:S.prefs.bgInt,style:S.prefs.style,mode:S.prefs.mode,accent:S.prefs.accent,firstUse:todayISO()};
  S={vehicles:[],records:[],clients:[],moves:[],tasks:[],intervals:{},prefs:keep,ver:3};
  if(DBOK)DB.set('autobak',[]).catch(()=>{});
- AIK='';AIC={vid:'',model:AI_DEF,msgs:[]};try{if(DBOK){DB.set('aikey','').catch(()=>{});DB.set('aichat',null).catch(()=>{})}else{localStorage.removeItem('7chaves-aikey');localStorage.removeItem('7chaves-aichat')}}catch(_){}
  save();$('#lock')&&$('#lock').remove();UI.cur=null;tab('home');toast('Dados apagados');
 }
 document.addEventListener('visibilitychange',()=>{
@@ -3725,17 +3517,20 @@ function bgHTML(k,style){
  return '';
 }
 async function pickBgImg(inp){
- const f=inp.files&&inp.files[0];if(!f)return;
+ const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
  try{
   let url;
   if(/image\/(gif|webp)/.test(f.type)){if(f.size>6*1024*1024)return toast('GIF demasiado grande (máximo 6 MB)');url=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.onerror=rej;fr.readAsDataURL(f)})}
   else url=await new Promise((res,rej)=>{const fr=new FileReader();fr.onload=()=>{const img=new Image();img.onload=()=>{const k=Math.min(1,1800/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};img.onerror=rej;img.src=fr.result};fr.onerror=rej;fr.readAsDataURL(f)});
-  if(!/^data:image\/(jpeg|png|gif|webp);base64,/.test(url))return toast('Formato de imagem não suportado');
+  if(!FOTO_RE.test(url))return toast('Formato de imagem não suportado');
   BGIMG=url;await DB.set('bgimg',url);setPref('bg','minha');toast('Fundo aplicado');
  }catch(_){toast('Não foi possível ler a imagem')}
 }
 async function delBgImg(){BGIMG='';try{await DB.set('bgimg','')}catch(_){}setPref('bg','tema');toast('Imagem de fundo removida')}
-function mountBg(){let d=$('body>.bgfx');if(!d){d=document.createElement('div');d.className='bgfx';document.body.prepend(d)}d.innerHTML=bgHTML(curBg())}
+function mountBg(){let d=$('body>.bgfx');if(!d){d=document.createElement('div');d.className='bgfx';document.body.prepend(d)}
+ const k=curBg()==='minha'&&!BGIMG?'tema':curBg(),sig=k+':'+curStyle()+':'+(k==='minha'?BGIMG.length+BGIMG.slice(-32):'');
+ if(d.dataset.sig===sig)return; // não refaz o fundo (nem volta a descodificar o GIF) se nada mudou
+ d.dataset.sig=sig;d.innerHTML=bgHTML(k)}
 function applyPrefs(){
  const r=document.documentElement,st=curStyle(),light=isLight();
  r.dataset.style=st;r.dataset.mode=light?'light':'dark';
@@ -4065,11 +3860,12 @@ let tT;function toast(t){let e=$('.toast');if(!e){e=document.createElement('div'
 
 /* ================== ARRANQUE ================== */
 (async function init(){
- try{await DB.open();const s=await DB.get('state');if(s){const was=s.ver||1;S=normalize(s);if(was<3)save()}try{const bi=await DB.get('bgimg');BGIMG=typeof bi==='string'&&/^data:image\/(jpeg|png|gif|webp);base64,/.test(bi)?bi:''}catch(_){}}
+ try{await DB.open();const s=await DB.get('state');if(s){const was=s.ver||1;S=normalize(s);if(was<3)save()}try{const bi=await DB.get('bgimg');BGIMG=typeof bi==='string'&&FOTO_RE.test(bi)?bi:''}catch(_){}}
  catch(e){DBOK=false;try{const s=localStorage.getItem('garagepro');if(s)S=normalize(JSON.parse(s))}catch(_){}}
  try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(_){}
  await syLoadLocal();
- await aiLoad();
+ // O assistente com chave da API (1.2 de teste) foi removido: apaga a chave e a conversa que tenham ficado no aparelho
+ try{if(DBOK){DB.del('aikey').catch(()=>{});DB.del('aichat').catch(()=>{})}localStorage.removeItem('7chaves-aikey');localStorage.removeItem('7chaves-aichat')}catch(_){}
  UI.cur=myVeh()[0]?.id||S.vehicles[0]?.id||null;
  if(!(S.prefs||{}).firstUse){S.prefs={...S.prefs,firstUse:todayISO()};save()}
  applyPrefs();

@@ -3,6 +3,11 @@ const { app, BrowserWindow, protocol, net, shell, ipcMain, Menu, Notification, s
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL } = require('url');
+// Só a própria app (app://garagepro) pode falar com o Windows através da ponte
+const okSender = (e) => { try { return String((e.senderFrame && e.senderFrame.url) || '').startsWith('app://garagepro/'); } catch (_) { return false; } };
+{ const h = ipcMain.handle.bind(ipcMain), o = ipcMain.on.bind(ipcMain);
+  ipcMain.handle = (ch, fn) => h(ch, (e, ...a) => (okSender(e) ? fn(e, ...a) : null));
+  ipcMain.on = (ch, fn) => o(ch, (e, ...a) => { if (okSender(e)) fn(e, ...a); }); }
 
 const APP_ID = 'pt.bbtecnodev.garagepro.pc';
 // Os dados ficam sempre na pasta antiga "GaragePro", para não se perderem com a mudança de nome
